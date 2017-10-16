@@ -1,0 +1,8 @@
+---
+# This playbook runs the Ansible module ping to test the inventory status
+- hosts: all
+  remote_user: lkurusa
+  tasks:
+    - name: test connection
+      ping:
+
