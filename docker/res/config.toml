@@ -1,5 +1,5 @@
 [parity]
-chain = "./res/chain.json"
+chain = "./res/genesis.json"
 base_path = "./datadir/"
 [rpc]
 interface = "0.0.0.0"
