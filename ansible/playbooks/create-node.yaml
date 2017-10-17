@@ -1,0 +1,44 @@
+---
+# This playbook creates a blockchain node
+- hosts: all
+  remote_user: energy
+  become: yes
+  become_method: su
+  tasks:
+    - name: Update repositories
+      apt:
+        update_cache: yes
+    - name: Install dependencies for Docker
+      apt: name={{ item }} state=present
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - python
+        - python-setuptools
+        - python-dev
+    - name: Install pip
+      easy_install:
+        name: pip
+        state: latest
+    - name: Install Docker repo keys
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add the Docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu xenial stable
+        state: present
+    - name: Install Docker main package
+      apt:
+        update_cache: yes
+        name: docker-ce
+    - name: Install docker-py package
+      pip:
+        name: docker-py
+    - name: Test Docker installation
+      docker_container:
+        name: hello-world
+        state: present
+        image: hello-world
