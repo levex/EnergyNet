@@ -42,3 +42,12 @@
         name: hello-world
         state: present
         image: hello-world
+    - name: Copy over Docker image manifest
+      copy:
+        src: ../../docker
+        dest: /home/energy/
+    - name: Create blockchain docker image
+      docker_image:
+        name: imperial-energychain-node
+        build_path: /home/energy/docker/
+        state: present
