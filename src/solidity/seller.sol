@@ -21,6 +21,10 @@ contract seller {
     }
   }
 
+  function energy_available() public view returns(uint) {
+    return energy;
+  }
+
   function die() public {
     if (msg.sender == owner) {
       selfdestruct(owner);
