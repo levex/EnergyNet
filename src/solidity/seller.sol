@@ -12,7 +12,7 @@ contract seller {
   }
 
   function buy(uint energy_) public payable returns(uint) {
-    if (price * energy_ < msg.value) {
+    if (price * energy_ != msg.value) {
       // TODO: Refund
       return 0;
     } else {
