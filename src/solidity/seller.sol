@@ -5,7 +5,9 @@ contract seller {
   address owner;
   int energy;
 
-  function seller() public {}
+  function seller() public {
+    owner = msg.sender;
+  }
 
   function buy(int amount) returns (int x) {
     if (msg.value > 1 ether) {
