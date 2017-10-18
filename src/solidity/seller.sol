@@ -1,36 +1,42 @@
 pragma solidity ^0.4.11;
 
-contract seller {
+contract EnergyContract {
 
-  address owner;
-  uint energy;
+  address seller;
+  uint buyable;
+  uint bought;
+  uint consumed;
   uint price;
 
-  function seller(uint price_) public {
-    owner = msg.sender;
+  function EnergyContract(uint price_, uint buyable_) public {
+    seller = msg.sender;
     price = price_;
+    buyable = buyable_;
+    bought = 0;
+    consumed = 0;
   }
 
-  function buy(uint energy_) public payable returns(uint) {
-    if (price * energy_ != msg.value) {
+  function buy(uint energy_to_buy) public payable returns(uint) {
+    if (price * energy_to_buy != msg.value) {
       // TODO: Refund
       return 0;
     } else {
-      energy += energy_;
-      return energy_;
+      buyable -= energy_to_buy;
+      bought += energy_to_buy;
+      return energy_to_buy;
     }
   }
 
   function energy_available() public view returns(uint) {
-    return energy;
+    return buyable;
   }
 
-  function consume(uint energy_) public returns(uint) {
-    if (energy_ > energy) {
+  function consume(uint energy_consumed) public returns(uint) {
+    if (energy_consumed > bought) {
       return 0;
     } else {
-      energy -= energy_;
-      return energy_;
+      consumed += energy_consumed;
+      return energy_consumed;
     }
   }
 
@@ -38,9 +44,21 @@ contract seller {
     return price;
   }
 
+  function get_buyable() public view returns(uint) {
+    return buyable;
+  }
+
+  function get_bought() public view returns(uint) {
+    return bought;
+  }
+
+  function get_consumed() public view returns(uint) {
+    return consumed;
+  }
+
   function die() public {
-    if (msg.sender == owner) {
-      selfdestruct(owner);
+    if (msg.sender == seller) {
+      selfdestruct(seller);
     }
   }
 }
