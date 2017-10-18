@@ -3,19 +3,22 @@ pragma solidity ^0.4.11;
 contract seller {
 
   address owner;
-  int energy;
+  uint energy;
+  uint price;
 
-  function seller() public {
+  function seller(uint price_) public {
     owner = msg.sender;
+    price = price_;
   }
 
-  function buy(int amount) returns (int x) {
-    if (msg.value > 1 ether) {
-      owner.transfer(1 ether);
-      return 1;
+  function buy(uint energy_) public payable returns(uint) {
+    if (price * energy_ < msg.value) {
+      // TODO: Refund
+      return 0;
+    } else {
+      energy += energy_;
+      return energy_;
     }
-
-    return -1;
   }
 
   function die() public {
