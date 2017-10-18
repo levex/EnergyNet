@@ -17,7 +17,7 @@ contract EnergyContract {
   }
 
   function buy(uint energy_to_buy) public payable returns(uint) {
-    if (price * energy_to_buy != msg.value) {
+    if (price * energy_to_buy != msg.value || buyable < energy_to_buy) {
       // TODO: Refund
       return 0;
     } else {
