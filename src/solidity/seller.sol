@@ -34,6 +34,10 @@ contract seller {
     }
   }
 
+  function get_price() public view returns(uint) {
+    return price;
+  }
+
   function die() public {
     if (msg.sender == owner) {
       selfdestruct(owner);
