@@ -25,6 +25,15 @@ contract seller {
     return energy;
   }
 
+  function consume(uint energy_) public returns(uint) {
+    if (energy_ > energy) {
+      return 0;
+    } else {
+      energy -= energy_;
+      return energy_;
+    }
+  }
+
   function die() public {
     if (msg.sender == owner) {
       selfdestruct(owner);
