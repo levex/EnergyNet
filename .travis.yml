@@ -1,0 +1,16 @@
+language: python
+
+python:
+  - "3.6"
+
+cache: pip
+
+install:
+  - pip install -r client/requirements.txt
+
+script:
+  - cd client 
+  - python -m unittest discover
+  
+notifications:
+    slack: absolutelyno:husVV86h9j4IeoQTmekkK5FX
