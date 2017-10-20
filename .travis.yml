@@ -6,10 +6,10 @@ python:
 cache: pip
 
 install:
-  - pip install -r simulation/requirements.txt
+  - pip install -r client/requirements.txt
 
 script:
-  - cd simulation
+  - cd client 
   - python -m unittest discover
   
 notifications:
