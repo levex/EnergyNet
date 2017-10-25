@@ -3,14 +3,21 @@ language: python
 python:
   - "3.6"
 
-cache: pip
+cache:
+  pip : true
+  directories:
+    - $(npm config get prefix)/lib/node_modules
 
 install:
   - pip install -r client/requirements.txt
+  - npm install -g truffle
+  - npm install -g ethereumjs-testrpc
 
 script:
-  - cd client 
+  - cd client
   - python -m unittest discover
-  
+  - cd ../truffle
+  - testrpc & truffle test
+
 notifications:
     slack: absolutelyno:husVV86h9j4IeoQTmekkK5FX
