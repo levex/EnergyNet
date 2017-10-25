@@ -3,7 +3,10 @@ language: python
 python:
   - "3.6"
 
-cache: pip
+cache:
+  pip : true
+  directories:
+    - $(npm config get prefix)/lib/node_modules
 
 install:
   - pip install -r client/requirements.txt
