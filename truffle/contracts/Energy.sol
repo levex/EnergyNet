@@ -42,14 +42,14 @@ contract Energy {
 
     /// @notice Get price of unit energy
     /// @return Price of unit energy
-    function getPrice() public view returns(uint) {
+    function getPrice() public constant returns(uint) {
         return unitPrice;
     }
 
     /// @notice Get amount of energy purchased but not consumed yet, i.e.
     /// amount of consumable energy
     /// @return amount of energy purchased by buyer but not consumed yet
-    function getBalance() public view returns(uint) {
+    function getBalance() public constant returns(uint) {
         return energyBalance;
     }
 
