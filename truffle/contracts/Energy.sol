@@ -21,10 +21,11 @@ contract Energy {
 
     /// @notice Sell given amount of energy to buyer, can only be called by
     /// seller
-    /// @param amountSold amount of energy sold by seller, consumable by buyer
-    function sell(uint amountSold) public {
+    /// @param amountOffered amount of energy offered to sell by seller,
+    /// consumable by buyer
+    function sell(uint amountOffered) public {
         require(msg.sender == seller);
-        energyBalance += amountSold;
+        energyBalance += amountOffered;
     }
 
     /// @notice Consume given amount of energy previous purchased from seller,
