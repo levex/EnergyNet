@@ -12,11 +12,21 @@ contract EnergyMaster {
         sellers[seller].push(energyContract);
     }
 
-    function getBuyerContracts(address buyer) constant returns (address[]) {
-        return buyers[buyer];
+    function getBuyerContractCount(address buyer) constant returns (uint) {
+        return buyers[buyer].length;
     }
 
-    function getSellerContracts(address seller) constant returns (address[]) {
-        return sellers[seller];
+    function getBuyerContractByIndex(address buyer, uint index) constant returns (address) {
+        require(index < buyers[buyer].length);
+        return buyers[buyer][index];
+    }
+
+    function getSellerContractCount(address seller) constant returns (uint) {
+        return sellers[seller].length;
+    }
+
+    function getSellerContractByIndex(address seller, uint index) constant returns (address) {
+        require(index < sellers[seller].length);
+        return sellers[seller][index];
     }
 }
