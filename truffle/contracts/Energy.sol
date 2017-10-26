@@ -1,5 +1,7 @@
 pragma solidity ^0.4.10;
 
+import "EnergyMaster.sol";
+
 contract Energy {
     address seller;
     address buyer;
@@ -11,12 +13,15 @@ contract Energy {
     /// set by the seller (deployer of contract)
     /// @param buyer_ Energy buyer
     /// @param unitPrice_ Price per unit energy
-    function Energy(address buyer_, uint unitPrice_) public {
+    function Energy(address energyMaster_, address buyer_, uint unitPrice_) public {
+        EnergyMaster energyMaster = EnergyMaster(energyMaster_);
         seller = msg.sender;
         buyer = buyer_;
         energyBalance = 0;
         unitPrice = unitPrice_;
         amountPaid = 0;
+        energyMaster.registerBuyer(this, buyer);
+        energyMaster.registerSeller(this, seller);
     }
 
     /// @notice Sell given amount of energy to buyer, can only be called by
