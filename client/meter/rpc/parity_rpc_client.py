@@ -52,3 +52,27 @@ class ParityRPCClient():
             data=json.dumps([payload]),
             headers=self.headers
         )
+
+    def call(self, from_=None, **kwargs):
+        """
+        Send an eth_call command to the parity client
+
+        :param from_: This is explicit because from is a reserved keyword
+
+        See
+        https://github.com/paritytech/parity/wiki/JSONRPC-eth-module#eth_call
+        for documentation
+        """
+        if from_ is not None:
+            kwargs["from"] = format(from_, "#042x")
+
+        if "to" in kwargs.keys():
+            kwargs["to"] = format(kwargs["to"], "#042x")
+
+        payload = self._build_payload("eth_call", kwargs)
+
+        return requests.post(
+            self.url,
+            data=json.dumps([payload]),
+            headers=self.headers,
+        )
