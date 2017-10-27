@@ -39,7 +39,7 @@ contract Energy {
     /// from seller
     function consume(uint amountConsumed) public payable {
         require(msg.sender == buyer);
-        require(msg.value == unitPrice * amountConsumed);
+        require(msg.value >= unitPrice * amountConsumed);
         require(amountConsumed <= energyBalance);
         energyBalance -= amountConsumed;
         amountPaid += msg.value;
