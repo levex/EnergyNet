@@ -7,6 +7,7 @@ module.exports = function(deployer) {
   deployer.deploy(ConvertLib);
   deployer.link(ConvertLib, MetaCoin);
   deployer.deploy(MetaCoin);
-  deployer.deploy(EnergyMaster);
-  deployer.deploy(Energy, EnergyMaster.address, 0x42, 2);
+  deployer.deploy(EnergyMaster).then(() => {
+    deployer.deploy(Energy, EnergyMaster.address, 0x42, 2);
+  });
 };
