@@ -37,16 +37,20 @@ contract('TestEnergy', function(accounts) {
 
     it('consume() - let buyer buy energy', () => {
       const toConsume = 10
-      const newBalance = 0
-      const value = toConsume
+      const newEnergyBalance = 0
+      const value = toConsume * 2
+      let sellerBalanceBefore
       let energy
       return Energy.deployed().then(instance => {
         energy = instance
-        return energy.consume(toConsume, {from: buyer, value: web3.toWei(value, "ether")})
+        return energy.consume(toConsume, {from: buyer, value: value})
       }).then((result) => {
+        sellerBalanceBefore = web3.eth.getBalance(seller).toNumber()
         return energy.getBalance.call()
       }).then(balance => {
-        assert.equal(balance.valueOf(), newBalance, 'incorrect amount was consumed')
+        assert.equal(balance.valueOf(), newEnergyBalance, 'incorrect amount was consumed')
+        const sellerBalance = web3.eth.getBalance(seller).toNumber()
+        assert.equal(sellerBalance - 20, sellerBalanceBefore, 'seller has not been payed');
       })
     })
 })
