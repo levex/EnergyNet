@@ -4,23 +4,17 @@ import "./EnergyMaster.sol";
 
 contract Energy {
     address seller;
-    address buyer;
     uint energyBalance;
     uint unitPrice;
-    uint amountPaid;
 
     /// @notice Construct a contract between a seller and a buyer with a price
     /// set by the seller (deployer of contract)
-    /// @param buyer_ Energy buyer
     /// @param unitPrice_ Price per unit energy
-    function Energy(address energyMaster_, address buyer_, uint unitPrice_) public {
+    function Energy(address energyMaster_, uint unitPrice_) public {
         EnergyMaster energyMaster = EnergyMaster(energyMaster_);
         seller = msg.sender;
-        buyer = buyer_;
         energyBalance = 0;
         unitPrice = unitPrice_;
-        amountPaid = 0;
-        energyMaster.registerBuyer(this, buyer);
         energyMaster.registerSeller(this, seller);
     }
 
@@ -34,15 +28,14 @@ contract Energy {
     }
 
     /// @notice Consume given amount of energy previous purchased from seller,
-    /// can only be called by buyer
+    /// send the price paid to seller
     /// @param amountConsumed amount of energy consumed by buyer, purchased
     /// from seller
     function consume(uint amountConsumed) public payable {
-        require(msg.sender == buyer);
         require(msg.value >= unitPrice * amountConsumed);
         require(amountConsumed <= energyBalance);
         energyBalance -= amountConsumed;
-        amountPaid += msg.value;
+        seller.transfer(unitPrice * amountConsumed);
     }
 
     /// @notice Get price of unit energy
@@ -56,14 +49,5 @@ contract Energy {
     /// @return amount of energy purchased by buyer but not consumed yet
     function getBalance() public constant returns(uint) {
         return energyBalance;
-    }
-
-    /// @notice Return money paid by buyer to seller, can only be called 
-    /// by seller
-    function cashBack() public {
-        require(msg.sender == seller);
-        uint value = amountPaid;
-        amountPaid = 0;
-        msg.sender.transfer(value);
     }
 }

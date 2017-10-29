@@ -11,6 +11,6 @@ module.exports = (deployer) => {
   deployer.link(ConvertLib, MetaCoin);
   deployer.deploy(MetaCoin);
   deployer.deploy(EnergyMaster).then(() => {
-    return deployer.deploy(Energy, EnergyMaster.address, accounts[1], 2);
+    return deployer.deploy(Energy, EnergyMaster.address, 2);
   });
 };
