@@ -88,15 +88,9 @@ export class App extends React.Component {
     }
 
 	render() {
-		return (<Rspan>
-                My Address:
-                {bonds.me}
-                <br />
-                <Rspan>
-                    My contracts: <br />
-                    {this.state.accounts.join(', ')}
-                </Rspan>
-		</Rspan>
-        );
+		return (<div>
+			Hello world!
+                        <a href="bootstrap/index.html">goto</a>
+		</div>);
 	}
 }
