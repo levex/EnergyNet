@@ -1,6 +1,6 @@
 {
   "name": "energy",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Energy dapp",
   "main": "webpack.config.js",
   "dependencies": {
