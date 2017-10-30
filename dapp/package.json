@@ -1,7 +1,7 @@
 {
-  "name": "skeleton",
-  "version": "0.1.5",
-  "description": "Skeleton dapp",
+  "name": "energy",
+  "version": "0.1",
+  "description": "Energy dapp",
   "main": "webpack.config.js",
   "dependencies": {
     "babel-core": "^6.26.0",
@@ -25,20 +25,6 @@
     "build": "webpack",
     "start": "webpack-dev-server --content-base build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ethcore/skeleton.git"
-  },
-  "keywords": [
-    "Dapp",
-    "Parity",
-    "Reactive",
-    "Template"
-  ],
-  "author": "Parity Technologies Ltd",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/ethcore/skeleton/issues"
-  },
-  "homepage": "https://github.com/ethcore/skeleton#readme"
+  "author": "Blockchain Energy Ltd",
+  "license": "Apache-2.0"
 }
