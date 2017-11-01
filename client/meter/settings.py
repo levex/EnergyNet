@@ -5,7 +5,7 @@ MONGO_PORT = 27017
 MONGO_DBNAME = "meter"
 
 # Allowed methods
-ITEM_METHODS = ["GET", "PUT"]
+RESOURCE_METHODS = ["GET", "POST"]
 
 # Domain definition
 DOMAIN = {
