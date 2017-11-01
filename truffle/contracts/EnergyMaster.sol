@@ -1,18 +1,32 @@
 pragma solidity ^0.4.10;
 
-contract EnergyMaster {
-    mapping(address => address[]) sellers;
+import "./Energy.sol";
 
-    function registerSeller(address energyContract, address seller) public {
-        sellers[seller].push(energyContract);
+contract Master {
+    struct ContractEntity {
+        address contract_addr;
+        address seller;
+        bool deleted;
     }
 
-    function getSellerContractCount(address seller) constant returns (uint) {
-        return sellers[seller].length;
+    ContractEntity[] public contracts;
+    mapping (address => uint) lookup;
+
+    function Master() public {
     }
 
-    function getSellerContractByIndex(address seller, uint index) constant returns (address) {
-        require(index < sellers[seller].length);
-        return sellers[seller][index];
+    function sell(uint unitPrice, uint capacity) public {
+        Energy energy = new Energy(msg.sender, unitPrice, capacity);
+        ContractEntity memory entity;
+        entity.contract_addr = energy;
+        entity.seller = msg.sender;
+        lookup[energy] = contracts.length;
+        contracts.push(entity);
     }
+
+    function deregister(address contract_addr) public {
+        require(msg.sender == contract_addr);
+        contracts[lookup[contract_addr]].deleted = true;
+    }
+
 }
