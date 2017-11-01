@@ -4,7 +4,7 @@ export class App extends React.Component {
     constructor() {
         super();
         this.energyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
-        this.state = {accounts: []};
+        this.state = {contracts: []};
         bonds.me.tie(this.getContracts.bind(this));
     }
 
@@ -19,7 +19,7 @@ export class App extends React.Component {
         for (let i = 0; i < count; i++) {
             promises.push(this.energyMaster.getSellerContractByIndex(account, i));
         }
-        this.setState({accounts: await Promise.all(promises)});
+        this.setState({contracts: await Promise.all(promises)});
     }
 
 	render() {
@@ -108,7 +108,7 @@ export class App extends React.Component {
 	                                    <i class="fa fa-tasks fa-5x"></i>
 	                                </div>
 	                                <div class="col-xs-9 text-right">
-	                                    <div class="huge"><Rspan>{this.state.accounts.length}</Rspan></div>
+	                                    <div class="huge"><Rspan>{this.state.contracts.length}</Rspan></div>
 	                                    <div>Contracts in effect</div>
 	                                </div>
 	                            </div>
