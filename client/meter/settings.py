@@ -14,17 +14,14 @@ DOMAIN = {
             "from": {
                 "type": "datetime",
                 "required": True,
-                "readonly": True,
             },
             "to": {
                 "type": "datetime",
                 "required": True,
-                "readonly": True,
             },
             "amount": {
                 "type": "float",
                 "required": True,
-                "readonly": True,
             },
         }
     },
@@ -33,17 +30,14 @@ DOMAIN = {
             "from": {
                 "type": "datetime",
                 "required": True,
-                "readonly": True,
             },
             "to": {
                 "type": "datetime",
                 "required": True,
-                "readonly": True,
             },
             "amount": {
                 "type": "float",
                 "required": True,
-                "readonly": True,
             },
         }
     },
@@ -52,12 +46,10 @@ DOMAIN = {
             "timestamp": {
                 "type": "datetime",
                 "required": True,
-                "readonly": True,
             },
             "amount": {
                 "type": "float",
                 "required": True,
-                "readonly": True,
             },
         }
     },
@@ -66,12 +58,10 @@ DOMAIN = {
             "timestamp": {
                 "type": "datetime",
                 "required": True,
-                "readonly": True,
             },
             "amount": {
                 "type": "float",
                 "required": True,
-                "readonly": True,
             },
         }
     },
