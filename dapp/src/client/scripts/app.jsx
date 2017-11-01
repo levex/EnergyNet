@@ -108,7 +108,7 @@ export class App extends React.Component {
 	                                    <i class="fa fa-tasks fa-5x"></i>
 	                                </div>
 	                                <div class="col-xs-9 text-right">
-	                                    <div class="huge">13</div>
+	                                    <div class="huge"><Rspan>{this.state.accounts.length}</Rspan></div>
 	                                    <div>Contracts in effect</div>
 	                                </div>
 	                            </div>
