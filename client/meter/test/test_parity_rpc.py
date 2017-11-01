@@ -9,6 +9,7 @@ class ParityRPCClientTestCase(unittest.TestCase):
 
     def setUp(self):
         self.parity_rpc_client = ParityRPCClient("http://mock.url.com")
+        self.headers = {'content-type': 'application/json'}
 
     @patch('meter.rpc.parity_rpc_client.requests.post')
     def test_send_transaction(self, mock_post):
@@ -28,7 +29,28 @@ class ParityRPCClientTestCase(unittest.TestCase):
                     "from": format(1234, "#042x"),
                 },
             )]),
-            headers={'content-type': 'application/json'}
+            headers=self.headers,
+        )
+
+    @patch('meter.rpc.parity_rpc_client.requests.post')
+    def test_call(self, mock_post):
+        self.parity_rpc_client.call(
+            from_=1234,
+            to=12345,
+            gas=321,
+        )
+
+        mock_post.assert_called_once_with(
+            "http://mock.url.com",
+            data=json.dumps([self.parity_rpc_client._build_payload(
+                "eth_call",
+                {
+                    "to": format(12345, "#042x"),
+                    "gas": 321,
+                    "from": format(1234, "#042x"),
+                }
+            )]),
+            headers=self.headers,
         )
 
     def test_payload_is_built_correctly(self):
