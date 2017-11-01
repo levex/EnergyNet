@@ -11,7 +11,6 @@ cache:
 install:
   - pip install -r client/requirements.txt
   - npm install -g truffle
-  - npm install -g ethereumjs-testrpc
 
 script:
   - cd client
