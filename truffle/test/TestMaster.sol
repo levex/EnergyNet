@@ -2,10 +2,10 @@ pragma solidity ^0.4.10;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/EnergyMaster.sol";
+import "../contracts/Master.sol";
 import "../contracts/Energy.sol";
 
-contract TestEnergyMaster {
+contract TestMaster {
 
     function testSellCanDeployContract() {
         Master master = Master(DeployedAddresses.Master());

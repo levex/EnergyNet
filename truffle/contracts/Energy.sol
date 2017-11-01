@@ -1,6 +1,6 @@
 pragma solidity ^0.4.10;
 
-import './EnergyMaster.sol';
+import './Master.sol';
 
 contract Energy {
     uint public unitPrice;
