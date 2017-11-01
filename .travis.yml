@@ -17,7 +17,7 @@ script:
   - cd client
   - python -m unittest discover
   - cd ../truffle
-  - testrpc & truffle test
+  - truffle test
 
 notifications:
     slack: absolutelyno:husVV86h9j4IeoQTmekkK5FX
