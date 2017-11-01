@@ -191,7 +191,34 @@ export class App extends React.Component {
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
-                Find energy contracts
+                Sell energy
+              </div>
+              {/* /.panel-heading */}
+              <div className="panel-body">
+                <form role="form">
+                  <div className="col-lg-6">
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input class="form-control" placeholder="kWh/day"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Offer Energy</button>
+                  </div>
+                  <div className="col-lg-6">
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input class="form-control" placeholder="£/kWh" />
+                    </div>
+                  </div>
+                </form>
+              </div>
+              {/* /.panel-body */}
+            </div>
+            {/* /.panel */}
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <i className="fa fa-bar-chart-o fa-fw"></i>
+                Buy energy
               </div>
               {/* /.panel-heading */}
               <div className="panel-body">
