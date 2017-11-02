@@ -1,49 +1,19 @@
 import argparse
+import datetime
+import json
 import random
+import requests
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
-class Meter():
+METER_API_BASE_URL = "localhost:5000"
+API_CALL_HEADER = {
+    "content-type": "application/json"
+}
+DATE_FORMAT = "a, %d %b %Y %H:%M:%S UTC"
 
-    def __init__(self, wallet_address, excess_interval=(0.0, 0.0)):
-        self.energy_sold = 0
-        self.energy_bought = 0
-        self.penalties_paid = 0
-        self.energy_lost = 0
-        self.unsatsfied_energy_need = 0
-
-        self.excess_interval = excess_interval
-        self.wallet_address = wallet_address
-
-    def tick(self):
-        excess = random.uniform(*self.excess_interval)
-
-        if excess < 0:
-            # TODO: Implement method to buy energy from the network and update
-            # stats
-            # self.buy(-excess)
-            pass
-        elif excess > 0:
-            # TODO: Implement method to sell energy on the network and update
-            # stats
-            # self.sell(-excess)
-            pass
-
-        # TODO: Method to retrieve penalties information from the blockchain
-        # self.check_penalties()
-
-
-meter = None
-
-
-class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
-
-    def do_GET(self):
-        if self.path is "/tick":
-            meter.tick()
-
-        self.send_response(200, "Bananas")
+args = None
 
 
 def parse_arguments():
@@ -65,10 +35,50 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def buy_energy():
+    # TODO: This method should buy energy by calling a seller contract using
+    # the rpc client and update the stats kept by the meter using the API
+    pass
+
+
+def sell_energy():
+    # TODO: THis method should add energy to an existing seller contract or
+    # create a new seller contract
+    pass
+
+
+class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        if self.path is "/tick":
+            produced_energy = random.uniform(*args.excess_interval)
+
+            if produced_energy < 0:
+                endpoint = "/consumed"
+                produced_energy *= -1
+                buy_energy(produced_energy)
+            else:
+                endpoint = "/produced"
+                sell_energy(produced_energy)
+
+            requests.post(
+                METER_API_BASE_URL + endpoint,
+                data=json.dumps({
+                    "amount": produced_energy,
+                    "timestamp": datetime.strftime(
+                        datetime.utcnow(), DATE_FORMAT
+                    ),
+                }),
+                headers=API_CALL_HEADER,
+            )
+
+            self.send_response(200)
+
+        self.send_error(404)
+
+
 if __name__ == "__main__":
     args = parse_arguments()
-
-    meter = Meter(args.wallet_address, args.excess_interval)
 
     server_address = ("", args.port)
     httpd = HTTPServer(server_address, MeterHTTPRequestHandler)
