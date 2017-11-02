@@ -9,13 +9,12 @@ cache:
     - $(npm config get prefix)/lib/node_modules
 
 install:
-  - pip install -r client/requirements.txt
+  - pip install -r requirements.txt
   - npm install -g truffle
 
 script:
-  - cd client
   - python -m unittest discover
-  - cd ../truffle
+  - cd truffle
   - truffle test
 
 notifications:

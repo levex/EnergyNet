@@ -2,7 +2,7 @@ import json
 import unittest
 
 from unittest.mock import patch
-from meter.rpc import ParityRPCClient
+from client.meter.rpc import ParityRPCClient
 
 
 class ParityRPCClientTestCase(unittest.TestCase):
@@ -11,7 +11,7 @@ class ParityRPCClientTestCase(unittest.TestCase):
         self.parity_rpc_client = ParityRPCClient("http://mock.url.com")
         self.headers = {'content-type': 'application/json'}
 
-    @patch('meter.rpc.parity_rpc_client.requests.post')
+    @patch('client.meter.rpc.parity_rpc_client.requests.post')
     def test_send_transaction(self, mock_post):
         self.parity_rpc_client.send_transaction(
             from_=format(1234, "#042x"),
@@ -32,7 +32,7 @@ class ParityRPCClientTestCase(unittest.TestCase):
             headers=self.headers,
         )
 
-    @patch('meter.rpc.parity_rpc_client.requests.post')
+    @patch('client.meter.rpc.parity_rpc_client.requests.post')
     def test_call(self, mock_post):
         self.parity_rpc_client.call(
             from_=format(12345, "#042x"),
