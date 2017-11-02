@@ -12,7 +12,7 @@ export class App extends React.Component {
     this.state = {
       contracts: []
     };
-    bonds.me.tie(this.getContracts.bind(this));
+    //bonds.me.tie(this.getContracts.bind(this));
   }
 
   async getContractCount(account) {
@@ -30,18 +30,6 @@ export class App extends React.Component {
   }
 
   render() {
-    /*
-		return (<Rspan>
-                My Address:
-                {bonds.me}
-                <br />
-                <Rspan>
-                    My contracts: <br />
-                    {this.state.accounts.join(', ')}
-                </Rspan>
-		</Rspan>
-		*/
-
     return (<div id="wrapper">
       <Nav/>
       <div id="page-wrapper">
