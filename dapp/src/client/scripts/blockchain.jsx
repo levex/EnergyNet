@@ -81,8 +81,77 @@ const ENERGY_MASTER_ABI = [
     "stateMutability": "nonpayable",
     "type": "constructor"
   }
-]
+];
 
+const ENERGY_ABI = [{
+    "constant": true,
+    "inputs": [],
+    "name": "seller",
+    "outputs": [{"name": "", "type": "address"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{"name": "amount", "type": "uint256"}],
+    "name": "consume",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [{"name": "", "type": "address"}],
+    "name": "remainingEnergy",
+    "outputs": [{"name": "", "type": "uint256"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "offeredAmount",
+    "outputs": [{"name": "", "type": "uint256"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "constant": false,
+    "inputs": [{"name": "amount", "type": "uint256"}],
+    "name": "buy",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "master_addr",
+    "outputs": [{"name": "", "type": "address"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "constant": true,
+    "inputs": [],
+    "name": "unitPrice",
+    "outputs": [{"name": "", "type": "uint256"}],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+}, {
+    "inputs": [{"name": "seller_", "type": "address"}, {
+        "name": "unitPrice_",
+        "type": "uint256"
+    }, {"name": "offeredAmount_", "type": "uint256"}],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+}];
 export function makeMasterContract() {
   return bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
+}
+
+export function makeContract(address) {
+  return bonds.makeContract(address, ENERGY_ABI);
 }
