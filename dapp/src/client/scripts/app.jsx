@@ -4,6 +4,7 @@ import { bonds } from 'oo7-parity'
 import { Nav } from './nav'
 import { makeMasterContract } from './blockchain'
 import { SellEnergyPanel } from './sellEnergyPanel'
+import { BuyEnergyPanel } from './buyEnergyPanel'
 
 export class App extends React.Component {
   constructor() {
@@ -120,33 +121,7 @@ export class App extends React.Component {
         <div className="row">
           <div className="col-lg-12">
             <SellEnergyPanel />
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <i className="fa fa-bar-chart-o fa-fw"></i>
-                Buy energy
-              </div>
-              {/* /.panel-heading */}
-              <div className="panel-body">
-                <table width="100%" className="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>Date offered</th>
-                      <th>Amount offered</th>
-                      <th>Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>1st November 2017</th>
-                      <th>100kWh/day</th>
-                      <th>£1/kWh</th>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              {/* /.panel-body */}
-            </div>
-            {/* /.panel */}
+            <BuyEnergyPanel />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
