@@ -4,44 +4,55 @@ import {makeMasterContract, makeContract} from "./blockchain";
 
 export class BuyEnergyPanel extends React.Component {
 
-  async getContracts() {
+  async getSellerContracts() {
     let count = await this.master.contractCount();
-    this.setState({count: count});
+
     for (let i = 0; i < count; i++) {
       const contractEntity = await this.master.contracts(i);
       const deregistered = contractEntity[2];
-      const contract_addr = contractEntity[0];
+      const contractAddr = contractEntity[0];
+
       if (!deregistered) {
-        const contract = makeContract(contract_addr);
+        const contract = makeContract(contractAddr);
         const offeredAmount = await contract.offeredAmount();
         const unitPrice = await contract.unitPrice();
-        const newEntry = {
-          offeredAmount: offeredAmount,
-          unitPrice: unitPrice
-        };
+
         this.setState((prev) => {
-          return {contracts: prev.contracts.concat([newEntry])}
+          return {
+            contracts: prev.contracts.concat([
+              {
+                offeredAmount: offeredAmount,
+                unitPrice: unitPrice
+              }
+            ])
+          }
         })
       }
     }
-    console.log(this.state);
   }
 
   constructor() {
     super();
     this.master = makeMasterContract();
-    this.state = {contracts: []};
-    this.getContracts();
+    this.state = {
+      contracts: []
+    };
+    this.getSellerContracts();
+  }
+
+  buyEnergy() {
+    
   }
 
   render() {
-    var tableBody = this.state.contracts.map(contract =>
-      <tr>
-        <td>Some date</td>
-        <td>{contract.offeredAmount}</td>
-        <td>{contract.unitPrice}</td>
-      </tr>
-    );
+    var tableBody = this.state.contracts.map((contract, index) => <tr key={index}>
+      <td>Some date</td>
+      <td>{contract.offeredAmount.toString(10)} kWh/day</td>
+      <td>£{contract.unitPrice.toString(10)}/kWh</td>
+      <td>
+        <a href="#" onClick={() => this.buyEnergy()}>Buy</a>
+      </td>
+    </tr>);
 
     return (<div className="panel panel-default">
       <div className="panel-heading">
@@ -56,6 +67,7 @@ export class BuyEnergyPanel extends React.Component {
               <th>Date offered</th>
               <th>Amount offered</th>
               <th>Price</th>
+              <th>Buy</th>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +76,6 @@ export class BuyEnergyPanel extends React.Component {
         </table>
       </div>
       {/* /.panel-body */}
-    </div>
-    )
+    </div>)
   }
 }
