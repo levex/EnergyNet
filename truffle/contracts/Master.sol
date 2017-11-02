@@ -34,4 +34,8 @@ contract Master {
         contracts[lookupIdxByContract[contract_addr]].deregistered = true;
     }
 
+    function contractCount() view public returns(uint) {
+        return contracts.length;
+    }
+
 }
