@@ -74,16 +74,16 @@ export class BuyEnergyPanel extends React.Component {
           <td>Some date</td>
           <td>{contractState.offeredAmount.toString(10)}
             kWh/day</td>
-          <td>Remaining amount</td>
           <td>£{contractState.unitPrice.toString(10)}/kWh</td>
           <td>
             <form role="form">
-              <div className="form-group">
-                <label>Amount</label>
-                <InputBond placeholder="kWh/day" bond={this.amountBond}/>
-                <BButton className="btn btn-primary" content="Buy Energy" onClick={() => this.buyEnergy(contractState)}/>
-                <TransactionProgressLabel value={contractState.tx}/>
-              </div>
+              <InputBond placeholder="kWh/day" bond={this.amountBond} style={{width: "100%"}} action>
+                <input />
+                {contractState.tx == null
+                  ? <BButton className="btn btn-primary" content="Buy Energy" onClick={() => this.buyEnergy(contractState)}/>
+                  : <TransactionProgressLabel value={contractState.tx}/>
+                }
+              </InputBond>
             </form>
           </td>
         </tr>
@@ -101,8 +101,7 @@ export class BuyEnergyPanel extends React.Component {
           <thead>
             <tr>
               <th>Date offered</th>
-              <th>Amount originally offered</th>
-              <th>Amount remaining</th>
+              <th>Amount available</th>
               <th>Price</th>
               <th>Buy</th>
             </tr>

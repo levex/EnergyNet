@@ -31,32 +31,22 @@ export class SellEnergyPanel extends React.Component {
 
       <div className="panel-body">
         <form role="form">
-
-          <div className="row">
-            <div className="col-lg-6">
-              <div className="form-group">
-                <label>Amount</label>
-                <InputBond placeholder="kWh/day" bond={this.amountBond}/>
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-lg-5">
+                <InputBond label="Amount" placeholder="kWh/day" bond={this.amountBond} style={{width: "100%"}} />
               </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="form-group">
-                <label>Price</label>
-                <InputBond placeholder="£/kWh" bond={this.priceBond}/>
+              <div className="col-lg-5">
+                <InputBond label="Price" placeholder="£/kWh" bond={this.priceBond} style={{width: "100%"}} />
+              </div>
+              <div className="col-lg-2">
+                {this.state.tx == null
+                  ? <BButton className="btn btn-primary btn-block" content="Offer Energy" onClick={() => this.offerEnergy()} />
+                  : <TransactionProgressLabel value={this.state.tx} />
+                }
               </div>
             </div>
           </div>
-
-          <div className="row">
-            <div className="col-lg-6">
-              <BButton className="btn btn-primary" content="Offer Energy" onClick={() => this.offerEnergy()}/>
-            </div>
-
-            <div className="col-lg-6">
-              <TransactionProgressLabel value={this.state.tx}/>
-            </div>
-          </div>
-
         </form>
       </div>
       {/* /.panel-body */}
