@@ -35,7 +35,13 @@ export class BuyEnergyPanel extends React.Component {
   }
 
   render() {
-    var tableBody = ""
+    var tableBody = this.state.contracts.map(contract =>
+      <tr>
+        <td>Some date</td>
+        <td>{contract.offeredAmount}</td>
+        <td>{contract.unitPrice}</td>
+      </tr>
+    );
 
     return (<div className="panel panel-default">
       <div className="panel-heading">
