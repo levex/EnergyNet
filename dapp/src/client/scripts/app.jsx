@@ -1,71 +1,14 @@
-import React from 'react';
-import {Rspan} from 'oo7-react';
-import {bonds} from 'oo7-parity';
-import {Nav} from './nav'
-
-const ENERGY_MASTER_ADDRESS = "0xFD1867fF6E64DB3B38ea51158A4993F303855CD2";
-
-/* TODO: Import ABI somehow */
-const ENERGY_MASTER_ABI = [
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "seller",
-        "type": "address"
-      }, {
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "getSellerContractByIndex",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  }, {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "energyContract",
-        "type": "address"
-      }, {
-        "name": "seller",
-        "type": "address"
-      }
-    ],
-    "name": "registerSeller",
-    "outputs": [],
-    "payable": false,
-    "type": "function"
-  }, {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "seller",
-        "type": "address"
-      }
-    ],
-    "name": "getSellerContractCount",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  }
-];
+import React from 'react'
+import { Rspan } from 'oo7-react'
+import { bonds } from 'oo7-parity'
+import { Nav } from './nav'
+import { makeMasterContract } from './blockchain'
+import { SellEnergyPanel } from './sellEnergyPanel'
 
 export class App extends React.Component {
   constructor() {
     super();
-    this.energyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
+    this.energyMaster = makeMasterContract();
     this.state = {
       contracts: []
     };
@@ -188,33 +131,7 @@ export class App extends React.Component {
         {/* /.row */}
         <div className="row">
           <div className="col-lg-12">
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <i className="fa fa-bar-chart-o fa-fw"></i>
-                Sell energy
-              </div>
-              {/* /.panel-heading */}
-              <div className="panel-body">
-                <form role="form">
-                  <div className="col-lg-6">
-                    <div class="form-group">
-                        <label>Amount</label>
-                        <input class="form-control" placeholder="kWh/day"/>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Offer Energy</button>
-                  </div>
-                  <div className="col-lg-6">
-                    <div class="form-group">
-                        <label>Price</label>
-                        <input class="form-control" placeholder="£/kWh" />
-                    </div>
-                  </div>
-                </form>
-              </div>
-              {/* /.panel-body */}
-            </div>
-            {/* /.panel */}
+            <SellEnergyPanel />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
@@ -222,7 +139,7 @@ export class App extends React.Component {
               </div>
               {/* /.panel-heading */}
               <div className="panel-body">
-                <table width="100%" class="table table-striped table-bordered table-hover">
+                <table width="100%" className="table table-striped table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>Date offered</th>
