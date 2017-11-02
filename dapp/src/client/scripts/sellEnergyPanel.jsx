@@ -49,7 +49,7 @@ export class SellEnergyPanel extends React.Component {
 
           <div className="row">
             <div className="col-lg-6">
-              <BButton className="btn btn-primary" content="Offer Energy" onClick={() => offerEnergy()}/>
+              <BButton className="btn btn-primary" content="Offer Energy" onClick={() => this.offerEnergy()}/>
             </div>
 
             <div className="col-lg-6">
