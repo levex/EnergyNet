@@ -18,7 +18,7 @@ export class SellEnergyPanel extends React.Component {
 
   offerEnergy() {
     this.setState({
-      tx: this.energyMaster.sell(this.amountBond, this.priceBond)
+      tx: this.energyMaster.sell(this.priceBond, this.amountBond)
     });
   }
 
