@@ -1,0 +1,8 @@
+{
+	"id": "energy",
+	"name": "Energy",
+	"description": "A Dapp to manage your energy",
+	"version": "0.1",
+	"author": "Blockchain Energy Ltd",
+	"iconUrl": "title.png"
+}
