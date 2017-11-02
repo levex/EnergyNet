@@ -1,0 +1,26 @@
+---
+# This playbook sets up a fresh VM with the required user Setup
+# Before executing this playbook, you need to manually install Python
+# energy:123
+# root:123
+- hosts: all
+  remote_user: energy
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Setup root account to have password 123
+      user:
+        name: root
+        password: $6$8VPr22mWb1ImC9DS$WYUDdhb/GXtvXxwkHzNaegF81cS13Ms6YcDZJW3tm31ziwbQB6R3ggKK99wejJAUfRPqeOwO5.fPZPpsU1yef.
+    - name: Setup energy account to have no password
+      user:
+        name: energy
+        password: $6$8VPr22mWb1ImC9DS$WYUDdhb/GXtvXxwkHzNaegF81cS13Ms6YcDZJW3tm31ziwbQB6R3ggKK99wejJAUfRPqeOwO5.fPZPpsU1yef.
+    - name: Setup sshd config
+      copy:
+        src: ../resources/sshd_empty_config
+        dest: /etc/ssh/sshd_config
+    - name: Reboot machine
+      shell: reboot
+    - name: Waiting for comeback
+      local_action: wait_for host={{ ansible_ssh_host }} state=started
