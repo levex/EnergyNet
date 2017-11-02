@@ -14,7 +14,7 @@ export class BuyEnergyPanel extends React.Component {
     this.state = {
       contracts: {}
     };
-    this.getSellerContracts();
+    bonds.head.tie(this.getSellerContracts.bind(this));
   }
 
   async getSellerContracts() {
@@ -43,6 +43,12 @@ export class BuyEnergyPanel extends React.Component {
             }
           }
         }));
+      } else {
+        this.setState(update(this.state, {
+          contracts: {
+            $unset: [contractAddr]
+          }
+        }))
       }
     }
   }
