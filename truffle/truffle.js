@@ -1,4 +1,5 @@
 module.exports = {
+  build: "./get_master_abi.sh",
   networks: {
     localhost: {
       host: "localhost",
