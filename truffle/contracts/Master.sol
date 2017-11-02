@@ -6,28 +6,32 @@ contract Master {
     struct ContractEntity {
         address contract_addr;
         address seller;
-        bool deleted;
+        bool deregistered;
     }
 
     ContractEntity[] public contracts;
-    mapping (address => uint) lookup;
+    // lookup index of contract in the list
+    mapping (address => uint) lookupIdxByContract;
 
     function Master() public {
     }
 
-    function sell(uint unitPrice, uint capacity) public returns(address) {
-        Energy energy = new Energy(msg.sender, unitPrice, capacity);
+    // Sender is the seller, return deployed energy contract
+    function sell(uint unitPrice, uint amountOffered) public returns(address) {
+        // TODO: delegate call
+        Energy energy = new Energy(msg.sender, unitPrice, amountOffered);
         ContractEntity memory entity;
         entity.contract_addr = energy;
         entity.seller = msg.sender;
-        lookup[energy] = contracts.length;
+        lookupIdxByContract[energy] = contracts.length;
         contracts.push(entity);
         return energy;
     }
 
+    // Called by energy contract for deregister
     function deregister(address contract_addr) public {
         require(msg.sender == contract_addr);
-        contracts[lookup[contract_addr]].deleted = true;
+        contracts[lookupIdxByContract[contract_addr]].deregistered = true;
     }
 
 }
