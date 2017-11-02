@@ -14,8 +14,8 @@ class ParityRPCClientTestCase(unittest.TestCase):
     @patch('meter.rpc.parity_rpc_client.requests.post')
     def test_send_transaction(self, mock_post):
         self.parity_rpc_client.send_transaction(
-            from_=1234,
-            to=12345,
+            from_=format(1234, "#042x"),
+            to=format(12345, "#042x"),
             gas=123,
         )
 
@@ -35,8 +35,8 @@ class ParityRPCClientTestCase(unittest.TestCase):
     @patch('meter.rpc.parity_rpc_client.requests.post')
     def test_call(self, mock_post):
         self.parity_rpc_client.call(
-            from_=1234,
-            to=12345,
+            from_=format(12345, "#042x"),
+            to=format(12345, "#042x"),
             gas=321,
         )
 
@@ -47,7 +47,7 @@ class ParityRPCClientTestCase(unittest.TestCase):
                 {
                     "to": format(12345, "#042x"),
                     "gas": 321,
-                    "from": format(1234, "#042x"),
+                    "from": format(12345, "#042x"),
                 }
             )]),
             headers=self.headers,
