@@ -1,6 +1,6 @@
 import {bonds} from 'oo7-parity'
-import {ENERGY_ABI} from "./abi.js";
-import {ENERGY_MASTER_ABI} from "./abi_master.js";
+import {ENERGY_ABI} from "./abis/abi.js";
+import {ENERGY_MASTER_ABI} from "./abis/abi_master.js";
 
 const ENERGY_MASTER_ADDRESS = "0x3507Ff52cB28F3eCB32A8ee0b0B00618D2E3dD02";
 
