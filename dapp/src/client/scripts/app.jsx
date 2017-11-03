@@ -8,6 +8,7 @@ import {SellEnergyPanel} from './sellEnergyPanel'
 import {BuyEnergyPanel} from './buyEnergyPanel'
 import update from 'immutability-helper'
 import BigNumber from 'bignumber.js';
+import dateFormat from 'dateformat';
 
 export class App extends React.Component {
   constructor() {
@@ -89,10 +90,16 @@ export class App extends React.Component {
   }
 
   componentDidMount() {
-    // FIXME hardcoded values
-    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"Sun, 01 Oct 2017 00:00:00 GMT","$date_to":"Tue, 31 Oct 2017 23:59:59 GMT"}')
+    const today = new Date();
+    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const format = 'ddd, dd mmm yyyy HH:MM:ss Z'
+    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"'
+        + dateFormat(firstOfMonth, format) + '","$date_to":"' + dateFormat(today, format) + '"}')
       .then(response => { return response.json() })
-      .then(result => this.setState({monthlyUsage: result['_items'][0]['total_amount']}))
+      .then(result => result['_items'])
+      .then(maybeItems => { if (maybeItems.length == 0) { return Promise.reject('empty list') } else { return maybeItems } })
+      .then(items => items[0]['total_amount'])
+      .then(amount => this.setState({monthlyUsage: amount}))
   }
 
   render() {
