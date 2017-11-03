@@ -2,33 +2,71 @@ import React from 'react'
 import { Rspan } from 'oo7-react'
 import { bonds } from 'oo7-parity'
 import { Nav } from './nav'
-import { makeMasterContract } from './blockchain'
+import { Bond } from 'oo7';
+import { makeMasterContract, makeContract } from './blockchain'
 import { SellEnergyPanel } from './sellEnergyPanel'
 import { BuyEnergyPanel } from './buyEnergyPanel'
+import update from 'immutability-helper'
 
 export class App extends React.Component {
   constructor() {
     super();
-    this.energyMaster = makeMasterContract();
+    this.master = makeMasterContract();
     this.state = {
-      contracts: []
+      contracts: {}
     };
-    //bonds.me.tie(this.getContracts.bind(this));
+    this.amountBond = new Bond();
+    bonds.head.tie(this.getSellerContracts.bind(this));
   }
 
-  async getContractCount(account) {
-    const count = await this.energyMaster.getSellerContractCount(account);
-    return count.toString(10);
+  async getSellerContracts() {
+      let count = await this.master.contractCount();
+
+      for (let i = 0; i < count; i++) {
+          const contractEntity = await this.master.contracts(i);
+          const deregistered = contractEntity[2];
+          const contractAddr = contractEntity[0];
+
+          if (!deregistered) {
+              const contract = makeContract(contractAddr);
+              const offeredAmount = await contract.offeredAmount();
+              const unitPrice = await contract.unitPrice();
+
+              this.setState(update(this.state, {
+                  contracts: {
+                      $merge: {
+                          [contractAddr]: {
+                              contractAddr: contractAddr,
+                              contract: contract,
+                              offeredAmount: offeredAmount,
+                              unitPrice: unitPrice,
+                              tx: null
+                          }
+                      }
+                  }
+              }));
+          } else {
+              this.setState(update(this.state, {
+                  contracts: {
+                      $unset: [contractAddr]
+                  }
+              }))
+          }
+      }
   }
 
-  async getContracts(account) {
-    const count = await this.getContractCount(account);
-    const promises = [];
-    for (let i = 0; i < count; i++) {
-      promises.push(this.energyMaster.getSellerContractByIndex(account, i));
-    }
-    this.setState({contracts: await Promise.all(promises)});
+  buyEnergy(contractState) {
+      this.setState(update(this.state, {
+          contracts: {
+              [contractState.contractAddr]: {
+                  tx: {
+                      $set: contractState.contract.buy(this.amountBond)
+                  }
+              }
+          }
+      }));
   }
+
 
   render() {
     return (<div id="wrapper">
@@ -121,7 +159,7 @@ export class App extends React.Component {
         <div className="row">
           <div className="col-lg-12">
             <SellEnergyPanel />
-            <BuyEnergyPanel />
+            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.amountBond} />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
