@@ -16,7 +16,8 @@ export class App extends React.Component {
     this.state = {
       contracts: {},
       sellTx: null,
-      energyBalance: new BigNumber(0)
+      energyBalance: new BigNumber(0),
+      monthlyUsage: new BigNumber(0)
     };
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
@@ -87,6 +88,12 @@ export class App extends React.Component {
     });
   }
 
+  componentDidMount() {
+    // FIXME hardcoded values
+    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"Sun, 01 Oct 2017 00:00:00 GMT","$date_to":"Tue, 31 Oct 2017 23:59:59 GMT"}')
+      .then(response => { return response.json() })
+      .then(result => this.setState({monthlyUsage: result['_items'][0]['total_amount']}))
+  }
 
   render() {
     return (<div id="wrapper">
@@ -131,8 +138,16 @@ export class App extends React.Component {
                   <div className="col-xs-3">
                     <i className="fa fa-bolt fa-5x"></i>
                   </div>
-                  <div className="col-xs-9 text-right">
-                    <div className="huge">{this.state.energyBalance.toString(10)}</div>
+                  <div className="col-xs-4 text-right">
+                    <div className="huge">
+                        {this.state.monthlyUsage.toString(10)}
+                    </div>
+                    <div>kWh used</div>
+                  </div>
+                  <div className="col-xs-4 col-xs-offset-1 text-right">
+                    <div className="huge">
+                        {this.state.energyBalance.toString(10)}
+                    </div>
                     <div>kWh bought</div>
                   </div>
                 </div>
