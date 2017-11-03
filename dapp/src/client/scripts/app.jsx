@@ -1,33 +1,105 @@
 import React from 'react'
-import { Rspan } from 'oo7-react'
-import { bonds } from 'oo7-parity'
-import { Nav } from './nav'
-import { makeMasterContract } from './blockchain'
-import { SellEnergyPanel } from './sellEnergyPanel'
-import { BuyEnergyPanel } from './buyEnergyPanel'
+import {Rspan} from 'oo7-react'
+import {bonds} from 'oo7-parity'
+import {Nav} from './nav'
+import {Bond} from 'oo7';
+import {makeContract, makeMasterContract} from './blockchain'
+import {SellEnergyPanel} from './sellEnergyPanel'
+import {BuyEnergyPanel} from './buyEnergyPanel'
+import update from 'immutability-helper'
+import BigNumber from 'bignumber.js';
+import dateFormat from 'dateformat';
 
 export class App extends React.Component {
   constructor() {
     super();
-    this.energyMaster = makeMasterContract();
+    this.master = makeMasterContract();
     this.state = {
-      contracts: []
+      contracts: {},
+      sellTx: null,
+      energyBalance: new BigNumber(0),
+      monthlyUsage: new BigNumber(0)
     };
-    //bonds.me.tie(this.getContracts.bind(this));
+    this.buyAmountBond = new Bond();
+    this.sellAmountBond = new Bond();
+    this.priceBond = new Bond();
+    bonds.head.tie(this.getSellerContracts.bind(this));
+    bonds.me.tie(this.getAccount.bind(this));
   }
 
-  async getContractCount(account) {
-    const count = await this.energyMaster.getSellerContractCount(account);
-    return count.toString(10);
+  async getAccount() {
+    const account = await bonds.me;
+    this.setState({account: account});
   }
 
-  async getContracts(account) {
-    const count = await this.getContractCount(account);
-    const promises = [];
+  async getSellerContracts() {
+    let energyBalance = new BigNumber(0);
+    let count = await this.master.contractCount();
+
     for (let i = 0; i < count; i++) {
-      promises.push(this.energyMaster.getSellerContractByIndex(account, i));
+      const contractEntity = await this.master.contracts(i);
+      const deregistered = contractEntity[2];
+      const contractAddr = contractEntity[0];
+      const contract = makeContract(contractAddr);
+      const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
+      energyBalance = energyBalance.add(remainingEnergyInContract);
+      if (!deregistered) {
+        const offeredAmount = await contract.offeredAmount();
+        const unitPrice = await contract.unitPrice();
+
+        this.setState(update(this.state, {
+          contracts: {
+            $merge: {
+              [contractAddr]: {
+                contractAddr: contractAddr,
+                contract: contract,
+                offeredAmount: offeredAmount,
+                unitPrice: unitPrice,
+                tx: null
+              }
+            }
+          }
+        }));
+      } else {
+        this.setState(update(this.state, {
+          contracts: {
+            $unset: [contractAddr]
+          }
+        }))
+      }
     }
-    this.setState({contracts: await Promise.all(promises)});
+    this.setState({energyBalance: energyBalance.toString(10)});
+  }
+
+  buyEnergy(contractState) {
+    this.setState(update(this.state, {
+      contracts: {
+        [contractState.contractAddr]: {
+          tx: {
+            $set: contractState.contract.buy(this.buyAmountBond)
+          }
+        }
+      }
+    }));
+  }
+
+  offerEnergy() {
+    this.setState({
+      sellTx: this.master.sell(this.priceBond, this.sellAmountBond)
+    });
+  }
+
+  componentDidMount() {
+    const today = new Date();
+    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const format = 'ddd, dd mmm yyyy HH:MM:ss Z'
+    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"'
+        + dateFormat(firstOfMonth, format) + '","$date_to":"' + dateFormat(today, format) + '"}')
+      .then(response => { return response.json() })
+      .then(result => result['_items'])
+      .then(maybeItems => { if (maybeItems.length == 0) { return Promise.reject('empty list') } else { return maybeItems } })
+      .then(items => items[0]['total_amount'])
+      .then(amount => this.setState({monthlyUsage: amount}))
   }
 
   render() {
@@ -73,9 +145,17 @@ export class App extends React.Component {
                   <div className="col-xs-3">
                     <i className="fa fa-bolt fa-5x"></i>
                   </div>
-                  <div className="col-xs-9 text-right">
-                    <div className="huge">421</div>
-                    <div>kWh used this month</div>
+                  <div className="col-xs-4 text-right">
+                    <div className="huge">
+                        {this.state.monthlyUsage.toString(10)}
+                    </div>
+                    <div>kWh used</div>
+                  </div>
+                  <div className="col-xs-4 col-xs-offset-1 text-right">
+                    <div className="huge">
+                        {this.state.energyBalance.toString(10)}
+                    </div>
+                    <div>kWh bought</div>
                   </div>
                 </div>
               </div>
@@ -99,7 +179,7 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan>{this.state.contracts.length}</Rspan>
+                      <Rspan></Rspan>
                     </div>
                     <div>Contracts in effect</div>
                   </div>
@@ -120,8 +200,8 @@ export class App extends React.Component {
         {/* /.row */}
         <div className="row">
           <div className="col-lg-12">
-            <SellEnergyPanel />
-            <BuyEnergyPanel />
+            <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
+            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
