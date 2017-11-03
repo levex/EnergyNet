@@ -1,14 +1,10 @@
 import React from 'react';
-import {bonds} from 'oo7-parity';
 import {BButton, InputBond, TransactionProgressLabel} from 'parity-reactive-ui'
-import {makeMasterContract, makeContract} from "./blockchain";
-import update from 'immutability-helper'
 
 export class BuyEnergyPanel extends React.Component {
 
   constructor(props) {
     super(props);
-    this.master = makeMasterContract();
   }
 
   render() {
@@ -25,7 +21,7 @@ export class BuyEnergyPanel extends React.Component {
             <form role="form">
               <InputBond placeholder="kWh/day" bond={this.props.amountBond} style={{width: "100%"}} action>
                 <input />
-                {contractState.tx == null
+                {contractState.tx === null
                   ? <BButton className="btn btn-primary" content="Buy Energy" onClick={() => this.props.buyEnergy(contractState)}/>
                   : <TransactionProgressLabel value={contractState.tx}/>
                 }

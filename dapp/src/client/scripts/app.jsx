@@ -1,11 +1,11 @@
 import React from 'react'
-import { Rspan } from 'oo7-react'
-import { bonds } from 'oo7-parity'
-import { Nav } from './nav'
-import { Bond } from 'oo7';
-import { makeMasterContract, makeContract } from './blockchain'
-import { SellEnergyPanel } from './sellEnergyPanel'
-import { BuyEnergyPanel } from './buyEnergyPanel'
+import {Rspan} from 'oo7-react'
+import {bonds} from 'oo7-parity'
+import {Nav} from './nav'
+import {Bond} from 'oo7';
+import {makeContract, makeMasterContract} from './blockchain'
+import {SellEnergyPanel} from './sellEnergyPanel'
+import {BuyEnergyPanel} from './buyEnergyPanel'
 import update from 'immutability-helper'
 import BigNumber from 'bignumber.js';
 
@@ -26,65 +26,65 @@ export class App extends React.Component {
   }
 
   async getAccount() {
-      const account = await bonds.me;
-      this.setState({account: account});
+    const account = await bonds.me;
+    this.setState({account: account});
   }
 
   async getSellerContracts() {
-      let energyBalance = new BigNumber(0);
-      let count = await this.master.contractCount();
+    let energyBalance = new BigNumber(0);
+    let count = await this.master.contractCount();
 
-      for (let i = 0; i < count; i++) {
-          const contractEntity = await this.master.contracts(i);
-          const deregistered = contractEntity[2];
-          const contractAddr = contractEntity[0];
-          const contract = makeContract(contractAddr);
-          const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
-          energyBalance = energyBalance.add(remainingEnergyInContract);
-          if (!deregistered) {
-              const offeredAmount = await contract.offeredAmount();
-              const unitPrice = await contract.unitPrice();
+    for (let i = 0; i < count; i++) {
+      const contractEntity = await this.master.contracts(i);
+      const deregistered = contractEntity[2];
+      const contractAddr = contractEntity[0];
+      const contract = makeContract(contractAddr);
+      const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
+      energyBalance = energyBalance.add(remainingEnergyInContract);
+      if (!deregistered) {
+        const offeredAmount = await contract.offeredAmount();
+        const unitPrice = await contract.unitPrice();
 
-              this.setState(update(this.state, {
-                  contracts: {
-                      $merge: {
-                          [contractAddr]: {
-                              contractAddr: contractAddr,
-                              contract: contract,
-                              offeredAmount: offeredAmount,
-                              unitPrice: unitPrice,
-                              tx: null
-                          }
-                      }
-                  }
-              }));
-          } else {
-              this.setState(update(this.state, {
-                  contracts: {
-                      $unset: [contractAddr]
-                  }
-              }))
+        this.setState(update(this.state, {
+          contracts: {
+            $merge: {
+              [contractAddr]: {
+                contractAddr: contractAddr,
+                contract: contract,
+                offeredAmount: offeredAmount,
+                unitPrice: unitPrice,
+                tx: null
+              }
+            }
           }
+        }));
+      } else {
+        this.setState(update(this.state, {
+          contracts: {
+            $unset: [contractAddr]
+          }
+        }))
       }
-      this.setState({energyBalance: energyBalance.toString(10)});
+    }
+    this.setState({energyBalance: energyBalance.toString(10)});
   }
 
   buyEnergy(contractState) {
-      this.setState(update(this.state, {
-          contracts: {
-              [contractState.contractAddr]: {
-                  tx: {
-                      $set: contractState.contract.buy(this.buyAmountBond)
-                  }
-              }
+    this.setState(update(this.state, {
+      contracts: {
+        [contractState.contractAddr]: {
+          tx: {
+            $set: contractState.contract.buy(this.buyAmountBond)
           }
-      }));
+        }
+      }
+    }));
   }
 
   offerEnergy() {
-      this.setState({
-          sellTx: this.master.sell(this.priceBond, this.sellAmountBond)
-      });
+    this.setState({
+      sellTx: this.master.sell(this.priceBond, this.sellAmountBond)
+    });
   }
 
 

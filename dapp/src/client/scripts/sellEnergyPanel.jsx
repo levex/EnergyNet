@@ -1,8 +1,5 @@
 import React from 'react'
-import {Bond} from 'oo7'
 import {BButton, InputBond, TransactionProgressLabel} from 'parity-reactive-ui'
-import {bonds} from 'oo7-parity'
-import {makeMasterContract} from './blockchain'
 
 export class SellEnergyPanel extends React.Component {
   constructor(props) {
