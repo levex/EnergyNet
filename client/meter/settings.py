@@ -1,3 +1,5 @@
+X_DOMAINS = '*'
+
 # Database settings
 MONGO_HOST = "localhost"
 MONGO_PORT = 27017
@@ -23,6 +25,27 @@ DOMAIN = {
                 "type": "float",
                 "required": True,
             },
+        }
+    },
+    "consumed_aggregate": {
+        "datasource": {
+            "source": "consumed",
+            "aggregation": {
+                "pipeline": [
+                    {
+                        "$match": {
+                            "from": {"$gte": "$date_from"},
+                            "to": {"$lte": "$date_to"}
+                        }
+                    },
+                    {
+                        "$group": {
+                            "_id": None,
+                            "total_amount": { "$sum": "$amount" }
+                        }
+                    }
+                ]
+            }
         }
     },
     "produced": {
