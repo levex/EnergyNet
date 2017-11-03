@@ -13,9 +13,12 @@ export class App extends React.Component {
     super();
     this.master = makeMasterContract();
     this.state = {
-      contracts: {}
+      contracts: {},
+      sellTx: null
     };
-    this.amountBond = new Bond();
+    this.buyAmountBond = new Bond();
+    this.sellAmountBond = new Bond();
+    this.priceBond = new Bond();
     bonds.head.tie(this.getSellerContracts.bind(this));
   }
 
@@ -60,11 +63,17 @@ export class App extends React.Component {
           contracts: {
               [contractState.contractAddr]: {
                   tx: {
-                      $set: contractState.contract.buy(this.amountBond)
+                      $set: contractState.contract.buy(this.buyAmountBond)
                   }
               }
           }
       }));
+  }
+
+  offerEnergy() {
+      this.setState({
+          sellTx: this.master.sell(this.priceBond, this.sellAmountBond)
+      });
   }
 
 
@@ -158,8 +167,8 @@ export class App extends React.Component {
         {/* /.row */}
         <div className="row">
           <div className="col-lg-12">
-            <SellEnergyPanel />
-            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.amountBond} />
+            <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
+            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
