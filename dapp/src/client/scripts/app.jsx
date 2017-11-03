@@ -1,12 +1,12 @@
-import React from 'react'
-import {Rspan} from 'oo7-react'
-import {bonds} from 'oo7-parity'
-import {Nav} from './nav'
+import React from 'react';
+import {Rspan} from 'oo7-react';
+import {bonds, formatBalance} from 'oo7-parity';
+import {Nav} from './nav';
 import {Bond} from 'oo7';
-import {makeContract, makeMasterContract} from './blockchain'
-import {SellEnergyPanel} from './sellEnergyPanel'
-import {BuyEnergyPanel} from './buyEnergyPanel'
-import update from 'immutability-helper'
+import {makeContract, makeMasterContract} from './blockchain';
+import {SellEnergyPanel} from './sellEnergyPanel';
+import {BuyEnergyPanel} from './buyEnergyPanel';
+import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
 
@@ -122,7 +122,7 @@ export class App extends React.Component {
                     <i className="fa fa-money fa-5x"></i>
                   </div>
                   <div className="col-xs-9 text-right">
-                    <div className="huge">£ 2048</div>
+                    <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
                     <div>Account Balance</div>
                   </div>
                 </div>
@@ -142,16 +142,16 @@ export class App extends React.Component {
             <div className="panel panel-primary">
               <div className="panel-heading">
                 <div className="row">
-                  <div className="col-xs-3">
+                  <div className="col-xs-2">
                     <i className="fa fa-bolt fa-5x"></i>
                   </div>
-                  <div className="col-xs-4 text-right">
+                  <div className="col-xs-5 text-right">
                     <div className="huge">
                         {this.state.monthlyUsage.toString(10)}
                     </div>
                     <div>kWh used</div>
                   </div>
-                  <div className="col-xs-4 col-xs-offset-1 text-right">
+                  <div className="col-xs-5 text-right">
                     <div className="huge">
                         {this.state.energyBalance.toString(10)}
                     </div>
@@ -179,7 +179,7 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan></Rspan>
+                      <Rspan>3</Rspan>
                     </div>
                     <div>Contracts in effect</div>
                   </div>
