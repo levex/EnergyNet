@@ -7,6 +7,7 @@ import { makeMasterContract, makeContract } from './blockchain'
 import { SellEnergyPanel } from './sellEnergyPanel'
 import { BuyEnergyPanel } from './buyEnergyPanel'
 import update from 'immutability-helper'
+import BigNumber from 'bignumber.js';
 
 export class App extends React.Component {
   constructor() {
@@ -14,24 +15,33 @@ export class App extends React.Component {
     this.master = makeMasterContract();
     this.state = {
       contracts: {},
-      sellTx: null
+      sellTx: null,
+      energyBalance: new BigNumber(0)
     };
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
     this.priceBond = new Bond();
     bonds.head.tie(this.getSellerContracts.bind(this));
+    bonds.me.tie(this.getAccount.bind(this));
+  }
+
+  async getAccount() {
+      const account = await bonds.me;
+      this.setState({account: account});
   }
 
   async getSellerContracts() {
+      let energyBalance = new BigNumber(0);
       let count = await this.master.contractCount();
 
       for (let i = 0; i < count; i++) {
           const contractEntity = await this.master.contracts(i);
           const deregistered = contractEntity[2];
           const contractAddr = contractEntity[0];
-
+          const contract = makeContract(contractAddr);
+          const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
+          energyBalance = energyBalance.add(remainingEnergyInContract);
           if (!deregistered) {
-              const contract = makeContract(contractAddr);
               const offeredAmount = await contract.offeredAmount();
               const unitPrice = await contract.unitPrice();
 
@@ -56,6 +66,7 @@ export class App extends React.Component {
               }))
           }
       }
+      this.setState({energyBalance: energyBalance.toString(10)});
   }
 
   buyEnergy(contractState) {
@@ -121,8 +132,8 @@ export class App extends React.Component {
                     <i className="fa fa-bolt fa-5x"></i>
                   </div>
                   <div className="col-xs-9 text-right">
-                    <div className="huge">421</div>
-                    <div>kWh used this month</div>
+                    <div className="huge">{this.state.energyBalance.toString(10)}</div>
+                    <div>kWh bought</div>
                   </div>
                 </div>
               </div>
@@ -146,7 +157,7 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan>{this.state.contracts.length}</Rspan>
+                      <Rspan></Rspan>
                     </div>
                     <div>Contracts in effect</div>
                   </div>
