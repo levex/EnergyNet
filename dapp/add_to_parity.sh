@@ -1,3 +1,9 @@
 #!/bin/sh
 
-ln -s $(pwd)/dist ../parity/datadir/dapps/energy
+set -e
+
+DAPPS_DIR=$(pwd)/../parity/datadir/dapps
+
+mkdir -p $DAPPS_DIR
+
+ln -s $(pwd)/dist $DAPPS_DIR/energy
