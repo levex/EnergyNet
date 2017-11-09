@@ -6,7 +6,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser("Launch a simulated meter")
     parser.add_argument(
         "-i", "--simulated-client-ip", action="append",
-        help="The interval of energy excess per time unit (can be negative)"
+        help="IP of a simulation client. Can have more than one"
     )
     parser.add_argument(
         "-t", "--simulation-duration", type=int,
