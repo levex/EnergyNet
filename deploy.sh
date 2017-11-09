@@ -2,6 +2,20 @@
 
 set -e
 
+check_dep () {
+    if ! [ -x $(command -v $1) ]; then
+        echo "You don't have $1"
+        exit 1
+    fi
+}
+
+check_dep webpack
+check_dep truffle
+check_dep npm
+check_dep parity
+check_dep python
+check_dep pip
+
 HOME=$(pwd)
 cd $HOME/truffle && truffle build
 cd $HOME/dapp && npm install && webpack && ./add_to_parity.sh
