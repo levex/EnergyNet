@@ -25,6 +25,7 @@ export class App extends React.Component {
     this.priceBond = new Bond();
     bonds.head.tie(this.getSellerContracts.bind(this));
     bonds.me.tie(this.getAccount.bind(this));
+    bonds.me.tie(this.getSellerContracts.bind(this));
   }
 
   async getAccount() {
