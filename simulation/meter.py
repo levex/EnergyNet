@@ -49,6 +49,10 @@ def sell_energy():
 
 class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
 
+    def __init__(self, *args, **kwargs):
+        self.last_timestamp = datetime.utcnow()
+        super(args, kwargs)
+
     def do_GET(self):
         if self.path is "/tick":
             produced_energy = random.uniform(*args.excess_interval)
@@ -61,16 +65,22 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
                 endpoint = "/produced"
                 sell_energy(produced_energy)
 
+            new_timestamp = datetime.utcnow()
+
             requests.post(
                 METER_API_BASE_URL + endpoint,
                 data=json.dumps({
                     "amount": produced_energy,
-                    "timestamp": datetime.strftime(
-                        datetime.utcnow(), DATE_FORMAT
+                    "from": datetime.strftime(
+                        self.last_timestamp,
+                        DATE_FORMAT
                     ),
+                    "to": datetime.strftime(new_timestamp, DATE_FORMAT),
                 }),
                 headers=API_CALL_HEADER,
             )
+
+            self.last_timestamp = new_timestamp
 
             self.send_response(200)
 
@@ -81,5 +91,6 @@ if __name__ == "__main__":
     args = parse_arguments()
 
     server_address = ("", args.port)
-    httpd = HTTPServer(server_address, MeterHTTPRequestHandler)
+    handler = MeterHTTPRequestHandler()
+    httpd = HTTPServer(server_address, handler)
     httpd.serve_forever()
