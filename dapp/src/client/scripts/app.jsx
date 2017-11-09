@@ -213,7 +213,9 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan>3</Rspan>
+                      <Rspan>{Object.keys(this.state.myBuyerContracts).length
+                      +
+                        Object.keys(this.state.mySellerContracts).length}</Rspan>
                     </div>
                     <div>Contracts in effect</div>
                   </div>
