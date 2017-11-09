@@ -13,13 +13,13 @@ check_dep webpack
 check_dep truffle
 check_dep npm
 check_dep parity
-check_dep python
-check_dep pip
+check_dep python3
+check_dep pip3
 
 HOME=$(pwd)
 cd $HOME/truffle && truffle build
 cd $HOME/dapp && npm install && webpack && ./add_to_parity.sh
 cd $HOME/parity && ./run.sh &
-cd $HOME && pip install --user -r requirements.txt
-python client/meter/api.py &
+cd $HOME && pip3 install --user -r requirements.txt
+python3 client/meter/api.py &
 ./client/meter/mongostarter.sh &
