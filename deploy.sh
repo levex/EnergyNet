@@ -15,6 +15,7 @@ check_dep npm
 check_dep parity
 check_dep python3
 check_dep pip3
+check_dep mongod
 
 HOME=$(pwd)
 cd $HOME/truffle && truffle build
