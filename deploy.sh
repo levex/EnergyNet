@@ -24,3 +24,14 @@ cd $HOME/parity && ./run.sh &
 cd $HOME && pip3 install --user -r requirements.txt
 python3 client/meter/api.py &
 ./client/meter/mongostarter.sh &
+
+handler() {
+    echo "Killing everything"
+    JOBS=$(jobs -p)
+    kill ${JOBS}
+    killall mongod
+}
+
+trap handler SIGINT
+
+wait $(jobs -p)
