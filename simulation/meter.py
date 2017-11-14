@@ -1,17 +1,18 @@
 import argparse
-import datetime
 import json
 import random
 import requests
 
+
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
-METER_API_BASE_URL = "localhost:5000"
+METER_API_BASE_URL = "http://localhost:5000"
 API_CALL_HEADER = {
     "content-type": "application/json"
 }
-DATE_FORMAT = "a, %d %b %Y %H:%M:%S UTC"
+DATE_FORMAT = "%a, %d %b %Y %H:%M:%S GMT"
 
 args = None
 
@@ -27,7 +28,7 @@ def parse_arguments():
         help="The address of the meter wallet"
     )
     parser.add_argument(
-        "-p", "--port", default=8080,
+        "-p", "--port", default=8080, type=int,
         help="The port used to receive commands from the master "
         "simulation process"
     )
@@ -35,13 +36,13 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def buy_energy():
+def buy_energy(amount):
     # TODO: This method should buy energy by calling a seller contract using
     # the rpc client and update the stats kept by the meter using the API
     pass
 
 
-def sell_energy():
+def sell_energy(amount):
     # TODO: THis method should add energy to an existing seller contract or
     # create a new seller contract
     pass
@@ -49,12 +50,8 @@ def sell_energy():
 
 class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
 
-    def __init__(self, *args, **kwargs):
-        self.last_timestamp = datetime.utcnow()
-        super(args, kwargs)
-
     def do_GET(self):
-        if self.path is "/tick":
+        if self.path == "/tick":
             produced_energy = random.uniform(*args.excess_interval)
 
             if produced_energy < 0:
@@ -67,30 +64,39 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
 
             new_timestamp = datetime.utcnow()
 
+            request_body = json.dumps({
+                "amount": produced_energy,
+                "from": datetime.strftime(
+                    self.server.last_timestamp,
+                    DATE_FORMAT
+                ),
+                "to": datetime.strftime(new_timestamp, DATE_FORMAT),
+            })
+
             requests.post(
                 METER_API_BASE_URL + endpoint,
-                data=json.dumps({
-                    "amount": produced_energy,
-                    "from": datetime.strftime(
-                        self.last_timestamp,
-                        DATE_FORMAT
-                    ),
-                    "to": datetime.strftime(new_timestamp, DATE_FORMAT),
-                }),
+                data=request_body,
                 headers=API_CALL_HEADER,
             )
 
-            self.last_timestamp = new_timestamp
+            self.server.last_timestamp = new_timestamp
 
             self.send_response(200)
+            return
 
         self.send_error(404)
+
+
+class MeterServer(HTTPServer):
+
+    def __init__(self, server_address, handler_class):
+        self.last_timestamp = datetime.utcnow()
+        super(MeterServer, self).__init__(server_address, handler_class)
 
 
 if __name__ == "__main__":
     args = parse_arguments()
 
     server_address = ("", args.port)
-    handler = MeterHTTPRequestHandler()
-    httpd = HTTPServer(server_address, handler)
+    httpd = MeterServer(server_address, MeterHTTPRequestHandler)
     httpd.serve_forever()
