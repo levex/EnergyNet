@@ -1,9 +1,11 @@
 const express = require('express')
 const balance = require('./routes/balance')
+const view = require('./routes/view')
 
 let app = express()
 
 app.use('/balance', balance)
+app.use('/view', view)
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
 
 // catch 404
