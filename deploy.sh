@@ -18,7 +18,7 @@ check_dep pip3
 check_dep mongod
 
 HOME=$(pwd)
-cd $HOME/truffle && truffle build
+cd $HOME/truffle && rm -rf build && truffle compile && truffle build
 cd $HOME/dapp && npm install && webpack && ./add_to_parity.sh
 cd $HOME/parity && ./run.sh &
 cd $HOME && pip3 install --user -r requirements.txt
