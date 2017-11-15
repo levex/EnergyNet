@@ -72,10 +72,21 @@ async function availableContracts() {
   return contracts;
 }
 
+async function buyEnergy(contractAddress, amount) {
+  if (!contractAddress || !amount) throw new Error();
+  const contract = makeEnergyContract(contractAddress);
+  return await contract.buy(amount);
+}
+
+async function sellEnergy(price, amount) {
+  if (!price || !amount) throw new Error();
+  return await EnergyMaster.sell(price, amount);
+}
 module.exports = {
   myAccount,
   myBuyerContracts,
   mySellerContracts,
   myContracts,
-  availableContracts
+  availableContracts,
+  buyEnergy, sellEnergy
 }

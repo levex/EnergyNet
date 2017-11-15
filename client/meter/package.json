@@ -5,6 +5,7 @@
   "dependencies": {
     "babel-core": "^6.26.0",
     "bignumber.js": "^4.1.0",
+    "body-parser": "^1.18.2",
     "dateformat": "^3.0.2",
     "express": "^4.16.2",
     "immutability-helper": "^2.4.0",
