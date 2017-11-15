@@ -82,11 +82,19 @@ async function sellEnergy(price, amount) {
   if (!price || !amount) throw new Error();
   return await EnergyMaster.sell(price, amount);
 }
+
+async function consumeEnergy(contractAddress, amount) {
+  const contract = makeEnergyContract(contractAddress);
+  const price = await contract.unitPrice();
+  const cost = price.mul(amount);
+  return await contract.consume(amount, {value: cost})
+}
+
 module.exports = {
   myAccount,
   myBuyerContracts,
   mySellerContracts,
   myContracts,
   availableContracts,
-  buyEnergy, sellEnergy
+  buyEnergy, sellEnergy, consumeEnergy
 }
