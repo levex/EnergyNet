@@ -1,19 +1,19 @@
-const express = require('express')
-const balance = require('./routes/balance')
-const view = require('./routes/view')
-const transaction = require('./routes/transaction')
+const express = require('express');
+const balance = require('./routes/balance');
+const view = require('./routes/view');
+const transaction = require('./routes/transaction');
 
 const bodyParser = require('body-parser');
 
-let app = express()
+let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/balance', balance)
-app.use('/view', view)
-app.use('/transaction', transaction)
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.use('/balance', balance);
+app.use('/view', view);
+app.use('/transaction', transaction);
+app.listen(3000, () => console.log('Example app listening on port 3000!'));
 
 // catch 404
 app.use((req, res, next) => {
@@ -25,6 +25,6 @@ app.use((req, res, next) => {
 // err handler
 app.use((err, req, res, next) => {
   res.redirect('/');
-})
+});
 
-module.exports = app
+module.exports = app;

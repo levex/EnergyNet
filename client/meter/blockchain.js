@@ -1,5 +1,5 @@
-const oo7parity = require('oo7-parity')
-const bonds = oo7parity.bonds
+const oo7parity = require('oo7-parity');
+const bonds = oo7parity.bonds;
 const ENERGY_MASTER_ABI = require('./abis/abi_master');
 const ENERGY_ABI = require('./abis/abi');
 const ENERGY_MASTER_ADDRESS = "0x3507Ff52cB28F3eCB32A8ee0b0B00618D2E3dD02";
@@ -32,7 +32,7 @@ async function mySellerContracts() {
     if (seller === account) {
       const offeredAmount = await contract.offeredAmount();
       const unitPrice = await contract.unitPrice();
-      contracts.push({ contractAddr, unitPrice, offeredAmount })
+      contracts.push({contractAddr, unitPrice, offeredAmount})
     }
   }
   return contracts;
@@ -49,7 +49,7 @@ async function myBuyerContracts() {
     const remainingAmount = await contract.remainingEnergy(account);
     if (remainingAmount.greaterThan(0)) {
       const unitPrice = await contract.unitPrice();
-      contracts.push({ contractAddr, unitPrice, remainingAmount })
+      contracts.push({contractAddr, unitPrice, remainingAmount})
     }
   }
   return contracts;
@@ -66,7 +66,7 @@ async function availableContracts() {
       const contract = makeEnergyContract(contractAddr);
       const offeredAmount = await contract.offeredAmount();
       const unitPrice = await contract.unitPrice();
-      contracts.push({ contractAddr, unitPrice, offeredAmount })
+      contracts.push({contractAddr, unitPrice, offeredAmount})
     }
   }
   return contracts;
@@ -96,5 +96,7 @@ module.exports = {
   mySellerContracts,
   myContracts,
   availableContracts,
-  buyEnergy, sellEnergy, consumeEnergy
-}
+  buyEnergy,
+  sellEnergy,
+  consumeEnergy
+};

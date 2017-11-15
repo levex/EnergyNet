@@ -1,6 +1,6 @@
-const express = require('express')
-const router = express.Router()
-const blockchain = require('../blockchain')
+const express = require('express');
+const router = express.Router();
+const blockchain = require('../blockchain');
 
 router.post('/buy', (req, res) => {
   const body = req.body;
@@ -9,7 +9,7 @@ router.post('/buy', (req, res) => {
   blockchain.buyEnergy(contract, amount)
     .then(() => res.status(200).end())
     .catch(() => res.status(400).end())
-})
+});
 
 router.post('/sell', (req, res) => {
   const body = req.body;
@@ -18,6 +18,6 @@ router.post('/sell', (req, res) => {
   blockchain.sellEnergy(price, amount)
     .then(() => res.status(200).end())
     .catch(() => res.status(400).end())
-})
+});
 
-module.exports = router
+module.exports = router;
