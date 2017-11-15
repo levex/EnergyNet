@@ -55,9 +55,27 @@ async function myBuyerContracts() {
   return contracts;
 }
 
+async function availableContracts() {
+  const count = await EnergyMaster.contractCount();
+  const contracts = [];
+  for (let i = 0; i < count; i++) {
+    const contractEntity = await EnergyMaster.contracts(i);
+    const contractAddr = contractEntity[0];
+    const deregistered = contractEntity[2];
+    if (!deregistered) {
+      const contract = makeEnergyContract(contractAddr);
+      const offeredAmount = await contract.offeredAmount();
+      const unitPrice = await contract.unitPrice();
+      contracts.push({ contractAddr, unitPrice, offeredAmount })
+    }
+  }
+  return contracts;
+}
+
 module.exports = {
   myAccount,
   myBuyerContracts,
   mySellerContracts,
-  myContracts
+  myContracts,
+  availableContracts
 }
