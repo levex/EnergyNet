@@ -31,6 +31,7 @@ contract Energy {
         require(remainingEnergy[msg.sender] >= amount);
         require(msg.value >= unitPrice * amount);
         seller.transfer(msg.value);
+        remainingEnergy[msg.sender] -= amount;
     }
 
 }
