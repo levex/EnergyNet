@@ -6,6 +6,7 @@ import {Bond} from 'oo7';
 import {makeContract, makeMasterContract} from './blockchain';
 import {SellEnergyPanel} from './sellEnergyPanel';
 import {BuyEnergyPanel} from './buyEnergyPanel';
+import {ContractsViewPanel} from "./contractsViewPanel";
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
@@ -16,6 +17,8 @@ export class App extends React.Component {
     this.master = makeMasterContract();
     this.state = {
       contracts: {},
+      mySellerContracts: {},
+      myBuyerContracts: {},
       sellTx: null,
       energyBalance: new BigNumber(0),
       monthlyUsage: new BigNumber(0)
@@ -30,7 +33,11 @@ export class App extends React.Component {
 
   async getAccount() {
     const account = await bonds.me;
-    this.setState({account: account});
+    this.setState({
+      account: account,
+      mySellerContracts: {},
+      myBuyerContracts: {},
+    });
   }
 
   async getSellerContracts() {
@@ -43,10 +50,37 @@ export class App extends React.Component {
       const contractAddr = contractEntity[0];
       const contract = makeContract(contractAddr);
       const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
-      energyBalance = energyBalance.add(remainingEnergyInContract);
+      const seller = await contract.seller();
+      const offeredAmount = await contract.offeredAmount();
+      const unitPrice = await contract.unitPrice();
+      if (this.state.account === seller) {
+        this.setState(update(this.state, {
+          mySellerContracts: {
+            $merge: {
+              [contractAddr]: {
+                contractAddr: contractAddr,
+                amount: offeredAmount,
+                unitPrice: unitPrice
+              }
+            }
+          }
+        }))
+      }
+      if (remainingEnergyInContract.greaterThan(0)) {
+        energyBalance = energyBalance.add(remainingEnergyInContract);
+        this.setState(update(this.state, {
+          myBuyerContracts: {
+            $merge: {
+              [contractAddr]: {
+                contractAddr: contractAddr,
+                amount: remainingEnergyInContract,
+                unitPrice: unitPrice
+              }
+            }
+          }
+        }))
+      }
       if (!deregistered) {
-        const offeredAmount = await contract.offeredAmount();
-        const unitPrice = await contract.unitPrice();
 
         this.setState(update(this.state, {
           contracts: {
@@ -180,7 +214,9 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan>3</Rspan>
+                      <Rspan>{Object.keys(this.state.myBuyerContracts).length
+                      +
+                        Object.keys(this.state.mySellerContracts).length}</Rspan>
                     </div>
                     <div>Contracts in effect</div>
                   </div>
@@ -203,6 +239,8 @@ export class App extends React.Component {
           <div className="col-lg-12">
             <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
             <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
+            <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer"/>
+            <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller"/>
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
