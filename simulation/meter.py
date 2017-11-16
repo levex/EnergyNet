@@ -16,7 +16,7 @@ args = None
 
 simulation_metrics = {
     "consumed": 0.0,
-    "produced": 0.0,
+    "sold": 0.0,
 }
 
 
@@ -55,7 +55,7 @@ def sell_energy(amount):
         }),
         headers=API_CALL_HEADER,
     )
-    simulation_metrics["produced"] += amount
+    simulation_metrics["sold"] += amount
 
 
 def tick(excess_interval):
