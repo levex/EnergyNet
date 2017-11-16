@@ -119,7 +119,7 @@ async function myEnergyBalance() {
   const contracts = await myBuyerContracts();
   let balance = new bigNumber(0);
   for (const contract of contracts) {
-    balance += contract.remainingAmount;
+    balance = balance.add(contract.remainingAmount);
   }
   return balance;
 
