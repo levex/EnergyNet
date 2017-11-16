@@ -3,7 +3,7 @@
 set -e
 
 check_dep () {
-    if ! [ -x $(command -v $1) ]; then
+    if ! [ -x "$(command -v $1)" ]; then
         echo "You don't have $1"
         exit 1
     fi
