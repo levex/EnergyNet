@@ -20,4 +20,13 @@ router.post('/sell', (req, res) => {
     .catch(() => res.status(400).end())
 });
 
+router.post('/consume', (req, res) => {
+  const body = req.body;
+  const amount = body.amount;
+
+  // TODO get contract address from DB and consume energy.
+  // If there's not enough energy available, get another contract,
+  // buy from there (if allowed) -> consume
+});
+
 module.exports = router;
