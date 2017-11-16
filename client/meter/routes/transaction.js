@@ -20,4 +20,12 @@ router.post('/sell', (req, res) => {
     .catch(() => res.status(400).end())
 });
 
+router.post('/consume', (req, res) => {
+  const body = req.body;
+  const amount = body.amount;
+  blockchain.consumeEnergy(amount)
+    .then(() => res.status(200).end())
+    .catch(reason => res.status(500).send(reason))
+});
+
 module.exports = router;

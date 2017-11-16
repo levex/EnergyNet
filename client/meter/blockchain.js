@@ -3,6 +3,7 @@ const bonds = oo7parity.bonds;
 const ENERGY_MASTER_ABI = require('./abis/abi_master');
 const ENERGY_ABI = require('./abis/abi');
 const ENERGY_MASTER_ADDRESS = "0x520fF2C06fB1ee32eB9e4f1EedecB985869769Ab";
+const bigNumber = require('bignumber.js');
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
@@ -83,11 +84,69 @@ async function sellEnergy(price, amount) {
   return await EnergyMaster.sell(price, amount);
 }
 
-async function consumeEnergy(contractAddress, amount) {
+async function consumeEnergyFromContract(contractAddress, amount) {
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
   return await contract.consume(amount, {value: cost})
+}
+
+async function consumeEnergy(amount) {
+  if (amount < 0) throw new Error("negative amount");
+  let energyBalance = await myEnergyBalance();
+  if (energyBalance < amount) {
+    await autoBuy(amount - energyBalance);
+    // FIXME: wait for signing and tx to complete properly
+    while (!energyBalance.equals(amount)) {
+      energyBalance = await myEnergyBalance();
+    }
+  }
+  const contracts = await myBuyerContracts();
+  let toConsume = amount;
+  // cheapest first
+  contracts.sort((a, b) => {
+    return a.unitPrice - b.unitPrice;
+  });
+  let txs = [];
+  for (const contract of contracts) {
+    if (toConsume === 0) break;
+    const deduction = Math.min(toConsume, contract.remainingAmount);
+    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    toConsume -= deduction;
+  }
+  if (toConsume > 0) throw new Error("Insufficient energy balance"); // should not happen
+  const promises = txs.map((tx) => consumeEnergyFromContract(tx.contractAddr, tx.amount));
+  return Promise.all(promises)
+}
+
+async function myEnergyBalance() {
+  const contracts = await myBuyerContracts();
+  let balance = new bigNumber(0);
+  for (const contract of contracts) {
+    balance = balance.add(contract.remainingAmount);
+  }
+  return balance;
+
+}
+
+async function autoBuy(amount) {
+  if (!amount || amount < 0) throw new Error("Invalid amount");
+  const contracts = await availableContracts();
+  let toBuy = amount;
+  // cheapest first
+  contracts.sort((a, b) => {
+    return a.unitPrice - b.unitPrice;
+  });
+  let txs = [];
+  for (const contract of contracts) {
+    if (toBuy === 0) break;
+    const deduction = Math.min(toBuy, contract.offeredAmount);
+    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    toBuy -= deduction;
+  }
+  if (toBuy > 0) throw new Error("Insufficient energy over network");
+  const promises = txs.map((tx) => buyEnergy(tx.contractAddr, tx.amount));
+  return Promise.all(promises)
 }
 
 module.exports = {
@@ -95,8 +154,10 @@ module.exports = {
   myBuyerContracts,
   mySellerContracts,
   myContracts,
+  myEnergyBalance,
   availableContracts,
   buyEnergy,
   sellEnergy,
-  consumeEnergy
+  consumeEnergy,
+  autoBuy
 };
