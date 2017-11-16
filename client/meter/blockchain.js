@@ -83,11 +83,35 @@ async function sellEnergy(price, amount) {
   return await EnergyMaster.sell(price, amount);
 }
 
-async function consumeEnergy(contractAddress, amount) {
+async function consumeEnergyFromContract(contractAddress, amount) {
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
   return await contract.consume(amount, {value: cost})
+}
+
+async function consumeEnergy(amount) {
+  const contracts = await myBuyerContracts();
+  if (amount < 0) throw new Error("negative amount");
+  let toConsume = amount;
+  // cheapest first
+  contracts.sort((a, b) => {
+    return a.unitPrice - b.unitPrice;
+  });
+  let txs = [];
+  for (const contract of contracts) {
+    if (toConsume === 0) break;
+    const deduction = Math.min(toConsume, contract.remainingAmount);
+    try {
+      txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+      toConsume -= deduction;
+    } catch (e) {
+      // ignore
+    }
+  }
+  if (toConsume > 0) throw new Error("Insufficient energy balance");
+  const promises = txs.map((tx) => consumeEnergyFromContract(tx.contractAddr, tx.amount));
+  return Promise.all(promises)
 }
 
 module.exports = {
