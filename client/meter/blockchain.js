@@ -3,6 +3,7 @@ const bonds = oo7parity.bonds;
 const ENERGY_MASTER_ABI = require('./abis/abi_master');
 const ENERGY_ABI = require('./abis/abi');
 const ENERGY_MASTER_ADDRESS = "0x520fF2C06fB1ee32eB9e4f1EedecB985869769Ab";
+const bigNumber = require('bignumber.js');
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
@@ -114,11 +115,22 @@ async function consumeEnergy(amount) {
   return Promise.all(promises)
 }
 
+async function myEnergyBalance() {
+  const contracts = await myBuyerContracts();
+  let balance = new bigNumber(0);
+  for (const contract of contracts) {
+    balance += contract.remainingAmount;
+  }
+  return balance;
+
+}
+
 module.exports = {
   myAccount,
   myBuyerContracts,
   mySellerContracts,
   myContracts,
+  myEnergyBalance,
   availableContracts,
   buyEnergy,
   sellEnergy,
