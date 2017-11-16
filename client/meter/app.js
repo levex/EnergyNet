@@ -4,11 +4,13 @@ const view = require('./routes/view');
 const transaction = require('./routes/transaction');
 
 const bodyParser = require('body-parser');
+const logger = require('morgan');
 
 let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(logger('dev'));
 
 app.use('/balance', balance);
 app.use('/view', view);
