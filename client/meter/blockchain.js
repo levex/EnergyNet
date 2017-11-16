@@ -32,6 +32,7 @@ async function mySellerContracts() {
     const seller = await contract.seller();
     if (seller === account) {
       const offeredAmount = await contract.offeredAmount();
+      if (offeredAmount == 0) continue;
       const unitPrice = await contract.unitPrice();
       contracts.push({contractAddr, unitPrice, offeredAmount})
     }
