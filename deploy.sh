@@ -24,6 +24,7 @@ cd $HOME/parity && ./run.sh &
 cd $HOME && pip3 install --user -r requirements.txt
 python3 client/meter/api.py &
 ./client/meter/mongostarter.sh &
+cd $HOME/client/meter && npm install && npm start
 
 handler() {
     echo "Killing everything"
