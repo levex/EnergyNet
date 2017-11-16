@@ -23,7 +23,7 @@ simulation_metrics = {
 def parse_arguments():
     parser = argparse.ArgumentParser("Launch a simulated meter")
     parser.add_argument(
-        "-e", "--excess-interval", nargs=2, type=float, default=[0.0, 0.0],
+        "-e", "--excess-interval", nargs=2, type=int, default=[0, 0],
         help="The interval of energy excess per time unit (can be negative)"
     )
     parser.add_argument(
@@ -59,7 +59,7 @@ def sell_energy(amount):
 
 
 def tick(excess_interval):
-    produced_energy = random.uniform(*excess_interval)
+    produced_energy = random.randint(*excess_interval)
 
     if produced_energy < 0:
         consume_energy(-produced_energy)
