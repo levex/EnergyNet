@@ -15,7 +15,7 @@ app.use(logger('dev'));
 app.use('/balance', balance);
 app.use('/view', view);
 app.use('/transaction', transaction);
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.listen(3000, 'localhost', () => console.log('Example app listening on port 3000!'));
 
 // catch 404
 app.use((req, res, next) => {
