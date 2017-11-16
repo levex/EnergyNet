@@ -61,6 +61,7 @@ def sell_energy(amount):
 def tick(excess_interval):
     produced_energy = random.randint(*excess_interval)
 
+    print("Energy Consumption: " + str(produced_energy))
     if produced_energy < 0:
         consume_energy(-produced_energy)
     elif produced_energy > 0:
