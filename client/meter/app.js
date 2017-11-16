@@ -24,9 +24,4 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// err handler
-app.use((err, req, res, next) => {
-  res.redirect('/');
-});
-
 module.exports = app;
