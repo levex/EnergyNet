@@ -92,8 +92,16 @@ async function consumeEnergyFromContract(contractAddress, amount) {
 }
 
 async function consumeEnergy(amount) {
-  const contracts = await myBuyerContracts();
   if (amount < 0) throw new Error("negative amount");
+  let energyBalance = await myEnergyBalance();
+  if (energyBalance < amount) {
+    await autoBuy(amount - energyBalance);
+    // FIXME: wait for signing and tx to complete properly
+    while (!energyBalance.equals(amount)) {
+      energyBalance = await myEnergyBalance();
+    }
+  }
+  const contracts = await myBuyerContracts();
   let toConsume = amount;
   // cheapest first
   contracts.sort((a, b) => {
@@ -110,7 +118,7 @@ async function consumeEnergy(amount) {
       // ignore
     }
   }
-  if (toConsume > 0) throw new Error("Insufficient energy balance");
+  if (toConsume > 0) throw new Error("Insufficient energy balance"); // should not happen
   const promises = txs.map((tx) => consumeEnergyFromContract(tx.contractAddr, tx.amount));
   return Promise.all(promises)
 }
