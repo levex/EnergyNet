@@ -7,7 +7,7 @@ import requests
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
-METER_API_BASE_URL = "http://localhost:3000"
+METER_API_BASE_URL = "http://localhost:3000/"
 API_CALL_HEADER = {
     "content-type": "application/json"
 }
@@ -34,7 +34,7 @@ def buy_energy(amount):
     # TODO: This method should buy energy by calling a seller contract using
     # the rpc client and update the stats kept by the meter using the API
     requests.post(
-        METER_API_BASE_URL + "/transaction/consume",
+        METER_API_BASE_URL + "transaction/consume",
         data=json.dumps({
             "amount": amount,
         }),
@@ -55,8 +55,8 @@ def sell_energy(amount):
     )
 
 
-def tick():
-    produced_energy = random.uniform(*args.excess_interval)
+def tick(excess_interval):
+    produced_energy = random.uniform(*excess_interval)
 
     if produced_energy < 0:
         buy_energy(-produced_energy)
@@ -68,7 +68,7 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/tick":
-            tick()
+            tick(args.excess_interval)
 
             self.send_response(200)
             return
