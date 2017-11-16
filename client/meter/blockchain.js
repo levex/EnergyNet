@@ -125,6 +125,30 @@ async function myEnergyBalance() {
 
 }
 
+async function autoBuy(amount) {
+  if (!amount || amount < 0) throw new Error("Invalid amount");
+  const contracts = await availableContracts();
+  let toBuy = amount;
+  // cheapest first
+  contracts.sort((a, b) => {
+    return a.unitPrice - b.unitPrice;
+  });
+  let txs = [];
+  for (const contract of contracts) {
+    if (toBuy === 0) break;
+    const deduction = Math.min(toBuy, contract.offeredAmount);
+    try {
+      txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+      toBuy -= deduction;
+    } catch (e) {
+      // ignore
+    }
+  }
+  if (toBuy > 0) throw new Error("Insufficient energy over network");
+  const promises = txs.map((tx) => buyEnergy(tx.contractAddr, tx.amount));
+  return Promise.all(promises)
+}
+
 module.exports = {
   myAccount,
   myBuyerContracts,
@@ -134,5 +158,6 @@ module.exports = {
   availableContracts,
   buyEnergy,
   sellEnergy,
-  consumeEnergy
+  consumeEnergy,
+  autoBuy
 };
