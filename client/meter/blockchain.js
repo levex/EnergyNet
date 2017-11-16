@@ -106,11 +106,18 @@ async function consumeEnergy(amount) {
   if (energyBalance < amount) {
     try {
       await autoBuy(amount - energyBalance);
+
+      let count = 0;
+      while (energyBalance < amount) {
+        energyBalance = await myEnergyBalance();
+        count++;
+        if (count == 30) {
+          return Promise.reject({ msg: "failed to autoBuy", value: amount });
+        }
+      }
     } catch(e) {
       return Promise.reject(e);
     }
-
-    energyBalance = await myEnergyBalance();
   }
 
   const contracts = await myBuyerContracts();
