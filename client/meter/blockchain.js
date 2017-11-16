@@ -111,12 +111,8 @@ async function consumeEnergy(amount) {
   for (const contract of contracts) {
     if (toConsume === 0) break;
     const deduction = Math.min(toConsume, contract.remainingAmount);
-    try {
-      txs.push({ contractAddr: contract.contractAddr, amount: deduction});
-      toConsume -= deduction;
-    } catch (e) {
-      // ignore
-    }
+    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    toConsume -= deduction;
   }
   if (toConsume > 0) throw new Error("Insufficient energy balance"); // should not happen
   const promises = txs.map((tx) => consumeEnergyFromContract(tx.contractAddr, tx.amount));
@@ -145,12 +141,8 @@ async function autoBuy(amount) {
   for (const contract of contracts) {
     if (toBuy === 0) break;
     const deduction = Math.min(toBuy, contract.offeredAmount);
-    try {
-      txs.push({ contractAddr: contract.contractAddr, amount: deduction});
-      toBuy -= deduction;
-    } catch (e) {
-      // ignore
-    }
+    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    toBuy -= deduction;
   }
   if (toBuy > 0) throw new Error("Insufficient energy over network");
   const promises = txs.map((tx) => buyEnergy(tx.contractAddr, tx.amount));
