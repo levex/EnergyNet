@@ -54,17 +54,25 @@ export class App extends React.Component {
       const offeredAmount = await contract.offeredAmount();
       const unitPrice = await contract.unitPrice();
       if (this.state.account === seller) {
-        this.setState(update(this.state, {
-          mySellerContracts: {
-            $merge: {
-              [contractAddr]: {
-                contractAddr: contractAddr,
-                amount: offeredAmount,
-                unitPrice: unitPrice
+        if (offeredAmount > 0) {
+          this.setState(update(this.state, {
+            mySellerContracts: {
+              $merge: {
+                [contractAddr]: {
+                  contractAddr: contractAddr,
+                  amount: offeredAmount,
+                  unitPrice: unitPrice
+                }
               }
             }
-          }
-        }))
+          }))
+        } else {
+          this.setState(update(this.state, {
+            mySellerContracts: {
+              $unset: [contractAddr]
+            }
+          }))
+        }
       }
       if (remainingEnergyInContract.greaterThan(0)) {
         energyBalance = energyBalance.add(remainingEnergyInContract);
