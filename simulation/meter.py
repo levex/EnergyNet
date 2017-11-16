@@ -14,6 +14,11 @@ API_CALL_HEADER = {
 
 args = None
 
+simulation_metrics = {
+    "consumed": 0.0,
+    "sold": 0.0,
+}
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser("Launch a simulated meter")
@@ -38,6 +43,7 @@ def consume_energy(amount):
         }),
         headers=API_CALL_HEADER,
     )
+    simulation_metrics["consumed"] += amount
 
 
 def sell_energy(amount):
@@ -49,6 +55,7 @@ def sell_energy(amount):
         }),
         headers=API_CALL_HEADER,
     )
+    simulation_metrics["sold"] += amount
 
 
 def tick(excess_interval):
@@ -67,9 +74,20 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
             tick(args.excess_interval)
 
             self.send_response(200)
+            self.end_headers()
+            return
+        elif self.path == "/metrics":
+
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(bytes(
+                json.dumps(simulation_metrics),
+                "utf-8",
+            ))
             return
 
-        self.send_error(404)
+        self.send_response(404)
+        self.end_headers()
 
 
 if __name__ == "__main__":
