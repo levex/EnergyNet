@@ -21,6 +21,8 @@ class SimulatedMeterClientTest(unittest.TestCase):
             headers=simulation.meter.API_CALL_HEADER,
         )
 
+        self.assertEqual(simulation.meter.simulation_metrics["produced"], 2.0)
+
     @patch('simulation.meter.requests.post')
     def test_consume_energy(self, mock_post):
         simulation.meter.tick((-2.0, -2.0))
@@ -32,3 +34,5 @@ class SimulatedMeterClientTest(unittest.TestCase):
             }),
             headers=simulation.meter.API_CALL_HEADER,
         )
+
+        self.assertEqual(simulation.meter.simulation_metrics["consumed"], 2.0)
