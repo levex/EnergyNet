@@ -30,9 +30,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def buy_energy(amount):
-    # TODO: This method should buy energy by calling a seller contract using
-    # the rpc client and update the stats kept by the meter using the API
+def consume_energy(amount):
     requests.post(
         METER_API_BASE_URL + "transaction/consume",
         data=json.dumps({
@@ -43,8 +41,6 @@ def buy_energy(amount):
 
 
 def sell_energy(amount):
-    # TODO: THis method should add energy to an existing seller contract or
-    # create a new seller contract
     requests.post(
         METER_API_BASE_URL + "transaction/sell",
         data=json.dumps({
@@ -59,8 +55,8 @@ def tick(excess_interval):
     produced_energy = random.uniform(*excess_interval)
 
     if produced_energy < 0:
-        buy_energy(-produced_energy)
-    else:
+        consume_energy(-produced_energy)
+    elif produced_energy > 0:
         sell_energy(produced_energy)
 
 
