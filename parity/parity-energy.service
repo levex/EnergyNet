@@ -1,0 +1,9 @@
+[Unit]
+Description=Parity EnergyChain daemon
+
+[Service]
+WorkingDirectory=/energy/parity/
+ExecStart=/bin/bash /energy/parity/run.sh
+
+[Install]
+WantedBy=multi-user.target
