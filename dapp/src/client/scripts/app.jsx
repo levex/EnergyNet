@@ -26,92 +26,79 @@ export class App extends React.Component {
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
     this.priceBond = new Bond();
-    bonds.head.tie(this.getSellerContracts.bind(this));
+    //bonds.head.tie(this.getSellerContracts.bind(this));
     bonds.me.tie(this.getAccount.bind(this));
     bonds.me.tie(this.getSellerContracts.bind(this));
+    bonds.me.tie(this.getBuyerContracts.bind(this));
+    bonds.me.tie(this.getAvailableContracts.bind(this));
   }
 
   async getAccount() {
     const account = await bonds.me;
-    this.setState({
-      account: account,
-      mySellerContracts: {},
-      myBuyerContracts: {},
-    });
+    this.setState({account: account, mySellerContracts: {}, myBuyerContracts: {}});
   }
 
-  async getSellerContracts() {
-    let energyBalance = new BigNumber(0);
-    let count = await this.master.contractCount();
-
-    for (let i = 0; i < count; i++) {
-      const contractEntity = await this.master.contracts(i);
-      const deregistered = contractEntity[2];
-      const contractAddr = contractEntity[0];
-      const contract = makeContract(contractAddr);
-      const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
-      const seller = await contract.seller();
-      const offeredAmount = await contract.offeredAmount();
-      const unitPrice = await contract.unitPrice();
-      if (this.state.account === seller) {
-        if (offeredAmount > 0) {
+  async getAvailableContracts() {
+    fetch('http://localhost:3000/contract/available_contracts')
+      .then(response => response.json())
+      .then(contracts => contracts.filter((c) => c.offeredAmount > 0))
+      .then(contracts => {
+        contracts.forEach((contract) => {
           this.setState(update(this.state, {
-            mySellerContracts: {
+            contracts: {
               $merge: {
-                [contractAddr]: {
-                  contractAddr: contractAddr,
-                  amount: offeredAmount,
-                  unitPrice: unitPrice
+                [contract.contractAddr]: {
+                  contractAddr: contract.contractAddr,
+                  offeredAmount: contract.offeredAmount,
+                  unitPrice: contract.unitPrice
                 }
               }
             }
           }))
-        } else {
+        })
+      })
+  }
+
+  async getSellerContracts() {
+    fetch('http://localhost:3000/contract/my_seller_contracts')
+      .then(response => response.json())
+      .then(contracts => contracts.filter((c) => c.offeredAmount > 0))
+      .then(contracts => {
+        contracts.forEach((contract) => {
           this.setState(update(this.state, {
             mySellerContracts: {
-              $unset: [contractAddr]
+              $merge: {
+                [contract.contractAddr]: {
+                  contractAddr: contract.contractAddr,
+                  amount: contract.offeredAmount,
+                  unitPrice: contract.unitPrice
+                }
+              }
             }
           }))
-        }
-      }
-      if (remainingEnergyInContract.greaterThan(0)) {
-        energyBalance = energyBalance.add(remainingEnergyInContract);
-        this.setState(update(this.state, {
-          myBuyerContracts: {
-            $merge: {
-              [contractAddr]: {
-                contractAddr: contractAddr,
-                amount: remainingEnergyInContract,
-                unitPrice: unitPrice
-              }
-            }
-          }
-        }))
-      }
-      if (!deregistered) {
+        })
+      })
+  }
 
-        this.setState(update(this.state, {
-          contracts: {
-            $merge: {
-              [contractAddr]: {
-                contractAddr: contractAddr,
-                contract: contract,
-                offeredAmount: offeredAmount,
-                unitPrice: unitPrice,
-                tx: null
+  async getBuyerContracts() {
+    fetch('http://localhost:3000/contract/my_buyer_contracts')
+      .then(response => response.json())
+      .then(contracts => contracts.filter((c) => c.remainingAmount > 0))
+      .then(contracts => {
+        contracts.forEach((contract) => {
+          this.setState(update(this.state, {
+            myBuyerContracts: {
+              $merge: {
+                [contract.contractAddr]: {
+                  contractAddr: contract.contractAddr,
+                  amount: contract.remainingAmount,
+                  unitPrice: contract.unitPrice
+                }
               }
             }
-          }
-        }));
-      } else {
-        this.setState(update(this.state, {
-          contracts: {
-            $unset: [contractAddr]
-          }
-        }))
-      }
-    }
-    this.setState({energyBalance: energyBalance.toString(10)});
+          }))
+        })
+      })
   }
 
   buyEnergy(contractState) {
@@ -136,13 +123,15 @@ export class App extends React.Component {
     const today = new Date();
     const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const format = 'ddd, dd mmm yyyy HH:MM:ss Z'
-    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"'
-        + dateFormat(firstOfMonth, format) + '","$date_to":"' + dateFormat(today, format) + '"}')
-      .then(response => { return response.json() })
-      .then(result => result['_items'])
-      .then(maybeItems => { if (maybeItems.length == 0) { return Promise.reject('empty list') } else { return maybeItems } })
-      .then(items => items[0]['total_amount'])
-      .then(amount => this.setState({monthlyUsage: amount}))
+    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"' + dateFormat(firstOfMonth, format) + '","$date_to":"' + dateFormat(today, format) + '"}').then(response => {
+      return response.json()
+    }).then(result => result['_items']).then(maybeItems => {
+      if (maybeItems.length == 0) {
+        return Promise.reject('empty list')
+      } else {
+        return maybeItems
+      }
+    }).then(items => items[0]['total_amount']).then(amount => this.setState({monthlyUsage: amount}))
   }
 
   render() {
@@ -165,7 +154,9 @@ export class App extends React.Component {
                     <i className="fa fa-money fa-5x"></i>
                   </div>
                   <div className="col-xs-9 text-right">
-                    <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
+                    <div className="huge">
+                      <Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan>
+                    </div>
                     <div>Account Balance</div>
                   </div>
                 </div>
@@ -190,13 +181,13 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-5 text-right">
                     <div className="huge">
-                        {this.state.monthlyUsage.toString(10)}
+                      {this.state.monthlyUsage.toString(10)}
                     </div>
                     <div>kWh used</div>
                   </div>
                   <div className="col-xs-5 text-right">
                     <div className="huge">
-                        {this.state.energyBalance.toString(10)}
+                      {this.state.energyBalance.toString(10)}
                     </div>
                     <div>kWh bought</div>
                   </div>
@@ -222,9 +213,7 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan>{Object.keys(this.state.myBuyerContracts).length
-                      +
-                        Object.keys(this.state.mySellerContracts).length}</Rspan>
+                      <Rspan>{Object.keys(this.state.myBuyerContracts).length + Object.keys(this.state.mySellerContracts).length}</Rspan>
                     </div>
                     <div>Contracts in effect</div>
                   </div>
@@ -246,7 +235,7 @@ export class App extends React.Component {
         <div className="row">
           <div className="col-lg-12">
             <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
-            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
+            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond}/>
             <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer"/>
             <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller"/>
             <div className="panel panel-default">
