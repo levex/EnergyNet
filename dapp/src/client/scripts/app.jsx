@@ -10,6 +10,7 @@ import {ContractsViewPanel} from "./contractsViewPanel";
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
+import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 
 export class App extends React.Component {
   constructor() {
@@ -21,7 +22,8 @@ export class App extends React.Component {
       myBuyerContracts: {},
       sellTx: null,
       energyBalance: new BigNumber(0),
-      monthlyUsage: new BigNumber(0)
+      monthlyUsage: new BigNumber(0),
+      contractsHistogram: []
     };
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
@@ -41,8 +43,11 @@ export class App extends React.Component {
   }
 
   async getSellerContracts() {
+    const HISTOGRAM_BINS = 10;
     let energyBalance = new BigNumber(0);
     let count = await this.master.contractCount();
+    let minHistogramPrice = new BigNumber(Number.MAX_SAFE_INTEGER);
+    let maxHistogramPrice = new BigNumber(0);
 
     for (let i = 0; i < count; i++) {
       const contractEntity = await this.master.contracts(i);
@@ -110,7 +115,32 @@ export class App extends React.Component {
           }
         }))
       }
+
+      if (unitPrice.cmp(maxHistogramPrice) == 1) {
+        maxHistogramPrice = unitPrice;
+      } else if (unitPrice.cmp(minHistogramPrice) == -1) {
+        minHistogramPrice = unitPrice;
+      }
     }
+    let contractsHistogram = new Array(HISTOGRAM_BINS);
+    let binSize = (maxHistogramPrice - minHistogramPrice) / HISTOGRAM_BINS;
+
+    for (let i = 0; i < HISTOGRAM_BINS; i++) {
+      contractsHistogram[i] = {
+        region: minHistogramPrice + (i * binSize),
+        count: 0
+      }
+    }
+
+    Object.keys(this.state.contracts).forEach(function (key) {
+      let bin = Math.round((this.state.contracts[key].unitPrice - minHistogramPrice) / binSize);
+      if (bin < HISTOGRAM_BINS && bin >= 0) {
+        contractsHistogram[bin].count += 1;
+      }
+    }, this);
+
+    this.setState({contractsHistogram: contractsHistogram});
+
     this.setState({energyBalance: energyBalance.toString(10)});
   }
 
@@ -280,6 +310,23 @@ export class App extends React.Component {
               {/* /.panel-heading */}
               <div className="panel-body">
                 <div id="morris-area-chart"></div>
+              </div>
+              {/* /.panel-body */}
+            </div>
+            <div className="panel panel-default">
+              <div className="panel-heading">
+                <i className="fa fa-bar-chart-o fa-fw"></i>
+                Average price histogram
+              </div>
+              {/* /.panel-heading */}
+              <div className="panel-body">
+                <BarChart width={800} height={480} data={this.state.contractsHistogram}>
+                  <XAxis dataKey="region" />
+                  <YAxis />
+                  <CartesianGrid strokeDashArray="3 3" />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#8884d8" />
+                </BarChart>
               </div>
               {/* /.panel-body */}
             </div>
