@@ -20,11 +20,14 @@ contract Master {
     function sell(uint unitPrice, uint amountOffered) public returns(address) {
         // TODO: delegate call
         Energy energy = new Energy(msg.sender, unitPrice, amountOffered);
+
         ContractEntity memory entity;
         entity.contract_addr = energy;
         entity.seller = msg.sender;
+
         lookupIdxByContract[energy] = contracts.length;
         contracts.push(entity);
+
         return energy;
     }
 
@@ -36,6 +39,19 @@ contract Master {
 
     function contractCount() view public returns(uint) {
         return contracts.length;
+    }
+
+    function registeredContractCount() view public returns(uint) {
+        count = 0;
+
+        for (uint i = 0; i < contracts.length; i++) {
+            ContractEntity entity = contracts[i];
+            if (!entity.deregistered) {
+              count += 1;
+            }
+        }
+
+        return count;
     }
 
 }
