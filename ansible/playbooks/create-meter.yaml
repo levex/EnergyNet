@@ -57,3 +57,15 @@
       shell: systemctl enable /energy/parity/parity-energy.service
     - name: Start ParityEnergy service
       shell: systemctl start parity-energy
+    - name: Build Meter server
+      shell: cd /energy/client/meter && npm install
+    - name: Enable Meter service
+      shell: systemctl enable /energy/client/meter/meter-server.service
+    - name: Start Meter service
+      shell: systemctl start meter-server
+    - name: Install python dependencies
+      shell: cd /energy/ && pip3 install -r requirements.txt
+    - name: Enable Simulation service
+      shell: systemctl enable /energy/simulation/simulation-server.service
+    - name: Start Simulation service
+      shell: systemctl start simulation-server
