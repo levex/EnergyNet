@@ -1,0 +1,11 @@
+[Unit]
+Description=Simulation Server daemon
+
+[Service]
+WorkingDirectory=/energy/simulation/
+ExecStart=/usr/bin/env python3 /energy/simulation/meter.py -e $ENERGY_MIN $ENERGY_MAX
+Environment=ENERGY_MIN=-100
+Environment=ENERGY_MAX=100
+
+[Install]
+WantedBy=multi-user.target

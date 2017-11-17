@@ -1,0 +1,9 @@
+[Unit]
+Description=Smart Meter EnergyChain daemon
+
+[Service]
+WorkingDirectory=/energy/client/meter
+ExecStart=/usr/bin/env node /energy/client/meter/app.js
+
+[Install]
+WantedBy=multi-user.target
