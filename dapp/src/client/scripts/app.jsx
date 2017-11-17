@@ -17,6 +17,8 @@ export class App extends React.Component {
     super();
     this.master = makeMasterContract();
     this.state = {
+      has_next: false,
+      contractPages: [],
       contracts: {},
       mySellerContracts: {},
       myBuyerContracts: {},
@@ -43,7 +45,17 @@ export class App extends React.Component {
   }
 
   async getAvailableContracts() {
-    fetch('http://localhost:3000/contract/available_contracts').then(response => response.json()).then(contracts => contracts.filter((c) => c.offeredAmount > 0)).then(contracts => {
+    fetch('http://localhost:3000/contract/available_contracts')
+    .then(response => response.json())
+    .then(result => {
+      this.setState({
+        contractPages: result.pages,
+        has_next: result.has_next
+      })
+      return result.data;
+    })
+    .then(contracts => contracts.filter((c) => c.offeredAmount > 0))
+    .then(contracts => {
       contracts.forEach((contract) => {
         this.setState(update(this.state, {
           contracts: {
@@ -242,7 +254,13 @@ export class App extends React.Component {
         <div className="row">
           <div className="col-lg-12">
             <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
-            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond}/>
+            <BuyEnergyPanel
+              contractPages={this.state.contractPages}
+              has_next={this.state.has_next}
+              contracts={this.state.contracts}
+              buyEnergy={this.buyEnergy.bind(this)}
+              amountBond={this.buyAmountBond}
+            />
             <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer"/>
             <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller"/>
             <EnergyConsumptionGraph data={this.state.energyConsumptionHistory} />
