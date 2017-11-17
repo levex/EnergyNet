@@ -10,6 +10,7 @@ import {ContractsViewPanel} from "./contractsViewPanel";
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
+import {EnergyConsumptionGraph} from './energyConsumptionGraph';
 
 export class App extends React.Component {
   constructor() {
@@ -27,6 +28,9 @@ export class App extends React.Component {
     this.sellAmountBond = new Bond();
     this.priceBond = new Bond();
     //bonds.head.tie(this.getSellerContracts.bind(this));
+
+    //TODO: Auto update this
+    this.getEnergyConsumptionHistory()
     bonds.me.tie(this.getAccount.bind(this));
     bonds.me.tie(this.getSellerContracts.bind(this));
     bonds.me.tie(this.getBuyerContracts.bind(this));
@@ -39,66 +43,57 @@ export class App extends React.Component {
   }
 
   async getAvailableContracts() {
-    fetch('http://localhost:3000/contract/available_contracts')
-      .then(response => response.json())
-      .then(contracts => contracts.filter((c) => c.offeredAmount > 0))
-      .then(contracts => {
-        contracts.forEach((contract) => {
-          this.setState(update(this.state, {
-            contracts: {
-              $merge: {
-                [contract.contractAddr]: {
-                  contractAddr: contract.contractAddr,
-                  offeredAmount: contract.offeredAmount,
-                  unitPrice: contract.unitPrice
-                }
+    fetch('http://localhost:3000/contract/available_contracts').then(response => response.json()).then(contracts => contracts.filter((c) => c.offeredAmount > 0)).then(contracts => {
+      contracts.forEach((contract) => {
+        this.setState(update(this.state, {
+          contracts: {
+            $merge: {
+              [contract.contractAddr]: {
+                contractAddr: contract.contractAddr,
+                offeredAmount: contract.offeredAmount,
+                unitPrice: contract.unitPrice
               }
             }
-          }))
-        })
+          }
+        }))
       })
+    })
   }
 
   async getSellerContracts() {
-    fetch('http://localhost:3000/contract/my_seller_contracts')
-      .then(response => response.json())
-      .then(contracts => contracts.filter((c) => c.offeredAmount > 0))
-      .then(contracts => {
-        contracts.forEach((contract) => {
-          this.setState(update(this.state, {
-            mySellerContracts: {
-              $merge: {
-                [contract.contractAddr]: {
-                  contractAddr: contract.contractAddr,
-                  amount: contract.offeredAmount,
-                  unitPrice: contract.unitPrice
-                }
+    fetch('http://localhost:3000/contract/my_seller_contracts').then(response => response.json()).then(contracts => contracts.filter((c) => c.offeredAmount > 0)).then(contracts => {
+      contracts.forEach((contract) => {
+        this.setState(update(this.state, {
+          mySellerContracts: {
+            $merge: {
+              [contract.contractAddr]: {
+                contractAddr: contract.contractAddr,
+                amount: contract.offeredAmount,
+                unitPrice: contract.unitPrice
               }
             }
-          }))
-        })
+          }
+        }))
       })
+    })
   }
 
   async getBuyerContracts() {
-    fetch('http://localhost:3000/contract/my_buyer_contracts')
-      .then(response => response.json())
-      .then(contracts => contracts.filter((c) => c.remainingAmount > 0))
-      .then(contracts => {
-        contracts.forEach((contract) => {
-          this.setState(update(this.state, {
-            myBuyerContracts: {
-              $merge: {
-                [contract.contractAddr]: {
-                  contractAddr: contract.contractAddr,
-                  amount: contract.remainingAmount,
-                  unitPrice: contract.unitPrice
-                }
+    fetch('http://localhost:3000/contract/my_buyer_contracts').then(response => response.json()).then(contracts => contracts.filter((c) => c.remainingAmount > 0)).then(contracts => {
+      contracts.forEach((contract) => {
+        this.setState(update(this.state, {
+          myBuyerContracts: {
+            $merge: {
+              [contract.contractAddr]: {
+                contractAddr: contract.contractAddr,
+                amount: contract.remainingAmount,
+                unitPrice: contract.unitPrice
               }
             }
-          }))
-        })
+          }
+        }))
       })
+    })
   }
 
   buyEnergy(contractState) {
@@ -119,10 +114,13 @@ export class App extends React.Component {
     });
   }
 
-  componentDidMount() {
+  componentDidMount() {}
+
+  getEnergyUsageThisMonth() {
     const today = new Date();
-    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstOfMonth = new Date(2017, 10, 1);
     const format = 'ddd, dd mmm yyyy HH:MM:ss Z'
+
     fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"' + dateFormat(firstOfMonth, format) + '","$date_to":"' + dateFormat(today, format) + '"}').then(response => {
       return response.json()
     }).then(result => result['_items']).then(maybeItems => {
@@ -132,6 +130,15 @@ export class App extends React.Component {
         return maybeItems
       }
     }).then(items => items[0]['total_amount']).then(amount => this.setState({monthlyUsage: amount}))
+  }
+
+  getEnergyConsumptionHistory() {
+    fetch('http://localhost:5000/consumed')
+      .then(response => response.json())
+      .then(result => result['_items'])
+      .then(history => {
+        this.setState({energyConsumptionHistory: history})
+      })
   }
 
   render() {
@@ -238,41 +245,7 @@ export class App extends React.Component {
             <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond}/>
             <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer"/>
             <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller"/>
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <i className="fa fa-bar-chart-o fa-fw"></i>
-                Energy consumption
-                <div className="pull-right">
-                  <div className="btn-group">
-                    <button type="button" className="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                      Actions
-                      <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu pull-right" role="menu">
-                      <li>
-                        <a href="#">Action</a>
-                      </li>
-                      <li>
-                        <a href="#">Another action</a>
-                      </li>
-                      <li>
-                        <a href="#">Something else here</a>
-                      </li>
-                      <li className="divider"></li>
-                      <li>
-                        <a href="#">Separated link</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              {/* /.panel-heading */}
-              <div className="panel-body">
-                <div id="morris-area-chart"></div>
-              </div>
-              {/* /.panel-body */}
-            </div>
-            {/* /.panel */}
+            <EnergyConsumptionGraph data={this.state.energyConsumptionHistory} />
           </div>
           {/* /.col-lg-8 */}
         </div>
