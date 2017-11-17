@@ -1,5 +1,7 @@
 [parity]
 chain = "./res/genesis.json"
 base_path = "./datadir/"
+[ui]
+force = true
 [rpc]
-apis = ["web3", "eth", "net", "personal", "parity", "parity_set", "traces", "rpc", "parity_accounts"]
+apis = ["web3", "eth", "signer", "net", "personal", "parity", "parity_set", "traces", "rpc", "parity_accounts"]
