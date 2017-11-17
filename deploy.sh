@@ -27,7 +27,7 @@ then
   truffle compile && truffle build
 fi
 
-$ROOT/dapp/add_to_parity.sh
+cd $ROOT/dapp/ && add_to_parity.sh
 
 if [ "$1" != "--no-install" ] && [ "$2" != "--no-install" ]
 then
