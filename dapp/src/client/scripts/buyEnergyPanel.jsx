@@ -32,6 +32,28 @@ export class BuyEnergyPanel extends React.Component {
       );
     });
 
+    var prevPage = (
+        <li>
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+      )
+
+    var nextPage = (
+        <li>
+          <a href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      )
+
+    var pagination = this.props.contractPages.map((page) => {
+      return (
+          <li><a href={page.url}>{page.number}</a></li>
+      )
+    })
+
     return (<div className="panel panel-default">
       <div className="panel-heading">
         <i className="fa fa-bar-chart-o fa-fw"></i>
@@ -52,8 +74,13 @@ export class BuyEnergyPanel extends React.Component {
             {tableBody}
           </tbody>
         </table>
+
+        <ul class="pagination">
+        {prevPage}
+        {pagination}
+        {nextPage}
+        </ul>
       </div>
-      {/* /.panel-body */}
     </div>)
   }
 }
