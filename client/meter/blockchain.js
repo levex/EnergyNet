@@ -4,6 +4,7 @@ const ENERGY_MASTER_ABI = require('./abis/abi_master');
 const ENERGY_ABI = require('./abis/abi');
 const ENERGY_MASTER_ADDRESS = "0x520fF2C06fB1ee32eB9e4f1EedecB985869769Ab";
 const bigNumber = require('bignumber.js');
+const paginate = require('express-paginate');
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
@@ -58,21 +59,35 @@ async function myBuyerContracts() {
   return contracts;
 }
 
-async function availableContracts() {
-  const count = await EnergyMaster.contractCount();
-  const contracts = [];
-  for (let i = 0; i < count; i++) {
-    const contractEntity = await EnergyMaster.contracts(i);
-    const contractAddr = contractEntity[0];
-    const deregistered = contractEntity[2];
+async function availableContracts(req, res) {
+  const count = await EnergyMaster.contractCount()
+  const contracts = []
+
+  for (let i = req.offset; i < Math.min(req.offset + req.query.limit, count); i++) {
+    const contractEntity = await EnergyMaster.contracts(i)
+    const contractAddr = contractEntity[0]
+    const deregistered = contractEntity[2]
+
     if (!deregistered) {
-      const contract = makeEnergyContract(contractAddr);
-      const offeredAmount = await contract.offeredAmount();
-      const unitPrice = await contract.unitPrice();
+      const contract = makeEnergyContract(contractAddr)
+      const offeredAmount = await contract.offeredAmount()
+      const unitPrice = await contract.unitPrice()
+
       contracts.push({contractAddr: contractAddr, unitPrice: unitPrice, offeredAmount: offeredAmount})
+    } else {
+      // We always want to return req.limit items, so we increase the conditional of the loop
+      // if this contract is deregistered
+      req.offset++
     }
   }
-  return contracts;
+
+  pageCount = Math.ceil(count / req.query.limit)
+
+  return {
+    pages: paginate.getArrayPages(req)(9, pageCount, req.query.page),
+    has_more: paginate.hasNextPages(req)(pageCount),
+    data: contracts
+  };
 }
 
 async function buyEnergy(contractAddress, amount) {
