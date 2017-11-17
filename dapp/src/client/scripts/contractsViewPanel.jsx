@@ -8,7 +8,6 @@ export class ContractsViewPanel extends React.Component {
   render() {
     var tableBody = Object.keys(this.props.contracts).map(contractAddr => {
       var contractState = this.props.contracts[contractAddr];
-
       return (
         <tr key={contractAddr}>
           <td>Some date</td>

@@ -32,9 +32,10 @@ async function mySellerContracts() {
     const seller = await contract.seller();
     if (seller === account) {
       const offeredAmount = await contract.offeredAmount();
-      if (offeredAmount == 0) continue;
+      if (offeredAmount == 0)
+        continue;
       const unitPrice = await contract.unitPrice();
-      contracts.push({contractAddr, unitPrice, offeredAmount})
+      contracts.push({contractAddr: contractAddr, unitPrice: unitPrice, offeredAmount: offeredAmount})
     }
   }
   return contracts;
@@ -51,7 +52,7 @@ async function myBuyerContracts() {
     const remainingAmount = await contract.remainingEnergy(account);
     if (remainingAmount.greaterThan(0)) {
       const unitPrice = await contract.unitPrice();
-      contracts.push({contractAddr, unitPrice, remainingAmount})
+      contracts.push({contractAddr: contractAddr, unitPrice: unitPrice, remainingAmount: remainingAmount})
     }
   }
   return contracts;
@@ -68,7 +69,7 @@ async function availableContracts() {
       const contract = makeEnergyContract(contractAddr);
       const offeredAmount = await contract.offeredAmount();
       const unitPrice = await contract.unitPrice();
-      contracts.push({contractAddr, unitPrice, offeredAmount})
+      contracts.push({contractAddr: contractAddr, unitPrice: unitPrice, offeredAmount: offeredAmount})
     }
   }
   return contracts;
@@ -76,7 +77,7 @@ async function availableContracts() {
 
 async function buyEnergy(contractAddress, amount) {
   if (!contractAddress || !amount) {
-    return Promise.reject({ msg: "Wrong contact address or amount", value: amount });
+    return Promise.reject({msg: "Wrong contact address or amount", value: amount});
   }
 
   const contract = makeEnergyContract(contractAddress);
@@ -85,7 +86,7 @@ async function buyEnergy(contractAddress, amount) {
 
 async function sellEnergy(price, amount) {
   if (!price || !amount) {
-    return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
+    return Promise.reject({msg: "Unable to sell energy", value: amount, price: price});
   }
 
   return await EnergyMaster.sell(price, amount);
@@ -100,7 +101,7 @@ async function consumeEnergyFromContract(contractAddress, amount) {
 
 async function consumeEnergy(amount) {
   if (amount < 0) {
-    return Promise.reject({ msg: "negative amount", value: amount });
+    return Promise.reject({msg: "negative amount", value: amount});
   }
 
   let energyBalance = await myEnergyBalance();
@@ -113,10 +114,10 @@ async function consumeEnergy(amount) {
         energyBalance = await myEnergyBalance();
         count++;
         if (count == 30) {
-          return Promise.reject({ msg: "failed to autoBuy", value: amount });
+          return Promise.reject({msg: "failed to autoBuy", value: amount});
         }
       }
-    } catch(e) {
+    } catch (e) {
       return Promise.reject(e);
     }
   }
@@ -130,14 +131,15 @@ async function consumeEnergy(amount) {
 
   let txs = [];
   for (const contract of contracts) {
-    if (toConsume === 0) break;
+    if (toConsume === 0)
+      break;
     const deduction = Math.min(toConsume, contract.remainingAmount);
-    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    txs.push({contractAddr: contract.contractAddr, amount: deduction});
     toConsume -= deduction;
   }
 
   if (toConsume > 0) {
-    return Promise.reject({ msg: "Unable to consume energy", value: toConsume });
+    return Promise.reject({msg: "Unable to consume energy", value: toConsume});
   }
 
   const promises = txs.map((tx) => consumeEnergyFromContract(tx.contractAddr, tx.amount));
@@ -155,7 +157,7 @@ async function myEnergyBalance() {
 
 async function autoBuy(amount) {
   if (!amount || amount < 0) {
-    return Promise.reject({ msg: "Invalid amount", value: amount });
+    return Promise.reject({msg: "Invalid amount", value: amount});
   }
 
   const contracts = await availableContracts();
@@ -166,14 +168,15 @@ async function autoBuy(amount) {
   });
   let txs = [];
   for (const contract of contracts) {
-    if (toBuy === 0) break;
+    if (toBuy === 0)
+      break;
     const deduction = Math.min(toBuy, contract.offeredAmount);
-    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    txs.push({contractAddr: contract.contractAddr, amount: deduction});
     toBuy -= deduction;
   }
 
   if (toBuy > 0) {
-    return Promise.reject({ msg: "Insufficient energy over network", value: toBuy });
+    return Promise.reject({msg: "Insufficient energy over network", value: toBuy});
   }
 
   const promises = txs.map((tx) => buyEnergy(tx.contractAddr, tx.amount));
