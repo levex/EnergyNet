@@ -15,17 +15,36 @@ check_dep npm
 check_dep parity
 check_dep python3
 check_dep pip3
-check_dep mongod
 
+ROOT=$(pwd)
 ENERGY_MIN=-100
 ENERGY_MAX=100
-PROJ_DIR=$(pwd)
-cd $PROJ_DIR/truffle && rm -rf build && truffle compile && truffle build
-cd $PROJ_DIR/dapp && npm install && webpack && ./add_to_parity.sh
-cd $PROJ_DIR/parity && ./run.sh &
-cd $PROJ_DIR && pip3 install --user -r requirements.txt
-cd $PROJ_DIR/client/meter && npm install && npm start &
-cd $PROJ_DIR/simulation && python3 meter.py -e $ENERGY_MIN $ENERGY_MAX &
+
+if [ "$1" != "--no-truffle" ] && [ "$2" != "--no-truffle" ]
+then
+  cd $ROOT/truffle
+  rm -rf build
+  truffle compile && truffle build
+fi
+
+cd $ROOT/dapp/ && add_to_parity.sh
+
+if [ "$1" != "--no-install" ] && [ "$2" != "--no-install" ]
+then
+  # Install stuff
+  cd $ROOT && pip3 install --user -r requirements.txt
+  cd $ROOT/dapp && npm install
+  cd $ROOT/client/meter && npm install
+fi
+
+# Run parity
+cd $ROOT/parity && ./run.sh &
+
+# Run smart meter
+cd $ROOT/client/meter && npm start &
+
+# Run dapp
+webpack --watch &
 
 handler() {
     echo "Killing everything"
@@ -34,6 +53,6 @@ handler() {
     killall mongod
 }
 
-trap handler SIGINT
+#trap handler SIGINT
 
 wait $(jobs -p)
