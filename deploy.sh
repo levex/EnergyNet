@@ -20,16 +20,31 @@ ROOT=$(pwd)
 ENERGY_MIN=-100
 ENERGY_MAX=100
 
-if [ "$2" = "--no-truffle" ]; then
-  cd $HOME/truffle && rm -rf build && truffle compile && truffle build
+if [ "$1" != "--no-truffle" ] && [ "$2" != "--no-truffle" ]
+then
+  cd $ROOT/truffle
+  rm -rf build
+  truffle compile && truffle build
 fi
 
-cd $HOME/dapp && npm install && webpack && ./add_to_parity.sh
-cd $HOME/parity && ./run.sh &
-cd $HOME && pip3 install --user -r requirements.txt
-python3 client/meter/api.py &
-./client/meter/mongostarter.sh &
-cd $HOME/client/meter && npm install && npm start &
+$ROOT/dapp/add_to_parity.sh
+
+if [ "$1" != "--no-install" ] && [ "$2" != "--no-install" ]
+then
+  # Install stuff
+  cd $ROOT && pip3 install --user -r requirements.txt
+  cd $ROOT/dapp && npm install
+  cd $ROOT/client/meter && npm install
+fi
+
+# Run parity
+cd $ROOT/parity && ./run.sh &
+
+# Run smart meter
+cd $ROOT/client/meter && npm start &
+
+# Run dapp
+webpack --watch &
 
 handler() {
     echo "Killing everything"
