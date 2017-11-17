@@ -24,9 +24,9 @@ Example response:
 {"balance":"0"}
 ```
 
-# View
+# Contract
 
-## GET `/view/available_contracts`
+## GET `/contract/available_contracts`
 
 Get all available contracts that a user can buy energy from
 
@@ -38,7 +38,7 @@ Example response:
 [{"contractAddr":"0xEA0c294fa0bc9729598193E655229Cb26Fa82224","unitPrice":"1","offeredAmount":"9"}]
 ```
 
-##GET `/view/my_buyer_contracts`
+##GET `/contract/my_buyer_contracts`
 
 Get all contracts of which I am a buyer and I have bought and not consumed energy
 
@@ -50,7 +50,7 @@ Example response:
 [{"contractAddr":"0xEA0c294fa0bc9729598193E655229Cb26Fa82224","unitPrice":"1","remainingAmount":"9"}]
 ```
 
-## GET `/view/my_seller_contracts`
+## GET `/contract/my_seller_contracts`
 
 Get all contracts of which I am a seller
 
@@ -62,7 +62,7 @@ Example response:
 [{"contractAddr":"0x0d4438dA9cC8DeB51cF94B3e5D75500DB70f8B03","unitPrice":"1","offeredAmount":"10"}]
 ```
 
-## GET `/view/my_contracts`
+## GET `/contract/my_contracts`
 
 Get all contracts of which I am a seller or a buyer
 
