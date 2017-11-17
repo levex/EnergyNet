@@ -16,9 +16,14 @@ class BankHTTPRequestsHandler(BaseHTTPRequestHandler):
       content_length = int(self.headers['Content-Length'])
       post_data = self.rfile.read(content_length)
       print(str(post_data)[2:-1])
-      res = parity.send_transaction(address, to=str(post_data)[2:-1],
-          value=1000000000000000000)
-      print(res.text)
+      try:
+        res = parity.send_transaction(address, to=str(post_data)[2:-1],
+            value=1000000000000000000)
+        print(res.text)
+        self.send_response(200)
+      except:
+        self.send_response(500)
+      self.end_headers()
 
 
 if __name__ == "__main__":
