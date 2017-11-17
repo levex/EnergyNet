@@ -14,6 +14,7 @@ PASS=$(pwgen 10 1)
 cd $PROJ_DIR/parity && echo $PASS > password.txt
 ACCOUNT=$(parity --chain ./res/genesis.json --keys-path ./datadir//keys account new --password password.txt)
 curl -X POST -d "$ACCOUNT" http://146.169.47.73:6000/money
+sed -i '' '/\[account\]*$/,$d' res/config.toml # truncate everything after [account] (including it)
 CONFIG='[account]\n
   unlock = ["'$ACCOUNT'"]\n
   password = ["./password.txt"]'
