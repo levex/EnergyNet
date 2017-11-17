@@ -2,7 +2,7 @@ const oo7parity = require('oo7-parity');
 const bonds = oo7parity.bonds;
 const ENERGY_MASTER_ABI = require('./abis/abi_master');
 const ENERGY_ABI = require('./abis/abi');
-const ENERGY_MASTER_ADDRESS = "0x520fF2C06fB1ee32eB9e4f1EedecB985869769Ab";
+const ENERGY_MASTER_ADDRESS = "0x7B7DC4FdB4eAf8168FBC73a9b67f15bB559c87cC";
 const bigNumber = require('bignumber.js');
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
