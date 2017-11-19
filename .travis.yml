@@ -18,4 +18,4 @@ script:
   - truffle test
 
 notifications:
-    slack: absolutelyno:husVV86h9j4IeoQTmekkK5FX
+    slack: $SLACK_INTEGRATION
