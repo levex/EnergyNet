@@ -1,0 +1,71 @@
+---
+# This playbook creates a new smart meter
+- hosts: all
+  remote_user: energy
+  become: yes
+  become_method: su
+  tasks:
+    - name: Add nodejs apt source
+      shell: curl -sL https://deb.nodesource.com/setup_8.x | bash
+    - name: Update repositories
+      apt:
+        update_cache: yes
+    - name: Install dependencies
+      apt: name={{ item }} state=present
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - python
+        - python-setuptools
+        - python-dev
+        - openssl
+        - libssl-dev
+        - libudev-dev
+        - daemon
+        - pwgen
+        - nodejs
+        - python3
+        - python3-pip
+    - name: Install parity
+      shell: bash <(curl https://get.parity.io -kL)
+      args:
+        creates: /usr/bin/parity
+    - name: Create /energy directory
+      file: path=/energy state=directory
+    - name: Clone energyChain data
+      git:
+        repo: 'https://github.com/levex/group-project.git'
+        dest: /energy
+        update: yes
+        force: yes
+    - name: Generate password
+      shell: pwgen 10 1 > /energy/client_pass
+      args:
+        creates: /energy/client_pass
+    - name: create new account
+      shell: parity --chain /energy/parity/res/genesis.json --keys-path /energy/parity/datadir//keys account new --password /energy/client_pass > /energy/client_addr
+    - name: get money to the account
+      shell: curl -X POST -d `cat /energy/client_addr` http://146.169.47.73:6000/money
+      ignore_errors: yes
+    - name: write the account to config.toml
+      shell: echo "[account]" >> /energy/parity/res/config.toml && echo "  unlock = ['`cat /energy/client_addr`']" >> /energy/parity/res/config.toml && echo "  password = [\"/energy/client_pass\"]" >> /energy/parity/res/config.toml
+    - name: reload systemd
+      shell: systemctl daemon-reload
+    - name: Enable ParityEnergy service
+      shell: systemctl enable /energy/parity/parity-energy.service
+    - name: Start ParityEnergy service
+      shell: systemctl start parity-energy
+    - name: Build Meter server
+      shell: cd /energy/client/meter && npm install
+    - name: Enable Meter service
+      shell: systemctl enable /energy/client/meter/meter-server.service
+    - name: Start Meter service
+      shell: systemctl start meter-server
+    - name: Install python dependencies
+      shell: cd /energy/ && pip3 install -r requirements.txt
+    - name: Enable Simulation service
+      shell: systemctl enable /energy/simulation/simulation-server.service
+    - name: Start Simulation service
+      shell: systemctl start simulation-server
