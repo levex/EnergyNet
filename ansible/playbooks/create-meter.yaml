@@ -46,6 +46,8 @@
         creates: /energy/client_pass
     - name: clean old parity accounts
       shell: rm -rf /energy/parity/datadir/keys/*
+    - name: truncate old account info
+      shell: sed -i '' '/\[account\]*$/,$d' /energy/parity/res/config.toml
     - name: create new account
       shell: parity --chain /energy/parity/res/genesis.json --keys-path /energy/parity/datadir//keys account new --password /energy/client_pass > /energy/client_addr
     - name: get money to the account
@@ -62,7 +64,7 @@
     - name: reload systemd
       shell: systemctl daemon-reload
     - name: Disable ParityEnergy service if running
-      shell: systemctl disable parity-energy && systemctl stop parity-energy
+      shell: systemctl stop parity-energy && systemctl disable parity-energy
       ignore_errors: yes
     - name: Enable ParityEnergy service
       shell: systemctl enable /energy/parity/parity-energy.service
@@ -71,7 +73,7 @@
     - name: Build Meter server
       shell: cd /energy/client/meter && npm install
     - name: Disable Meter service if running
-      shell: systemctl disable meter-server && systemctl stop meter-server
+      shell: systemctl stop meter-server && systemctl disable meter-server
       ignore_errors: yes
     - name: Enable Meter service
       shell: systemctl enable /energy/client/meter/meter-server.service
@@ -80,7 +82,7 @@
     - name: Install python dependencies
       shell: cd /energy/ && pip3 install -r requirements.txt
     - name: Disable Simulation service if running
-      shell: systemctl disable simulation-server && systemctl stop simulation-server
+      shell: systemctl stop simulation-server && systemctl disable simulation-server
       ignore_errors: yes
     - name: Enable Simulation service
       shell: systemctl enable /energy/simulation/simulation-server.service
