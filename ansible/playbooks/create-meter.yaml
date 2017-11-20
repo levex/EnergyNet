@@ -44,27 +44,44 @@
       shell: pwgen 10 1 > /energy/client_pass
       args:
         creates: /energy/client_pass
+    - name: clean old parity accounts
+      shell: rm -rf /energy/parity/datadir/keys/*
     - name: create new account
       shell: parity --chain /energy/parity/res/genesis.json --keys-path /energy/parity/datadir//keys account new --password /energy/client_pass > /energy/client_addr
     - name: get money to the account
       shell: curl -X POST -d `cat /energy/client_addr` http://146.169.47.73:6000/money
       ignore_errors: yes
     - name: write the account to config.toml
-      shell: echo "[account]" >> /energy/parity/res/config.toml && echo "  unlock = ['`cat /energy/client_addr`']" >> /energy/parity/res/config.toml && echo "  password = [\"/energy/client_pass\"]" >> /energy/parity/res/config.toml
+      shell: echo "[account]" >> /energy/parity/res/config.toml
+             && echo "  unlock = ['`cat /energy/client_addr`']" >> /energy/parity/res/config.toml
+             && echo "  password = [\"/energy/client_pass\"]" >> /energy/parity/res/config.toml
+    - name: install truffle
+      shell: npm install -g truffle
+    - name: build contracts
+      shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
     - name: reload systemd
       shell: systemctl daemon-reload
+    - name: Disable ParityEnergy service if running
+      shell: systemctl disable parity-energy && systemctl stop parity-energy
+      ignore_errors: yes
     - name: Enable ParityEnergy service
       shell: systemctl enable /energy/parity/parity-energy.service
     - name: Start ParityEnergy service
       shell: systemctl start parity-energy
     - name: Build Meter server
       shell: cd /energy/client/meter && npm install
+    - name: Disable Meter service if running
+      shell: systemctl disable meter-server && systemctl stop meter-server
+      ignore_errors: yes
     - name: Enable Meter service
       shell: systemctl enable /energy/client/meter/meter-server.service
     - name: Start Meter service
       shell: systemctl start meter-server
     - name: Install python dependencies
       shell: cd /energy/ && pip3 install -r requirements.txt
+    - name: Disable Simulation service if running
+      shell: systemctl disable simulation-server && systemctl stop simulation-server
+      ignore_errors: yes
     - name: Enable Simulation service
       shell: systemctl enable /energy/simulation/simulation-server.service
     - name: Start Simulation service
