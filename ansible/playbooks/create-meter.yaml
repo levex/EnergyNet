@@ -47,7 +47,7 @@
     - name: clean old parity accounts
       shell: rm -rf /energy/parity/datadir/keys/*
     - name: truncate old account info
-      shell: sed -i '' '/\[account\]*$/,$d' /energy/parity/res/config.toml
+      shell: sed -i '/\[account\]*$/,$d' /energy/parity/res/config.toml
     - name: create new account
       shell: parity --chain /energy/parity/res/genesis.json --keys-path /energy/parity/datadir//keys account new --password /energy/client_pass > /energy/client_addr
     - name: get money to the account
