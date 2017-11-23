@@ -7,6 +7,7 @@ contract Energy {
     uint public offeredAmount;
     mapping (address => uint) public remainingEnergy;
     address public seller;
+    bool public noUpdate;
 
     event finalUpdate(uint blockNumber);
     event update(uint blockNumber);
@@ -15,6 +16,7 @@ contract Energy {
         unitPrice = unitPrice_;
         offeredAmount = offeredAmount_;
         seller = seller_;
+        noUpdate = false;
     }
 
     function buy(uint amount) public {
@@ -22,6 +24,7 @@ contract Energy {
         offeredAmount -= amount;
         remainingEnergy[msg.sender] += amount;
         if (offeredAmount == 0) {
+            noUpdate = true;
             finalUpdate(block.number);
         } else {
             update(block.number);
