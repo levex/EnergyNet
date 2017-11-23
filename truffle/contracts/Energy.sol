@@ -7,14 +7,14 @@ contract Energy {
     uint public offeredAmount;
     mapping (address => uint) public remainingEnergy;
     address public seller;
-    address public master_addr;
+
+    event finalUpdate(uint blockNumber);
+    event update(uint blockNumber);
 
     function Energy(address seller_, uint unitPrice_, uint offeredAmount_) public {
         unitPrice = unitPrice_;
         offeredAmount = offeredAmount_;
         seller = seller_;
-        // Sender is master contract, this is called in sell function
-        master_addr = msg.sender;
     }
 
     function buy(uint amount) public {
@@ -22,8 +22,9 @@ contract Energy {
         offeredAmount -= amount;
         remainingEnergy[msg.sender] += amount;
         if (offeredAmount == 0) {
-            Master master = Master(master_addr);
-            master.deregister(this);
+            finalUpdate(block.number);
+        } else {
+            update(block.number);
         }
     }
 

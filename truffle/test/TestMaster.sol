@@ -15,10 +15,8 @@ contract TestMaster {
         uint actual_price = energy.unitPrice();
         uint actual_offeredAmount = energy.offeredAmount();
         address actual_seller = energy.seller();
-        address actual_master_addr = energy.master_addr();
         Assert.equal(price, actual_price, "Price should be set");
         Assert.equal(offeredAmount, actual_offeredAmount, "offeredAmount should be set");
         Assert.equal(this, actual_seller, "Seller should be caller");
-        Assert.equal(master, actual_master_addr, "Master address should be set");
     }
 }
