@@ -5,7 +5,7 @@ import "./Energy.sol";
 contract Master {
 
     address[] public contracts;
-    event update(uint blockNumber);
+    event Update(uint index);
 
     function Master() public {
     }
@@ -16,7 +16,7 @@ contract Master {
         require(amountOffered > 0);
         Energy energy = new Energy(msg.sender, unitPrice, amountOffered);
         contracts.push(energy);
-        update(block.number);
+        Update(contracts.length - 1);
         return energy;
     }
 
