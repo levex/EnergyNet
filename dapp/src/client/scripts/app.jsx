@@ -10,7 +10,8 @@ import {ContractsViewPanel} from "./contractsViewPanel";
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
+import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
+
 
 export class App extends React.Component {
   constructor() {
@@ -116,25 +117,29 @@ export class App extends React.Component {
         }))
       }
 
-      if (unitPrice.cmp(maxHistogramPrice) == 1) {
-        maxHistogramPrice = unitPrice;
-      } else if (unitPrice.cmp(minHistogramPrice) == -1) {
-        minHistogramPrice = unitPrice;
-      }
+      maxHistogramPrice = BigNumber.max(maxHistogramPrice, unitPrice);
+      minHistogramPrice = BigNumber.min(minHistogramPrice, unitPrice);
     }
+
     let contractsHistogram = new Array(HISTOGRAM_BINS);
     let binSize = (maxHistogramPrice - minHistogramPrice) / HISTOGRAM_BINS;
+    binSize = Math.round(binSize * 100) / 100;
 
     for (let i = 0; i < HISTOGRAM_BINS; i++) {
+      let region = Math.round((minHistogramPrice.toNumber() + (i * binSize)) * 100) / 100;
       contractsHistogram[i] = {
-        region: minHistogramPrice + (i * binSize),
+        region: region,
         count: 0
       }
     }
 
     Object.keys(this.state.contracts).forEach(function (key) {
       let bin = Math.round((this.state.contracts[key].unitPrice - minHistogramPrice) / binSize);
-      if (bin < HISTOGRAM_BINS && bin >= 0) {
+      if (bin <= HISTOGRAM_BINS && bin >= 0) {
+        if (bin == HISTOGRAM_BINS) {
+          bin -= 1;
+        }
+
         contractsHistogram[bin].count += 1;
       }
     }, this);
@@ -320,8 +325,10 @@ export class App extends React.Component {
               </div>
               {/* /.panel-heading */}
               <div className="panel-body">
-                <BarChart width={800} height={480} data={this.state.contractsHistogram}>
-                  <XAxis dataKey="region" />
+                <BarChart width={800} height={480} margin={{ top: 5, right: 5, bottom: 20, left: 5 }} data={this.state.contractsHistogram}>
+                  <XAxis dataKey="region">
+                    <Label position="bottom" value="Unit price [ETH]" />
+                  </XAxis>
                   <YAxis />
                   <CartesianGrid strokeDashArray="3 3" />
                   <Tooltip />
