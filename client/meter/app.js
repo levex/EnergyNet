@@ -1,6 +1,6 @@
 const express = require('express');
 const balance = require('./routes/balance');
-const view = require('./routes/view');
+const contract = require('./routes/contract');
 const transaction = require('./routes/transaction');
 
 const bodyParser = require('body-parser');
@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
 
 app.use('/balance', balance);
-app.use('/view', view);
+app.use('/contract', contract);
 app.use('/transaction', transaction);
 app.listen(3000, 'localhost', () => console.log('Example app listening on port 3000!'));
 
