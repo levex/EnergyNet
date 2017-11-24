@@ -5,10 +5,11 @@ import './Master.sol';
 contract Energy {
     uint public unitPrice;
     uint public offeredAmount;
-    mapping (address => uint) public remainingEnergy;
-    uint public boughtAmount;  // sum of remainingEnergy;
+    mapping (address => uint) public balancePerBuyer;
+    // the sum of remainingEnergy, a.k.a. sold, unconsumed energy
+    uint public soldAmount;
     address public seller;
-    bool public noUpdate;
+    bool public empty;
 
     event Update(uint blockNumber);
 
@@ -16,27 +17,27 @@ contract Energy {
         unitPrice = unitPrice_;
         offeredAmount = offeredAmount_;
         seller = seller_;
-        boughtAmount = 0;
-        noUpdate = false;
+        soldAmount = 0;
+        empty = false;
     }
 
     function buy(uint amount) public {
         require(amount <= offeredAmount);
         offeredAmount -= amount;
-        remainingEnergy[msg.sender] += amount;
-        boughtAmount += amount;
+        balancePerBuyer[msg.sender] += amount;
+        soldAmount += amount;
         Update(block.number);
         // there will always be an update when the buyer consumes energy
     }
 
     function consume(uint amount) public payable {
-        require(remainingEnergy[msg.sender] >= amount);
+        require(balancePerBuyer[msg.sender] >= amount);
         require(msg.value >= unitPrice * amount);
         seller.transfer(msg.value);
-        remainingEnergy[msg.sender] -= amount;
-        boughtAmount -= amount;
-        if (boughtAmount == 0 && offeredAmount == 0) {
-            noUpdate = true;
+        balancePerBuyer[msg.sender] -= amount;
+        soldAmount -= amount;
+        if (soldAmount == 0 && offeredAmount == 0) {
+            empty = true;
         }
 
         Update(block.number);
