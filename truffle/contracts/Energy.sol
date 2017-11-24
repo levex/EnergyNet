@@ -10,7 +10,7 @@ contract Energy {
     address public seller;
     bool public noUpdate;
 
-    event update(uint blockNumber);
+    event Update(uint blockNumber);
 
     function Energy(address seller_, uint unitPrice_, uint offeredAmount_) public {
         unitPrice = unitPrice_;
@@ -25,7 +25,7 @@ contract Energy {
         offeredAmount -= amount;
         remainingEnergy[msg.sender] += amount;
         boughtAmount += amount;
-        update(block.number);
+        Update(block.number);
         // there will always be an update when the buyer consumes energy
     }
 
@@ -38,7 +38,8 @@ contract Energy {
         if (boughtAmount == 0 && offeredAmount == 0) {
             noUpdate = true;
         }
-        update(block.number);
+
+        Update(block.number);
     }
 
 }
