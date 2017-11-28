@@ -9,7 +9,7 @@ export class ContractsViewPanel extends React.Component {
   render() {
     let tableBody = (this.props.contracts).map(contract => {
       return (
-        <tr key={contract.seller}>
+        <tr key={contract.address}>
           <td>Some date</td>
           <td>{contract.offeredAmount}
             kWh/day</td>

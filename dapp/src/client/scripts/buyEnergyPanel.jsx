@@ -10,7 +10,7 @@ export class BuyEnergyPanel extends React.Component {
   render() {
     var tableBody = this.props.contracts.map(contract => {
       return (
-        <tr key={contract.seller}>
+        <tr key={contract.address}>
           <td>Some date</td>
           <td>{contract.offeredAmount}
             kWh/day</td>
