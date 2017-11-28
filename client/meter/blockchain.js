@@ -15,11 +15,9 @@ let inited = false;
 let lastBlock = 0;
 let lastCount = 0;
 
-async function getContractInfoByIndex(index) {
+async function getContractInfoByAddress(address) {
   const account = await myAccount();
-  const contractEntity = await EnergyMaster.contracts(index);
-  const contractAddr = contractEntity[0];
-  const contract = makeEnergyContract(contractAddr);
+  const contract = makeEnergyContract(address);
   const [
     seller,
     offeredAmount,
@@ -31,39 +29,52 @@ async function getContractInfoByIndex(index) {
     contract.unitPrice(),
     contract.remainingEnergy(account)
   ]);
-  contracts[contractAddr] = {
+  contracts[address] = {
     seller,
     offeredAmount,
     unitPrice,
     remainingAmount
   };
   if (seller === account && offeredAmount > 0) {
-    sellerContractsSet.add(contractAddr);
+    sellerContractsSet.add(address);
   } else {
-    sellerContractsSet.delete(contractAddr);
+    sellerContractsSet.delete(address);
   }
   if (remainingAmount > 0) {
-    buyerContractsSet.add(contractAddr);
+    buyerContractsSet.add(address);
   } else {
-    buyerContractsSet.delete(contractAddr);
+    buyerContractsSet.delete(address);
   }
   if (offeredAmount > 0) {
-    availableContractsSet.add(contractAddr);
+    availableContractsSet.add(address);
   } else {
-    availableContractsSet.delete(contractAddr);
+    availableContractsSet.delete(address);
   }
 }
 
-async function init() {
-  if (inited) return;
-  inited = true;
-  lastBlock = await bonds.height;
-  lastCount = await EnergyMaster.contractCount();
+async function getContractInfoByIndex(index) {
+  const contractEntity = await EnergyMaster.contracts(index);
+  const contractAddr = contractEntity[0];
+  await getContractInfoByAddress(contractAddr);
+}
+
+async function updateMaster() {
+  const count = await EnergyMaster.contractCount();
   const promises = [];
-  for (let i = 0; i < lastCount; i++) {
+  for (let i = lastCount; i < count; i++) {
     promises.push(getContractInfoByIndex(i));
   }
   await Promise.all(promises);
+  lastCount = count;
+}
+
+async function init() {
+  // FIXME: Multiple inits
+  if (inited) return;
+  await updateMaster();
+  lastBlock = await bonds.height;
+  console.log("Blockchain synced");
+  inited = true;
 }
 
 function makeEnergyContract(address) {
