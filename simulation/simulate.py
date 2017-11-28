@@ -27,11 +27,17 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
 
+    collected_metrics = defaultdict(int)
+
+    # Collect metrics and print them out
+    for ip in args.simulated_client_ip:
+        metrics = requests.get(make_api(ip, "/metrics")).json()
+        collected_metrics["sold"] -= metrics["sold"]
+        collected_metrics["consumed"] -= metrics["consumed"]
+
     for i in range(args.simulation_duration):
         for ip in args.simulated_client_ip:
             requests.get(make_api(ip, "/tick"))
-
-    collected_metrics = defaultdict(int)
 
     # Collect metrics and print them out
     for ip in args.simulated_client_ip:
