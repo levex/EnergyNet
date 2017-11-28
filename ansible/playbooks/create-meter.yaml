@@ -28,8 +28,10 @@
         - nodejs
         - python3
         - python3-pip
+    - name: Download parity install script
+      shell: curl https://get.parity.io -kL > /install_parity.sh
     - name: Install parity
-      shell: bash <(curl https://get.parity.io -kL)
+      shell: bash /install_parity.sh
       args:
         creates: /usr/bin/parity
     - name: Create /energy directory
