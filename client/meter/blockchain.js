@@ -7,6 +7,8 @@ const bigNumber = require('bignumber.js');
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
+const UPDATE_INTERVAL = 1000;
+
 let contracts = {};
 let buyerContractsSet = new Set();
 let sellerContractsSet = new Set();
@@ -224,6 +226,35 @@ async function autoBuy(amount) {
   const promises = txs.map((tx) => buyEnergy(tx.contractAddr, tx.amount));
   return Promise.all(promises)
 }
+
+async function updateBlock(blockNumber) {
+  if (blockNumber < lastCount) return;
+  const block = await bonds.findBlock(blockNumber);
+  const txs = block.transactions;
+  for (const tx of txs) {
+    const txDetail = await bonds.transaction(tx);
+    const to = txDetail.to;
+    if (to === ENERGY_MASTER_ADDRESS) {
+      console.log("Updating master");
+      await updateMaster();
+    } else if (contracts[to] !== undefined) {
+      console.log(`Updating contract ${to}`);
+      await getContractInfoByAddress(to);
+    }
+  }
+  console.log(`Synced block ${blockNumber}`);
+  lastBlock = blockNumber;
+}
+
+async function updateBlockchain() {
+  if (!inited) await init();
+  const blockNumber = await bonds.blockNumber;
+  for (let i = lastBlock + 1; i <= blockNumber; i++) {
+    await updateBlock(i);
+  }
+}
+
+setInterval(updateBlockchain, UPDATE_INTERVAL);
 
 module.exports = {
   myAccount,
