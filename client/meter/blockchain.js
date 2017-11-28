@@ -79,69 +79,25 @@ async function myContracts() {
 }
 
 async function mySellerContracts() {
-  const account = await myAccount();
-  const count = await EnergyMaster.contractCount();
-  const contracts = [];
-  const getInfo = async (index) => {
-    const contractEntity = await EnergyMaster.contracts(index);
-    const contractAddr = contractEntity[0];
-    const contract = makeEnergyContract(contractAddr);
-    const [seller, offeredAmount, unitPrice] = await Promise.all([contract.seller(), contract.offeredAmount(), contract.unitPrice()]);
-    if (seller === account) {
-      if (offeredAmount == 0) return;
-      contracts.push({contractAddr, unitPrice, offeredAmount})
-    }
-  };
-  const promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(getInfo(i));
-  }
-  await Promise.all(promises);
-  return contracts;
+  if (!inited) await init();
+  return Object.keys(contracts)
+    .filter((contractAddr) => sellerContractsSet.has(contractAddr))
+    .map((contractAddr) => contracts[contractAddr]);
 }
 
 async function myBuyerContracts() {
-  const account = await myAccount();
-  const count = await EnergyMaster.contractCount();
-  const contracts = [];
-  const getInfo = async (index) => {
-    const contractEntity = await EnergyMaster.contracts(index);
-    const contractAddr = contractEntity[0];
-    const contract = makeEnergyContract(contractAddr);
-    const [remainingAmount, unitPrice] = await Promise.all([contract.remainingEnergy(account), contract.unitPrice()]);
-    if (remainingAmount.greaterThan(0)) {
-      contracts.push({contractAddr, unitPrice, remainingAmount})
-    }
-  };
-  const promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(getInfo(i));
-  }
-  await Promise.all(promises);
-  return contracts;
+  if (!inited) await init();
+  return Object.keys(contracts)
+    .filter((contractAddr) => buyerContractsSet.has(contractAddr))
+    .map((contractAddr) => contracts[contractAddr]);
 }
 
 
 async function availableContracts() {
-  const count = await EnergyMaster.contractCount();
-  const contracts = [];
-  const getInfo = async (index) => {
-    const contractEntity = await EnergyMaster.contracts(index);
-    const contractAddr = contractEntity[0];
-    const deregistered = contractEntity[2];
-    const contract = makeEnergyContract(contractAddr);
-    const [offeredAmount, unitPrice] = await Promise.all([contract.offeredAmount(), contract.unitPrice()]);
-    if (!deregistered) {
-      const contract = makeEnergyContract(contractAddr);
-      contracts.push({contractAddr, unitPrice, offeredAmount})
-    }
-  };
-  const promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(getInfo(i));
-  }
-  await Promise.all(promises);
-  return contracts;
+  if (!inited) await init();
+  return Object.keys(contracts)
+    .filter((contractAddr) => availableContractsSet.has(contractAddr))
+    .map((contractAddr) => contracts[contractAddr]);
 }
 
 async function buyEnergy(contractAddress, amount) {
