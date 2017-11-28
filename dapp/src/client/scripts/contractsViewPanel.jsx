@@ -5,16 +5,15 @@ export class ContractsViewPanel extends React.Component {
   constructor(props) {
     super(props)
   }
-  render() {
-    var tableBody = Object.keys(this.props.contracts).map(contractAddr => {
-      var contractState = this.props.contracts[contractAddr];
 
+  render() {
+    let tableBody = (this.props.contracts).map(contract => {
       return (
-        <tr key={contractAddr}>
+        <tr key={contract.address}>
           <td>Some date</td>
-          <td>{contractState.amount.toString(10)}
+          <td>{contract.offeredAmount}
             kWh/day</td>
-          <td>£{contractState.unitPrice.toString(10)}/kWh</td>
+          <td>£{contract.unitPrice}/kWh</td>
         </tr>
       );
     });
