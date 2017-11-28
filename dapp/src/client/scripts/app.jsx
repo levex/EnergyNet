@@ -67,7 +67,8 @@ export class App extends React.Component {
       }
     }
 
-    this.state.contracts.forEach(contract => {
+    Object.keys(this.state.contracts).forEach(address => {
+      const contract = this.state.contracts[address];
       let bin = Math.round((contract.unitPrice - minHistogramPrice) / binSize);
       if (bin <= HISTOGRAM_BINS && bin >= 0) {
         if (bin == HISTOGRAM_BINS) {
@@ -106,8 +107,12 @@ export class App extends React.Component {
   getAvailableContracts() {
     this.getContracts("/contract/available_contracts")
       .then(data => {
-        const contracts = []
-        for (let c in data) { contracts.push(data[c]) }
+        const contracts = {}
+        for (let c in data) {
+          const contract = data[c];
+          contracts[contract.address] = contract;
+          contracts[contract.address].tx = null;
+        }
         this.setState({
           contracts: contracts,
         });
@@ -127,12 +132,13 @@ export class App extends React.Component {
       });
   }
 
-  buyEnergy(contractState) {
+  buyEnergy(contractAddress) {
+    const contract = makeContract(contractAddress);
     this.setState(update(this.state, {
       contracts: {
-        [contractState.contractAddr]: {
+        [contractAddress]: {
           tx: {
-            $set: contractState.contract.buy(this.buyAmountBond)
+            $set: contract.buy(this.buyAmountBond)
           }
         }
       }

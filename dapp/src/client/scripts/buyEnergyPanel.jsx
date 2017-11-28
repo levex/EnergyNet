@@ -8,7 +8,8 @@ export class BuyEnergyPanel extends React.Component {
   }
 
   render() {
-    var tableBody = this.props.contracts.map(contract => {
+    var tableBody = Object.keys(this.props.contracts).map(address => {
+      const contract = this.props.contracts[address];
       return (
         <tr key={contract.address}>
           <td>Some date</td>
@@ -20,7 +21,7 @@ export class BuyEnergyPanel extends React.Component {
               <InputBond placeholder="kWh/day" bond={this.props.amountBond} style={{width: "100%"}} action>
                 <input />
                 {contract.tx === null
-                  ? <BButton className="btn btn-primary" content="Buy Energy" onClick={() => this.props.buyEnergy(contract)}/>
+                  ? <BButton className="btn btn-primary" content="Buy Energy" onClick={() => this.props.buyEnergy(address)}/>
                   : <TransactionProgressLabel value={contract.tx}/>
                 }
               </InputBond>
