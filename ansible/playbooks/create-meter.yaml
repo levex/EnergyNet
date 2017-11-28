@@ -16,6 +16,7 @@
         - apt-transport-https
         - ca-certificates
         - curl
+        - wget
         - software-properties-common
         - python
         - python-setuptools
@@ -28,6 +29,8 @@
         - nodejs
         - python3
         - python3-pip
+        - adduser
+        - libfontconfig
     - name: Download parity install script
       shell: curl https://get.parity.io -kL > /install_parity.sh
     - name: Install parity
@@ -61,6 +64,27 @@
              && echo "  password = [\"/energy/client_pass\"]" >> /energy/parity/res/config.toml
     - name: install truffle
       shell: npm install -g truffle
+    - name: get the influxdb package
+      get_url:
+        url: https://dl.influxdata.com/influxdb/releases/influxdb_1.4.2_amd64.deb
+        dst: /energy/influxdb.deb
+    - name: install influxdb
+      apt: deb="/energy/influxdb.deb"
+    - name: create influxdb database
+      shell: influx -host localhost -execute "CREATE DATABASE energy"
+    - name: get the grafana package
+      get_url:
+        url: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.6.2_amd64.deb
+        dst: /energy/grafana.deb
+    - name: install grafana
+      apt: deb="/energy/grafana.deb"
+    - name: configure grafana
+      copy:
+        src: /energy/ansible/grafana.ini
+        dest: /etc/grafana/grafana.ini
+        mode: 0740
+        owner: root
+        group: grafana
     - name: build contracts
       shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
     - name: reload systemd
