@@ -25,7 +25,7 @@ if __name__ == "__main__":
         for ip in args.simulated_client_ip:
             requests.get("http://" + ip + "/tick")
 
-    collected_metrics = defaultdict(float)
+    collected_metrics = defaultdict(int)
 
     # Collect metrics and print them out
     for ip in args.simulated_client_ip:
