@@ -35,7 +35,8 @@ async function getContractInfoByAddress(address) {
     seller,
     offeredAmount,
     unitPrice,
-    remainingAmount
+    remainingAmount,
+    address
   };
   if (seller === account && offeredAmount > 0) {
     sellerContractsSet.add(address);
