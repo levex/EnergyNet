@@ -15,8 +15,8 @@ API_CALL_HEADER = {
 args = None
 
 simulation_metrics = {
-    "consumed": 0.0,
-    "sold": 0.0,
+    "consumed": 0,
+    "sold": 0,
 }
 
 
