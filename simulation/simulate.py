@@ -3,6 +3,12 @@ import requests
 
 from collections import defaultdict
 
+CLIENT_PORT = 8080
+
+
+def make_api(ip, endpoint):
+    return "http://" + ip + ":8080" + endpoint
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser("Launch a simulated meter")
@@ -23,13 +29,13 @@ if __name__ == "__main__":
 
     for i in range(args.simulation_duration):
         for ip in args.simulated_client_ip:
-            requests.get("http://" + ip + "/tick")
+            requests.get(make_api(ip, "/tick"))
 
     collected_metrics = defaultdict(int)
 
     # Collect metrics and print them out
     for ip in args.simulated_client_ip:
-        metrics = requests.get("http://" + ip + "/metrics").json()
+        metrics = requests.get(make_api(ip, "/metrics")).json()
         collected_metrics["sold"] += metrics["sold"]
         collected_metrics["consumed"] += metrics["consumed"]
 
