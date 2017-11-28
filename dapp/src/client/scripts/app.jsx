@@ -31,7 +31,11 @@ export class App extends React.Component {
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
     this.priceBond = new Bond();
+    /* FIXME: this fetch will not fetch up-to-date data, because back end
+     * takes time to poll latest block update. This leads to front end rendering
+     * not up-to-date data. */
     bonds.head.tie(this.updateContracts.bind(this));
+    // FIXME: change in account does not propagate to back end
     bonds.me.tie(this.getAccount.bind(this));
     bonds.me.tie(this.updateContracts.bind(this));
   }
@@ -231,7 +235,8 @@ export class App extends React.Component {
                       {
                         Object.keys(this.state.myBuyerContracts).length
                       +
-                        Object.keys(this.state.mySellerContracts).length}
+                        Object.keys(this.state.mySellerContracts).length
+                      }
                     </div>
                     <div>Contracts in effect</div>
                   </div>
