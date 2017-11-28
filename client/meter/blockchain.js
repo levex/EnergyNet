@@ -101,6 +101,7 @@ async function availableContracts() {
 }
 
 async function buyEnergy(contractAddress, amount) {
+  if (!inited) await init();
   if (!contractAddress || !amount) {
     return Promise.reject({ msg: "Wrong contact address or amount", value: amount });
   }
@@ -110,6 +111,7 @@ async function buyEnergy(contractAddress, amount) {
 }
 
 async function sellEnergy(price, amount) {
+  if (!inited) await init();
   if (!price || !amount) {
     return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
   }
@@ -118,6 +120,7 @@ async function sellEnergy(price, amount) {
 }
 
 async function consumeEnergyFromContract(contractAddress, amount) {
+  if (!inited) await init();
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
@@ -125,6 +128,7 @@ async function consumeEnergyFromContract(contractAddress, amount) {
 }
 
 async function consumeEnergy(amount) {
+  if (!inited) await init();
   if (amount < 0) {
     return Promise.reject({ msg: "negative amount", value: amount });
   }
@@ -171,6 +175,7 @@ async function consumeEnergy(amount) {
 }
 
 async function myEnergyBalance() {
+  if (!inited) await init();
   const contracts = await myBuyerContracts();
   let balance = new bigNumber(0);
   for (const contract of contracts) {
@@ -180,6 +185,7 @@ async function myEnergyBalance() {
 }
 
 async function autoBuy(amount) {
+  if (!inited) await init();
   if (!amount || amount < 0) {
     return Promise.reject({ msg: "Invalid amount", value: amount });
   }
