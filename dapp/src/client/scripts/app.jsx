@@ -259,8 +259,8 @@ export class App extends React.Component {
           <div className="col-lg-12">
             <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
             <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
-            <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer"/>
-            <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller"/>
+            <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer" amountSelector="remainingAmount" />
+            <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller" amountSelector="offeredAmount" />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>

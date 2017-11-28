@@ -11,7 +11,7 @@ export class ContractsViewPanel extends React.Component {
       return (
         <tr key={contract.address}>
           <td>Some date</td>
-          <td>{contract.offeredAmount}
+          <td>{contract[this.props.amountSelector]}
             kWh/day</td>
           <td>£{contract.unitPrice}/kWh</td>
         </tr>
