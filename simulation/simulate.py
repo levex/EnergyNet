@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     collected_metrics = defaultdict(int)
 
-    # Collect metrics and print them out
+    # Collect initial readings
     for ip in args.simulated_client_ip:
         metrics = requests.get(make_api(ip, "/metrics")).json()
         collected_metrics["sold"] -= metrics["sold"]
