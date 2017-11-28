@@ -13,53 +13,55 @@ let sellerContractsSet = new Set();
 let availableContractsSet = new Set();
 let inited = false;
 let lastBlock = 0;
+let lastCount = 0;
+
+async function getContractInfoByIndex(index) {
+  const account = await myAccount();
+  const contractEntity = await EnergyMaster.contracts(index);
+  const contractAddr = contractEntity[0];
+  const contract = makeEnergyContract(contractAddr);
+  const [
+    seller,
+    offeredAmount,
+    unitPrice,
+    remainingAmount
+  ] = await Promise.all([
+    contract.seller(),
+    contract.offeredAmount(),
+    contract.unitPrice(),
+    contract.remainingEnergy(account)
+  ]);
+  contracts[contractAddr] = {
+    seller,
+    offeredAmount,
+    unitPrice,
+    remainingAmount
+  };
+  if (seller === account && offeredAmount > 0) {
+    sellerContractsSet.add(contractAddr);
+  } else {
+    sellerContractsSet.delete(contractAddr);
+  }
+  if (remainingAmount > 0) {
+    buyerContractsSet.add(contractAddr);
+  } else {
+    buyerContractsSet.delete(contractAddr);
+  }
+  if (offeredAmount > 0) {
+    availableContractsSet.add(contractAddr);
+  } else {
+    availableContractsSet.delete(contractAddr);
+  }
+}
 
 async function init() {
   if (inited) return;
   inited = true;
   lastBlock = await bonds.height;
-  const account = await myAccount();
-  const count = await EnergyMaster.contractCount();
-  const getInfo = async (index) => {
-    const contractEntity = await EnergyMaster.contracts(index);
-    const contractAddr = contractEntity[0];
-    const contract = makeEnergyContract(contractAddr);
-    const [
-      seller,
-      offeredAmount,
-      unitPrice,
-      remainingAmount
-    ] = await Promise.all([
-      contract.seller(),
-      contract.offeredAmount(),
-      contract.unitPrice(),
-      contract.remainingEnergy(account)
-    ]);
-    contracts[contractAddr] = {
-      seller,
-      offeredAmount,
-      unitPrice,
-      remainingAmount
-    };
-    if (seller === account && offeredAmount > 0) {
-      sellerContractsSet.add(contractAddr);
-    } else {
-      sellerContractsSet.delete(contractAddr);
-    }
-    if (remainingAmount > 0) {
-      buyerContractsSet.add(contractAddr);
-    } else {
-      buyerContractsSet.delete(contractAddr);
-    }
-    if (offeredAmount > 0) {
-      availableContractsSet.add(contractAddr);
-    } else {
-      availableContractsSet.delete(contractAddr);
-    }
-  };
+  lastCount = await EnergyMaster.contractCount();
   const promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(getInfo(i));
+  for (let i = 0; i < lastCount; i++) {
+    promises.push(getContractInfoByIndex(i));
   }
   await Promise.all(promises);
 }
