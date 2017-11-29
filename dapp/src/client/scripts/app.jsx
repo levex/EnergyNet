@@ -54,9 +54,10 @@ export class App extends React.Component {
     let minHistogramPrice = new BigNumber(Number.MAX_SAFE_INTEGER);
     let maxHistogramPrice = new BigNumber(0);
 
-    this.state.contracts.forEach(contract => {
-      maxHistogramPrice = BigNumber.max(maxHistogramPrice, contract.unitPrice);
-      minHistogramPrice = BigNumber.min(minHistogramPrice, contract.unitPrice);
+    Object.keys(this.state.contracts).forEach(address => {
+      const unitPrice = this.state.contracts[address].unitPrice;
+      maxHistogramPrice = BigNumber.max(maxHistogramPrice, unitPrice);
+      minHistogramPrice = BigNumber.min(minHistogramPrice, unitPrice);
     });
 
     let contractsHistogram = new Array(HISTOGRAM_BINS);
