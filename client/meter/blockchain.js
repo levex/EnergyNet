@@ -11,9 +11,9 @@ function send_energy_metric(name, amount) {
   fetch('http://localhost:8086/write?db=energy', {
     method: 'POST',
     headers: {
-		'Accept': 'application/json',
-		'Content-Type': 'application/json',
-	      },
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
     body: name + ' amount=' + amount,
   });
 }
