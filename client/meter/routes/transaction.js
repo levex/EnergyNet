@@ -7,15 +7,6 @@ router.post('/buy', (req, res) => {
   const contract = body.contract;
   const amount = body.amount;
 
-  fetch('http://localhost:8086/write?db=energy', {
-    method: 'POST',
-    headers: {
-		'Accept': 'application/json',
-		'Content-Type': 'application/json',
-	      },
-    body: 'energy_bought amount=' + amount,
-  })
-
   blockchain.buyEnergy(contract, amount)
     .then(() => res.status(200).end())
     .catch(() => res.status(400).end())
