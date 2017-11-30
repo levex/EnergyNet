@@ -34,10 +34,23 @@ export class App extends React.Component {
     /* FIXME: this fetch will not fetch up-to-date data, because back end
      * takes time to poll latest block update. This leads to front end rendering
      * not up-to-date data. */
-    bonds.head.tie(this.updateContracts.bind(this));
+    bonds.head.tie(this.updateBlock.bind(this));
     // FIXME: change in account does not propagate to back end
     bonds.me.tie(this.getAccount.bind(this));
     bonds.me.tie(this.updateContracts.bind(this));
+  }
+
+  async updateBlock(blockNumber) {
+    const payload = {
+      blockNumber: blockNumber.number
+    }
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    fetch(METER_BACKEND + "/transaction/updateBlockchain", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: headers
+    }).then(this.updateContracts());
   }
 
   async getAccount() {
