@@ -70,6 +70,8 @@
         dst: /energy/influxdb.deb
     - name: install influxdb
       apt: deb="/energy/influxdb.deb"
+    - name: enable & start influxdb
+      shell: systemctl enable influxdb && systemctl start influxdb
     - name: create influxdb database
       shell: influx -host localhost -execute "CREATE DATABASE energy"
     - name: get the grafana package
