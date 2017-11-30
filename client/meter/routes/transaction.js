@@ -28,4 +28,12 @@ router.post('/consume', (req, res) => {
     .catch(reason => res.status(500).send(reason))
 });
 
+router.post('/updateBlockchain', (req, res) => {
+  const body = req.body;
+  const blockNumber = body.blockNumber;
+  blockchain.updateBlockchain(blockNumber)
+    .then(() => res.status(200).end())
+    .catch(reason => res.status(500).send(reason))
+})
+
 module.exports = router;
