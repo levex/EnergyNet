@@ -19,58 +19,6 @@ export class Nav extends React.Component {
       <ul className="nav navbar-top-links navbar-right">
         <li className="dropdown">
           <a className="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i className="fa fa-envelope fa-fw"></i>
-            <i className="fa fa-caret-down"></i>
-          </a>
-          <ul className="dropdown-menu dropdown-messages">
-            <li>
-              <a href="#">
-                <div>
-                  <strong>John Smith</strong>
-                  <span className="pull-right text-muted">
-                    <em>Yesterday</em>
-                  </span>
-                </div>
-                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-              </a>
-            </li>
-            <li className="divider"></li>
-            <li>
-              <a href="#">
-                <div>
-                  <strong>John Smith</strong>
-                  <span className="pull-right text-muted">
-                    <em>Yesterday</em>
-                  </span>
-                </div>
-                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-              </a>
-            </li>
-            <li className="divider"></li>
-            <li>
-              <a href="#">
-                <div>
-                  <strong>John Smith</strong>
-                  <span className="pull-right text-muted">
-                    <em>Yesterday</em>
-                  </span>
-                </div>
-                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-              </a>
-            </li>
-            <li className="divider"></li>
-            <li>
-              <a className="text-center" href="#">
-                <strong>Read All Messages</strong>
-                <i className="fa fa-angle-right"></i>
-              </a>
-            </li>
-          </ul>
-          {/* /.dropdown-messages */}
-        </li>
-        {/* /.dropdown */}
-        <li className="dropdown">
-          <a className="dropdown-toggle" data-toggle="dropdown" href="#">
             <i className="fa fa-tasks fa-fw"></i>
             <i className="fa fa-caret-down"></i>
           </a>
@@ -250,36 +198,6 @@ export class Nav extends React.Component {
         </li>
         {/* /.dropdown */}
       </ul>
-      {/* /.navbar-top-links */}
-
-      <div className="navbar-default sidebar" role="navigation">
-        <div className="sidebar-nav navbar-collapse">
-            <ul className="nav" id="side-menu">
-              <li className="sidebar-search">
-                <div className="input-group custom-search-form">
-                  <input type="text" className="form-control" placeholder="Search..."/>
-                  <span className="input-group-btn">
-                    <button className="btn btn-default" type="button">
-                      <i className="fa fa-search"></i>
-                    </button>
-                  </span>
-                </div>
-                {/* /input-group */}
-              </li>
-              <li>
-                <a href="/">
-                  <i className="fa fa-dashboard fa-fw"></i>
-                  Dashboard</a>
-              </li>
-              <li>
-                <a href="/trade">
-                  <i className="fa fa-sitemap fa-fw"></i>
-                  Trade</a>
-              </li>
-            </ul>
-        </div>
-        {/* /.sidebar-collapse */}
-      </div>
       {/* /.navbar-static-side */}
     </nav>)
   }
