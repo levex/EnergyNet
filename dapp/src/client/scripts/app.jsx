@@ -12,15 +12,17 @@ import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
 import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 
+const file = "dapp/src/client/scripts/app.js"
+const METER_BACKEND = "http://localhost:3000"
 
 export class App extends React.Component {
   constructor() {
     super();
     this.master = makeMasterContract();
     this.state = {
-      contracts: {},
-      mySellerContracts: {},
-      myBuyerContracts: {},
+      contracts: [],
+      mySellerContracts: [],
+      myBuyerContracts: [],
       sellTx: null,
       energyBalance: new BigNumber(0),
       monthlyUsage: new BigNumber(0),
@@ -29,97 +31,47 @@ export class App extends React.Component {
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
     this.priceBond = new Bond();
-    bonds.head.tie(this.getSellerContracts.bind(this));
+    /* FIXME: this fetch will not fetch up-to-date data, because back end
+     * takes time to poll latest block update. This leads to front end rendering
+     * not up-to-date data. */
+    bonds.head.tie(this.updateBlock.bind(this));
+    // FIXME: change in account does not propagate to back end
     bonds.me.tie(this.getAccount.bind(this));
-    bonds.me.tie(this.getSellerContracts.bind(this));
+    bonds.me.tie(this.updateContracts.bind(this));
+  }
+
+  async updateBlock(blockNumber) {
+    const payload = {
+      blockNumber: blockNumber.number
+    }
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    fetch(METER_BACKEND + "/transaction/updateBlockchain", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: headers
+    }).then(this.updateContracts());
   }
 
   async getAccount() {
     const account = await bonds.me;
     this.setState({
       account: account,
-      mySellerContracts: {},
-      myBuyerContracts: {},
+      mySellerContracts: [],
+      myBuyerContracts: [],
     });
   }
 
-  async getSellerContracts() {
+  updateHistogram() {
     const HISTOGRAM_BINS = 10;
-    let energyBalance = new BigNumber(0);
-    let count = await this.master.contractCount();
     let minHistogramPrice = new BigNumber(Number.MAX_SAFE_INTEGER);
     let maxHistogramPrice = new BigNumber(0);
 
-    for (let i = 0; i < count; i++) {
-      const contractEntity = await this.master.contracts(i);
-      const deregistered = contractEntity[2];
-      const contractAddr = contractEntity[0];
-      const contract = makeContract(contractAddr);
-      const remainingEnergyInContract = await contract.remainingEnergy(this.state.account);
-      const seller = await contract.seller();
-      const offeredAmount = await contract.offeredAmount();
-      const unitPrice = await contract.unitPrice();
-      if (this.state.account === seller) {
-        if (offeredAmount > 0) {
-          this.setState(update(this.state, {
-            mySellerContracts: {
-              $merge: {
-                [contractAddr]: {
-                  contractAddr: contractAddr,
-                  amount: offeredAmount,
-                  unitPrice: unitPrice
-                }
-              }
-            }
-          }))
-        } else {
-          this.setState(update(this.state, {
-            mySellerContracts: {
-              $unset: [contractAddr]
-            }
-          }))
-        }
-      }
-      if (remainingEnergyInContract.greaterThan(0)) {
-        energyBalance = energyBalance.add(remainingEnergyInContract);
-        this.setState(update(this.state, {
-          myBuyerContracts: {
-            $merge: {
-              [contractAddr]: {
-                contractAddr: contractAddr,
-                amount: remainingEnergyInContract,
-                unitPrice: unitPrice
-              }
-            }
-          }
-        }))
-      }
-      if (!deregistered) {
-
-        this.setState(update(this.state, {
-          contracts: {
-            $merge: {
-              [contractAddr]: {
-                contractAddr: contractAddr,
-                contract: contract,
-                offeredAmount: offeredAmount,
-                unitPrice: unitPrice,
-                tx: null
-              }
-            }
-          }
-        }));
-      } else {
-        this.setState(update(this.state, {
-          contracts: {
-            $unset: [contractAddr]
-          }
-        }))
-      }
-
+    Object.keys(this.state.contracts).forEach(address => {
+      const unitPrice = this.state.contracts[address].unitPrice;
       maxHistogramPrice = BigNumber.max(maxHistogramPrice, unitPrice);
       minHistogramPrice = BigNumber.min(minHistogramPrice, unitPrice);
-    }
+    });
 
     let contractsHistogram = new Array(HISTOGRAM_BINS);
     let binSize = (maxHistogramPrice - minHistogramPrice) / HISTOGRAM_BINS;
@@ -133,8 +85,9 @@ export class App extends React.Component {
       }
     }
 
-    Object.keys(this.state.contracts).forEach(function (key) {
-      let bin = Math.round((this.state.contracts[key].unitPrice - minHistogramPrice) / binSize);
+    Object.keys(this.state.contracts).forEach(address => {
+      const contract = this.state.contracts[address];
+      let bin = Math.round((contract.unitPrice - minHistogramPrice) / binSize);
       if (bin <= HISTOGRAM_BINS && bin >= 0) {
         if (bin == HISTOGRAM_BINS) {
           bin -= 1;
@@ -142,19 +95,68 @@ export class App extends React.Component {
 
         contractsHistogram[bin].count += 1;
       }
-    }, this);
+    });
 
     this.setState({contractsHistogram: contractsHistogram});
-
-    this.setState({energyBalance: energyBalance.toString(10)});
   }
 
-  buyEnergy(contractState) {
+  updateContracts() {
+    this.getAvailableContracts();
+    this.getSellerContracts();
+    this.getBuyerContracts();
+  }
+
+  getContracts(route) {
+    return fetch(METER_BACKEND + route)
+      .then(response => response.json())
+  }
+
+  getSellerContracts() {
+    this.getContracts("/contract/my_seller_contracts")
+      .then(data => {
+        const sellerContracts = [];
+        for (let c in data) { sellerContracts.push(data[c]) }
+        this.setState({
+          mySellerContracts: sellerContracts,
+        })
+      });
+  }
+
+  getAvailableContracts() {
+    this.getContracts("/contract/available_contracts")
+      .then(data => {
+        const contracts = {}
+        for (let c in data) {
+          const contract = data[c];
+          contracts[contract.address] = contract;
+          contracts[contract.address].tx = null;
+        }
+        this.setState({
+          contracts: contracts,
+        });
+
+        this.updateHistogram();
+      });
+  }
+
+  getBuyerContracts() {
+    this.getContracts("/contract/my_buyer_contracts")
+      .then(data => {
+        const buyerContracts = []
+        for (let c in data) { buyerContracts.push(data[c]) }
+        this.setState({
+          myBuyerContracts: buyerContracts,
+        })
+      });
+  }
+
+  buyEnergy(contractAddress) {
+    const contract = makeContract(contractAddress);
     this.setState(update(this.state, {
       contracts: {
-        [contractState.contractAddr]: {
+        [contractAddress]: {
           tx: {
-            $set: contractState.contract.buy(this.buyAmountBond)
+            $set: contract.buy(this.buyAmountBond)
           }
         }
       }
@@ -165,19 +167,6 @@ export class App extends React.Component {
     this.setState({
       sellTx: this.master.sell(this.priceBond, this.sellAmountBond)
     });
-  }
-
-  componentDidMount() {
-    const today = new Date();
-    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const format = 'ddd, dd mmm yyyy HH:MM:ss Z'
-    fetch('http://localhost:5000/consumed_aggregate?aggregate={"$date_from":"'
-        + dateFormat(firstOfMonth, format) + '","$date_to":"' + dateFormat(today, format) + '"}')
-      .then(response => { return response.json() })
-      .then(result => result['_items'])
-      .then(maybeItems => { if (maybeItems.length == 0) { return Promise.reject('empty list') } else { return maybeItems } })
-      .then(items => items[0]['total_amount'])
-      .then(amount => this.setState({monthlyUsage: amount}))
   }
 
   render() {
@@ -257,9 +246,11 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-9 text-right">
                     <div className="huge">
-                      <Rspan>{Object.keys(this.state.myBuyerContracts).length
+                      {
+                        Object.keys(this.state.myBuyerContracts).length
                       +
-                        Object.keys(this.state.mySellerContracts).length}</Rspan>
+                        Object.keys(this.state.mySellerContracts).length
+                      }
                     </div>
                     <div>Contracts in effect</div>
                   </div>
@@ -282,8 +273,8 @@ export class App extends React.Component {
           <div className="col-lg-12">
             <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
             <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
-            <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer"/>
-            <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller"/>
+            <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer" amountSelector="remainingAmount" />
+            <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller" amountSelector="offeredAmount" />
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
