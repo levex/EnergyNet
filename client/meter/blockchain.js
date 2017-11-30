@@ -191,7 +191,7 @@ async function consumeEnergy(amount) {
   for (const contract of contracts) {
     if (toConsume === 0) break;
     const deduction = Math.min(toConsume, contract.remainingAmount);
-    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    txs.push({ address: contract.address, amount: deduction});
     toConsume -= deduction;
   }
 
@@ -199,7 +199,7 @@ async function consumeEnergy(amount) {
     return Promise.reject({ msg: "Unable to consume energy", value: toConsume });
   }
 
-  const promises = txs.map((tx) => consumeEnergyFromContract(tx.contractAddr, tx.amount));
+  const promises = txs.map((tx) => consumeEnergyFromContract(tx.address, tx.amount));
   return Promise.all(promises);
 }
 
@@ -229,7 +229,7 @@ async function autoBuy(amount) {
   for (const contract of contracts) {
     if (toBuy === 0) break;
     const deduction = Math.min(toBuy, contract.offeredAmount);
-    txs.push({ contractAddr: contract.contractAddr, amount: deduction});
+    txs.push({ address: contract.address, amount: deduction});
     toBuy -= deduction;
   }
 
@@ -237,7 +237,7 @@ async function autoBuy(amount) {
     return Promise.reject({ msg: "Insufficient energy over network", value: toBuy });
   }
 
-  const promises = txs.map((tx) => buyEnergy(tx.contractAddr, tx.amount));
+  const promises = txs.map((tx) => buyEnergy(tx.address, tx.amount));
   return Promise.all(promises)
 }
 
