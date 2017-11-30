@@ -76,6 +76,7 @@ async function init() {
   lastBlock = await bonds.height;
   console.log("Blockchain synced");
   inited = true;
+}
 
 function send_energy_metric(name, amount) {
   fetch('http://localhost:8086/write?db=energy', {
