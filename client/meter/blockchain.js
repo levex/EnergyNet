@@ -14,6 +14,7 @@ let availableContractsSet = new Set();
 let inited = false;
 let lastBlock = 0;
 let lastCount = 0;
+let logs = [];
 
 async function getContractInfoByAddress(address) {
   const account = await myAccount();
@@ -133,6 +134,11 @@ async function buyEnergy(contractAddress, amount) {
 
   send_energy_metric('energy_bought', amount);
   const contract = makeEnergyContract(contractAddress);
+  logs.push({
+    action: 'buy',
+    amount: amount,
+    contract: contractAddress
+  });
   return await contract.buy(amount);
 }
 
@@ -144,6 +150,13 @@ async function sellEnergy(price, amount) {
 
   send_energy_metric('energy_sold', amount);
 
+  logs.push({
+    // FIXME: Log contract address
+    // This is not available due to parity APIs unblocks
+    // after tx is initiated instead of completed
+    action: 'sell',
+    amount: amount,
+  });
   return await EnergyMaster.sell(price, amount);
 }
 
@@ -153,6 +166,11 @@ async function consumeEnergyFromContract(contractAddress, amount) {
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
   send_energy_metric('energy_consumed', amount);
+  logs.push({
+    action: 'consume',
+    amount: amount,
+    contract: contractAddress
+  });
   return await contract.consume(amount, {value: cost})
 }
 
@@ -269,6 +287,10 @@ async function updateBlockchain(blockNumber) {
 
 init();
 
+function getLog() {
+  return logs.slice(-10);
+}
+
 module.exports = {
   send_energy_metric,
   myAccount,
@@ -281,5 +303,6 @@ module.exports = {
   sellEnergy,
   consumeEnergy,
   autoBuy,
-  updateBlockchain
+  updateBlockchain,
+  getLog
 };
