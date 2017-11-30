@@ -6,10 +6,17 @@ import simulation.meter
 from unittest.mock import patch
 
 
+class Object():
+    pass
+
+
 class SimulatedMeterClientTest(unittest.TestCase):
 
     @patch('simulation.meter.requests.post')
     def test_sell_energy(self, mock_post):
+        simulation.meter.args = Object()
+        simulation.meter.args.price = 1
+
         simulation.meter.tick((2, 2))
 
         mock_post.assert_called_once_with(
@@ -25,6 +32,10 @@ class SimulatedMeterClientTest(unittest.TestCase):
 
     @patch('simulation.meter.requests.post')
     def test_consume_energy(self, mock_post):
+        simulation.meter.args = {
+            "price": 1,
+        }
+
         simulation.meter.tick((-2, -2))
 
         mock_post.assert_called_once_with(

@@ -49,12 +49,12 @@ def consume_energy(amount):
     simulation_metrics["consumed"] += amount
 
 
-def sell_energy(amount):
+def sell_energy(amount, price):
     requests.post(
         METER_API_BASE_URL + "transaction/sell",
         data=json.dumps({
             "amount": amount,
-            "price": args.price,
+            "price": price,
         }),
         headers=API_CALL_HEADER,
     )
@@ -64,11 +64,10 @@ def sell_energy(amount):
 def tick(excess_interval):
     produced_energy = random.randint(*excess_interval)
 
-    print("Energy Consumption: " + str(produced_energy))
     if produced_energy < 0:
         consume_energy(-produced_energy)
     elif produced_energy > 0:
-        sell_energy(produced_energy)
+        sell_energy(produced_energy, args.price)
 
 
 class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
