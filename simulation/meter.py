@@ -27,6 +27,9 @@ def parse_arguments():
         help="The interval of energy excess per time unit (can be negative)"
     )
     parser.add_argument(
+        "-P", "--price", type=int, default=1, help="Energy selling price"
+    )
+    parser.add_argument(
         "-p", "--port", default=8080, type=int,
         help="The port used to receive commands from the master "
         "simulation process"
@@ -51,7 +54,7 @@ def sell_energy(amount):
         METER_API_BASE_URL + "transaction/sell",
         data=json.dumps({
             "amount": amount,
-            "price": 1,
+            "price": args.price,
         }),
         headers=API_CALL_HEADER,
     )
