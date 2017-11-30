@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "orgId": 1,
+  "name": "Energy",
+  "type": "influxdb",
+  "typeLogoUrl": "",
+  "access": "direct",
+  "url": "http://localhost:8086",
+  "password": "",
+  "user": "",
+  "database": "energy",
+  "basicAuth": false,
+  "basicAuthUser": "",
+  "basicAuthPassword": "",
+  "withCredentials": false,
+  "isDefault": true,
+  "jsonData": {},
+  "secureJsonFields": {}
+}

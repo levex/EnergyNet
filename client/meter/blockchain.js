@@ -7,6 +7,17 @@ const bigNumber = require('bignumber.js');
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
+function send_energy_metric(name, amount) {
+  fetch('http://localhost:8086/write?db=energy', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: name + ' amount=' + amount,
+  });
+}
+
 function makeEnergyContract(address) {
   return bonds.makeContract(address, ENERGY_ABI);
 }
@@ -92,6 +103,7 @@ async function buyEnergy(contractAddress, amount) {
     return Promise.reject({ msg: "Wrong contact address or amount", value: amount });
   }
 
+  send_energy_metric('energy_bought', amount);
   const contract = makeEnergyContract(contractAddress);
   return await contract.buy(amount);
 }
@@ -101,6 +113,8 @@ async function sellEnergy(price, amount) {
     return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
   }
 
+  send_energy_metric('energy_sold', amount);
+
   return await EnergyMaster.sell(price, amount);
 }
 
@@ -108,6 +122,7 @@ async function consumeEnergyFromContract(contractAddress, amount) {
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
+  send_energy_metric('energy_consumed', amount);
   return await contract.consume(amount, {value: cost})
 }
 
@@ -194,6 +209,7 @@ async function autoBuy(amount) {
 }
 
 module.exports = {
+  send_energy_metric,
   myAccount,
   myBuyerContracts,
   mySellerContracts,
