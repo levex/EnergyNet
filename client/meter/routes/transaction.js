@@ -9,7 +9,7 @@ router.post('/buy', (req, res) => {
 
   blockchain.buyEnergy(contract, amount)
     .then(() => res.status(200).end())
-    .catch(() => res.status(400).end())
+    .catch(() => res.status(400).end());
 });
 
 router.post('/sell', (req, res) => {
@@ -19,7 +19,7 @@ router.post('/sell', (req, res) => {
 
   blockchain.sellEnergy(price, amount)
     .then(() => res.status(200).end())
-    .catch(() => res.status(400).end())
+    .catch(() => res.status(400).end());
 });
 
 router.post('/consume', (req, res) => {
@@ -28,7 +28,7 @@ router.post('/consume', (req, res) => {
 
   blockchain.consumeEnergy(amount)
     .then(() => res.status(200).end())
-    .catch(reason => res.status(500).send(reason))
+    .catch(reason => res.status(500).send(reason));
 });
 
 router.post('/updateBlockchain', (req, res) => {
@@ -36,7 +36,7 @@ router.post('/updateBlockchain', (req, res) => {
   const blockNumber = body.blockNumber;
   blockchain.updateBlockchain(blockNumber)
     .then(() => res.status(200).end())
-    .catch(reason => res.status(500).send(reason))
+    .catch(reason => res.status(500).send(reason));
 });
 
 router.get('/log', (req, res) => {

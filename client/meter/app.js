@@ -6,11 +6,11 @@ const transaction = require('./routes/transaction');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 
-const cors = require('cors')
+const cors = require('cors');
 
 let app = express();
 
-app.use(cors())
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
