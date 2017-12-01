@@ -67,7 +67,7 @@
     - name: get the influxdb package
       get_url:
         url: https://dl.influxdata.com/influxdb/releases/influxdb_1.4.2_amd64.deb
-        dst: /energy/influxdb.deb
+        dest: /energy/influxdb.deb
     - name: install influxdb
       apt: deb="/energy/influxdb.deb"
     - name: enable & start influxdb
@@ -77,20 +77,15 @@
     - name: get the grafana package
       get_url:
         url: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.6.2_amd64.deb
-        dst: /energy/grafana.deb
+        dest: /energy/grafana.deb
     - name: install grafana
       apt: deb="/energy/grafana.deb"
     - name: configure grafana
-      copy:
-        src: /energy/ansible/grafana/grafana.ini
-        dest: /etc/grafana/grafana.ini
-        mode: 0740
-        owner: root
-        group: grafana
-    - name: configure grafana datasource
-      shell: curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json
+      shell: cp /energy/ansible/grafana/grafana.ini /etc/grafana/grafana.ini && chmod 0740 /etc/grafana/grafana.ini && chown root:grafana /etc/grafana/grafana.ini
     - name: enable grafana
       shell: systemctl daemon-reload && systemctl enable grafana-server && systemctl start grafana-server
+    - name: configure grafana datasource
+      shell: "curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json"
     - name: build contracts
       shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
     - name: reload systemd
