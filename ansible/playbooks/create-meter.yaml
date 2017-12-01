@@ -67,7 +67,7 @@
     - name: get the influxdb package
       get_url:
         url: https://dl.influxdata.com/influxdb/releases/influxdb_1.4.2_amd64.deb
-        dst: /energy/influxdb.deb
+        dest: /energy/influxdb.deb
     - name: install influxdb
       apt: deb="/energy/influxdb.deb"
     - name: enable & start influxdb
@@ -77,7 +77,7 @@
     - name: get the grafana package
       get_url:
         url: https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.6.2_amd64.deb
-        dst: /energy/grafana.deb
+        dest: /energy/grafana.deb
     - name: install grafana
       apt: deb="/energy/grafana.deb"
     - name: configure grafana
