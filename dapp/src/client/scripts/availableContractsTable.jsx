@@ -26,7 +26,7 @@ export class AvailableContractsTable extends React.Component {
            render: (data, type, row) => data + " kWh/day"
          },
          {
-           title: "Amount Available",
+           title: "Amount Bought",
            width: 100,
            data: "remainingAmount",
            render: (data, type, row) => data + " kWh/day"
