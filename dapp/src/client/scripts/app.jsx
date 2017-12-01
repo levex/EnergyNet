@@ -24,8 +24,6 @@ export class App extends React.Component {
       mySellerContracts: [],
       myBuyerContracts: [],
       sellTx: null,
-      energyBalance: new BigNumber(0),
-      monthlyUsage: new BigNumber(0),
       contractsHistogram: []
     };
     this.buyAmountBond = new Bond();
@@ -205,13 +203,21 @@ export class App extends React.Component {
                   </div>
                   <div className="col-xs-5 text-right">
                     <div className="huge">
-                        {this.state.monthlyUsage.toString(10)}
+                      {this.state.mySellerContracts.reduce(
+                        (acc, contract) => {
+                          return acc.add(new BigNumber(contract.offeredAmount))
+                        }, new BigNumber(0)
+                      ).toString()}
                     </div>
-                    <div>kWh used</div>
+                    <div>kWh to sell</div>
                   </div>
                   <div className="col-xs-5 text-right">
                     <div className="huge">
-                        {this.state.energyBalance.toString(10)}
+                      {this.state.myBuyerContracts.reduce(
+                        (acc, contract) => {
+                          return acc.add(new BigNumber(contract.remainingAmount))
+                        }, new BigNumber(0)
+                      ).toString()}
                     </div>
                     <div>kWh bought</div>
                   </div>
