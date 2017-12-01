@@ -23,18 +23,21 @@ export class AvailableContractsTable extends React.Component {
            title: "Amount Offered",
            width: 100,
            data: "offeredAmount",
+           type: "num",
            render: (data, type, row) => data + " kWh/day"
          },
          {
            title: "Amount Bought",
            width: 100,
            data: "remainingAmount",
+           type: "num",
            render: (data, type, row) => data + " kWh/day"
          },
          {
             title: "Price",
             width: 100,
             data: "unitPrice",
+            type: "num",
             render: (data, type, row) => data + " £/kWh"
          },
          {
