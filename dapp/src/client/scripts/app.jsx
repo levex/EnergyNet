@@ -131,7 +131,7 @@ export class App extends React.Component {
           contracts: data,
         });
 
-        //this.updateHistogram();
+        this.updateHistogram();
       });
   }
 
