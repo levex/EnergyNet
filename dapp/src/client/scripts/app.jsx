@@ -1,7 +1,6 @@
 import React from 'react';
 import {Rspan} from 'oo7-react';
 import {bonds, formatBalance} from 'oo7-parity';
-import {Nav} from './nav';
 import {Bond} from 'oo7';
 import {makeContract, makeMasterContract} from './blockchain';
 import {SellEnergyPanel} from './sellEnergyPanel';
@@ -172,7 +171,6 @@ export class App extends React.Component {
 
   render() {
     return (<div id="wrapper">
-      <Nav/>
       <div id="page-wrapper">
         <div className="row">
           <div className="col-lg-12">
