@@ -87,7 +87,7 @@ function send_energy_metric(name, amount) {
       'Content-Type': 'application/json',
     },
     body: name + ' amount=' + amount,
-  }).then(console.log);
+  });
 }
 
 function makeEnergyContract(address) {
