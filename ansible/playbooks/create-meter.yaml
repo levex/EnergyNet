@@ -37,6 +37,8 @@
       shell: bash /install_parity.sh
       args:
         creates: /usr/bin/parity
+    - name: Remove /energy directory
+      shell: rm -rf /energy
     - name: Create /energy directory
       file: path=/energy state=directory
     - name: Clone energyChain data
@@ -62,8 +64,8 @@
       shell: echo "[account]" >> /energy/parity/res/config.toml
              && echo "  unlock = ['`cat /energy/client_addr`']" >> /energy/parity/res/config.toml
              && echo "  password = [\"/energy/client_pass\"]" >> /energy/parity/res/config.toml
-    - name: install truffle
-      shell: npm install -g truffle
+    - name: install truffle and webpack
+      shell: npm install -g truffle webpack
     - name: get the influxdb package
       get_url:
         url: https://dl.influxdata.com/influxdb/releases/influxdb_1.4.2_amd64.deb
@@ -86,8 +88,12 @@
       shell: systemctl daemon-reload && systemctl enable grafana-server && systemctl start grafana-server
     - name: configure grafana datasource
       shell: "curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json"
+    - name: configure grafana dashboard
+      shell: "curl -XPOST admin:admin@localhost:4000/api/dashboards -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/dashboards/dashboards.json"
     - name: build contracts
       shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
+    - name: build frontend
+      shell: cd /energy/dapp && npm install && webpack && ./add_to_parity.sh
     - name: reload systemd
       shell: systemctl daemon-reload
     - name: Disable ParityEnergy service if running
