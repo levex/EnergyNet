@@ -8,9 +8,7 @@ $.DataTable = require('datatables.net-bs');
 export class AvailableContractsTable extends React.Component {
 
   componentDidMount() {
-    const columns =
-
-    $(this.refs.table).DataTable({
+    const columns = $(this.refs.table).DataTable({
        "dom":
          "<'data-table-wrapper'" +
          "<'row'<'col-sm-6'l><'col-sm-6'>>" +
@@ -32,7 +30,7 @@ export class AvailableContractsTable extends React.Component {
            render: (data, type, row) => data + " kWh/day"
          },
          {
-            title: "Price",
+             title: "Price",
             width: 100,
             data: "unitPrice",
             render: (data, type, row) => data + " £/kWh"
@@ -54,7 +52,7 @@ export class AvailableContractsTable extends React.Component {
               </form>, cell)
          },
        ],
-       "order": [[2, "asc"]],
+       "order": [[0, "asc"], [1, "asc"], [2, "asc"]],
     })
   }
 
