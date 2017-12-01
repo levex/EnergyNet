@@ -89,7 +89,7 @@
     - name: configure grafana datasource
       shell: "curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json"
     - name: configure grafana dashboard
-      shell: "curl -XPOST admin:admin@localhost:4000/api/dashboards -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/dashboards/dashboards.json"
+      shell: "curl -XPOST admin:admin@localhost:4000/api/dashboards/db -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/dashboards/dashboard.json"
     - name: build contracts
       shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
     - name: build frontend
