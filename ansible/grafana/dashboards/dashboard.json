@@ -74,7 +74,7 @@
             "params": ["previous"],
             "type": "fill"
           }],
-          "measurement": "energy_bought",
+          "measurement": "energy_consumed",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
