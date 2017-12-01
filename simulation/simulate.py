@@ -1,5 +1,6 @@
 import argparse
 import requests
+import time
 
 from collections import defaultdict
 
@@ -38,6 +39,7 @@ if __name__ == "__main__":
     for i in range(args.simulation_duration):
         for ip in args.simulated_client_ip:
             requests.get(make_api(ip, "/tick"))
+        time.sleep(0.01)
 
     # Collect metrics and print them out
     for ip in args.simulated_client_ip:
