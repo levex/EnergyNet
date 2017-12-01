@@ -81,14 +81,9 @@
     - name: install grafana
       apt: deb="/energy/grafana.deb"
     - name: configure grafana
-      copy:
-        src: /energy/ansible/grafana/grafana.ini
-        dest: /etc/grafana/grafana.ini
-        mode: 0740
-        owner: root
-        group: grafana
+      shell: cp /energy/ansible/grafana/grafana.ini /etc/grafana/grafana.ini && chmod 0740 /etc/grafana/grafana.ini && chown root:grafana /etc/grafana/grafana.ini
     - name: configure grafana datasource
-      shell: curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json
+      shell: "curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json"
     - name: enable grafana
       shell: systemctl daemon-reload && systemctl enable grafana-server && systemctl start grafana-server
     - name: build contracts
