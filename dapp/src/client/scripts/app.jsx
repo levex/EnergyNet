@@ -20,7 +20,7 @@ export class App extends React.Component {
     super();
     this.master = makeMasterContract();
     this.state = {
-      contracts: [],
+      contracts: {},
       mySellerContracts: [],
       myBuyerContracts: [],
       sellTx: null,
@@ -125,14 +125,10 @@ export class App extends React.Component {
   getAvailableContracts() {
     this.getContracts("/contract/available_contracts")
       .then(data => {
-        const contracts = {}
-        for (let c in data) {
-          const contract = data[c];
-          contracts[contract.address] = contract;
-          contracts[contract.address].tx = null;
-        }
+        data.forEach(contract => contract.tx = null)
+
         this.setState({
-          contracts: contracts,
+          contracts: data,
         });
 
         this.updateHistogram();
@@ -152,9 +148,16 @@ export class App extends React.Component {
 
   buyEnergy(contractAddress) {
     const contract = makeContract(contractAddress);
+    var index = 0;
+    for (var i = 0; i < this.state.contracts.length; i++) {
+      if (this.state.contracts[i].address == contractAddress) {
+        index = i;
+        break;
+      }
+    }
     this.setState(update(this.state, {
       contracts: {
-        [contractAddress]: {
+        [index]: {
           tx: {
             $set: contract.buy(this.buyAmountBond)
           }
