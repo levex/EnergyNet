@@ -41,6 +41,7 @@ export class AvailableContractsTable extends React.Component {
             title: "Buy Energy",
             width: 400,
             data: null,
+            orderable: false,
             createdCell: (cell, cellData, rowData, rowIndex, colIndex) => ReactDOM.render(
               <form role="form">
                 <InputBond placeholder="kWh/day" bond={this.props.amountBond} style={{width: "100%"}} action>
