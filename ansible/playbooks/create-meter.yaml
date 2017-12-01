@@ -82,10 +82,10 @@
       apt: deb="/energy/grafana.deb"
     - name: configure grafana
       shell: cp /energy/ansible/grafana/grafana.ini /etc/grafana/grafana.ini && chmod 0740 /etc/grafana/grafana.ini && chown root:grafana /etc/grafana/grafana.ini
-    - name: configure grafana datasource
-      shell: "curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json"
     - name: enable grafana
       shell: systemctl daemon-reload && systemctl enable grafana-server && systemctl start grafana-server
+    - name: configure grafana datasource
+      shell: "curl -XPOST admin:admin@localhost:4000/api/datasources -H 'Content-Type: application/json;charset=UTF-8' --data @/energy/ansible/grafana/datasource.json"
     - name: build contracts
       shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
     - name: reload systemd
