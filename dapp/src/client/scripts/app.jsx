@@ -1,7 +1,6 @@
 import React from 'react';
 import {Rspan} from 'oo7-react';
 import {bonds, formatBalance} from 'oo7-parity';
-import {Nav} from './nav';
 import {Bond} from 'oo7';
 import {makeContract, makeMasterContract} from './blockchain';
 import {SellEnergyPanel} from './sellEnergyPanel';
@@ -172,7 +171,6 @@ export class App extends React.Component {
 
   render() {
     return (<div id="wrapper">
-      <Nav/>
       <div id="page-wrapper">
         <div className="row">
           <div className="col-lg-12">
@@ -287,7 +285,7 @@ export class App extends React.Component {
               </div>
               {/* /.panel-heading */}
               <div className="panel-body">
-                <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameborder="0"></iframe>
+                <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameBorder="0"></iframe>
               </div>
               {/* /.panel-body */}
             </div>
