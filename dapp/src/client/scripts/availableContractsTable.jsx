@@ -69,7 +69,6 @@ export class AvailableContractsTable extends React.Component {
     .find('table')
     .DataTable();
     table.clear();
-    console.log(nextProps.contracts)
     table.rows.add(nextProps.contracts);
     table.draw();
     return false;
