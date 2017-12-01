@@ -287,7 +287,7 @@ export class App extends React.Component {
               </div>
               {/* /.panel-heading */}
               <div className="panel-body">
-                <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameborder="0"></iframe>
+                <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameBorder="0"></iframe>
               </div>
               {/* /.panel-body */}
             </div>
