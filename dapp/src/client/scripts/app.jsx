@@ -5,14 +5,14 @@ import {Bond} from 'oo7';
 import {makeContract, makeMasterContract} from './blockchain';
 import {SellEnergyPanel} from './sellEnergyPanel';
 import {BuyEnergyPanel} from './buyEnergyPanel';
-import {ContractsViewPanel} from "./contractsViewPanel";
+import {ContractsViewPanel} from './contractsViewPanel';
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import dateFormat from 'dateformat';
 import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 
-const file = "dapp/src/client/scripts/app.js"
-const METER_BACKEND = "http://localhost:3000"
+const file = 'dapp/src/client/scripts/app.js';
+const METER_BACKEND = 'http://localhost:3000';
 
 export class App extends React.Component {
   constructor() {
@@ -40,11 +40,11 @@ export class App extends React.Component {
   async updateBlock(blockNumber) {
     const payload = {
       blockNumber: blockNumber.number
-    }
+    };
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    fetch(METER_BACKEND + "/transaction/updateBlockchain", {
-      method: "POST",
+    fetch(METER_BACKEND + '/transaction/updateBlockchain', {
+      method: 'POST',
       body: JSON.stringify(payload),
       headers: headers
     }).then(this.updateContracts());
@@ -79,7 +79,7 @@ export class App extends React.Component {
       contractsHistogram[i] = {
         region: region,
         count: 0
-      }
+      };
     }
 
     Object.keys(this.state.contracts).forEach(address => {
@@ -105,24 +105,24 @@ export class App extends React.Component {
 
   getContracts(route) {
     return fetch(METER_BACKEND + route)
-      .then(response => response.json())
+      .then(response => response.json());
   }
 
   getSellerContracts() {
-    this.getContracts("/contract/my_seller_contracts")
+    this.getContracts('/contract/my_seller_contracts')
       .then(data => {
         const sellerContracts = [];
-        for (let c in data) { sellerContracts.push(data[c]) }
+        for (let c in data) { sellerContracts.push(data[c]); }
         this.setState({
           mySellerContracts: sellerContracts,
-        })
+        });
       });
   }
 
   getAvailableContracts() {
-    this.getContracts("/contract/available_contracts")
+    this.getContracts('/contract/available_contracts')
       .then(data => {
-        data.forEach(contract => contract.tx = null)
+        data.forEach(contract => contract.tx = null);
 
         this.setState({
           contracts: data,
@@ -133,13 +133,13 @@ export class App extends React.Component {
   }
 
   getBuyerContracts() {
-    this.getContracts("/contract/my_buyer_contracts")
+    this.getContracts('/contract/my_buyer_contracts')
       .then(data => {
-        const buyerContracts = []
-        for (let c in data) { buyerContracts.push(data[c]) }
+        const buyerContracts = [];
+        for (let c in data) { buyerContracts.push(data[c]); }
         this.setState({
           myBuyerContracts: buyerContracts,
-        })
+        });
       });
   }
 
@@ -206,7 +206,7 @@ export class App extends React.Component {
                     <div className="huge">
                       {this.state.mySellerContracts.reduce(
                         (acc, contract) => {
-                          return acc.add(new BigNumber(contract.offeredAmount))
+                          return acc.add(new BigNumber(contract.offeredAmount));
                         }, new BigNumber(0)
                       ).toString()}
                     </div>
@@ -216,7 +216,7 @@ export class App extends React.Component {
                     <div className="huge">
                       {this.state.myBuyerContracts.reduce(
                         (acc, contract) => {
-                          return acc.add(new BigNumber(contract.remainingAmount))
+                          return acc.add(new BigNumber(contract.remainingAmount));
                         }, new BigNumber(0)
                       ).toString()}
                     </div>

@@ -1,5 +1,5 @@
-import React from 'react'
-import {BButton, InputBond, TransactionProgressLabel} from 'parity-reactive-ui'
+import React from 'react';
+import {BButton, InputBond, TransactionProgressLabel} from 'parity-reactive-ui';
 
 export class SellEnergyPanel extends React.Component {
   constructor(props) {
@@ -18,10 +18,10 @@ export class SellEnergyPanel extends React.Component {
           <div className="container-fluid">
             <div className="row">
               <div className="col-lg-5">
-                <InputBond label="Amount" placeholder="kWh/day" bond={this.props.amountBond} style={{width: "100%"}} />
+                <InputBond label="Amount" placeholder="kWh/day" bond={this.props.amountBond} style={{width: '100%'}} />
               </div>
               <div className="col-lg-5">
-                <InputBond label="Price" placeholder="£/kWh" bond={this.props.priceBond} style={{width: "100%"}} />
+                <InputBond label="Price" placeholder="£/kWh" bond={this.props.priceBond} style={{width: '100%'}} />
               </div>
               <div className="col-lg-2">
                 {this.props.sellTx === null
