@@ -1,9 +1,9 @@
-const oo7parity = require('oo7-parity');
+const oo7parity = require("oo7-parity");
 const bonds = oo7parity.bonds;
-const ENERGY_MASTER_ABI = require('./abis/abi_master');
-const ENERGY_ABI = require('./abis/abi');
-const ENERGY_MASTER_ADDRESS = '0x7B7DC4FdB4eAf8168FBC73a9b67f15bB559c87cC';
-const bigNumber = require('bignumber.js');
+const ENERGY_MASTER_ABI = require("./abis/abi_master");
+const ENERGY_ABI = require("./abis/abi");
+const ENERGY_MASTER_ADDRESS = "0x7B7DC4FdB4eAf8168FBC73a9b67f15bB559c87cC";
+const bigNumber = require("bignumber.js");
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
@@ -75,18 +75,18 @@ async function init() {
   if (inited) return;
   await updateMaster();
   lastBlock = await bonds.height;
-  console.log('Blockchain synced');
+  console.log("Blockchain synced");
   inited = true;
 }
 
 function send_energy_metric(name, amount) {
-  fetch('http://localhost:8086/write?db=energy', {
-    method: 'POST',
+  fetch("http://localhost:8086/write?db=energy", {
+    method: "POST",
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
+      "Accept": "application/json",
+      "Content-Type": "application/json",
     },
-    body: name + ' amount=' + amount,
+    body: name + " amount=" + amount,
   });
 }
 
@@ -129,13 +129,13 @@ async function availableContracts() {
 async function buyEnergy(contractAddress, amount) {
   if (!inited) await init();
   if (!contractAddress || !amount) {
-    return Promise.reject({ msg: 'Wrong contact address or amount', value: amount });
+    return Promise.reject({ msg: "Wrong contact address or amount", value: amount });
   }
 
-  send_energy_metric('energy_bought', amount);
+  send_energy_metric("energy_bought", amount);
   const contract = makeEnergyContract(contractAddress);
   logs.push({
-    action: 'buy',
+    action: "buy",
     amount: amount,
     contract: contractAddress
   });
@@ -145,16 +145,16 @@ async function buyEnergy(contractAddress, amount) {
 async function sellEnergy(price, amount) {
   if (!inited) await init();
   if (!price || !amount) {
-    return Promise.reject({ msg: 'Unable to sell energy', value: amount, price: price});
+    return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
   }
 
-  send_energy_metric('energy_sold', amount);
+  send_energy_metric("energy_sold", amount);
 
   logs.push({
     // FIXME: Log contract address
     // This is not available due to parity APIs unblocks
     // after tx is initiated instead of completed
-    action: 'sell',
+    action: "sell",
     amount: amount,
   });
   return await EnergyMaster.sell(price, amount);
@@ -165,9 +165,9 @@ async function consumeEnergyFromContract(contractAddress, amount) {
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
-  send_energy_metric('energy_consumed', amount);
+  send_energy_metric("energy_consumed", amount);
   logs.push({
-    action: 'consume',
+    action: "consume",
     amount: amount,
     contract: contractAddress
   });
@@ -177,7 +177,7 @@ async function consumeEnergyFromContract(contractAddress, amount) {
 async function consumeEnergy(amount) {
   if (!inited) await init();
   if (amount < 0) {
-    return Promise.reject({ msg: 'negative amount', value: amount });
+    return Promise.reject({ msg: "negative amount", value: amount });
   }
 
   let energyBalance = await myEnergyBalance();
@@ -190,7 +190,7 @@ async function consumeEnergy(amount) {
         energyBalance = await myEnergyBalance();
         count++;
         if (count == 30) {
-          return Promise.reject({ msg: 'failed to autoBuy', value: amount });
+          return Promise.reject({ msg: "failed to autoBuy", value: amount });
         }
       }
     } catch(e) {
@@ -214,7 +214,7 @@ async function consumeEnergy(amount) {
   }
 
   if (toConsume > 0) {
-    return Promise.reject({ msg: 'Unable to consume energy', value: toConsume });
+    return Promise.reject({ msg: "Unable to consume energy", value: toConsume });
   }
 
   const promises = txs.map((tx) => consumeEnergyFromContract(tx.address, tx.amount));
@@ -234,7 +234,7 @@ async function myEnergyBalance() {
 async function autoBuy(amount) {
   if (!inited) await init();
   if (!amount || amount < 0) {
-    return Promise.reject({ msg: 'Invalid amount', value: amount });
+    return Promise.reject({ msg: "Invalid amount", value: amount });
   }
 
   const contracts = await availableContracts();
@@ -252,7 +252,7 @@ async function autoBuy(amount) {
   }
 
   if (toBuy > 0) {
-    return Promise.reject({ msg: 'Insufficient energy over network', value: toBuy });
+    return Promise.reject({ msg: "Insufficient energy over network", value: toBuy });
   }
 
   const promises = txs.map((tx) => buyEnergy(tx.address, tx.amount));
@@ -267,7 +267,7 @@ async function updateBlock(blockNumber) {
     const txDetail = await bonds.transaction(tx);
     const to = txDetail.to;
     if (to === ENERGY_MASTER_ADDRESS) {
-      console.log('Updating master');
+      console.log("Updating master");
       await updateMaster();
     } else if (contracts[to] !== undefined) {
       console.log(`Updating contract ${to}`);

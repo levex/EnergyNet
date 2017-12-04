@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const blockchain = require('../blockchain');
+const blockchain = require("../blockchain");
 
-router.post('/buy', (req, res) => {
+router.post("/buy", (req, res) => {
   const body = req.body;
   const contract = body.contract;
   const amount = body.amount;
@@ -12,7 +12,7 @@ router.post('/buy', (req, res) => {
     .catch(() => res.status(400).end());
 });
 
-router.post('/sell', (req, res) => {
+router.post("/sell", (req, res) => {
   const body = req.body;
   const price = body.price;
   const amount = body.amount;
@@ -22,7 +22,7 @@ router.post('/sell', (req, res) => {
     .catch(() => res.status(400).end());
 });
 
-router.post('/consume', (req, res) => {
+router.post("/consume", (req, res) => {
   const body = req.body;
   const amount = body.amount;
 
@@ -31,7 +31,7 @@ router.post('/consume', (req, res) => {
     .catch(reason => res.status(500).send(reason));
 });
 
-router.post('/updateBlockchain', (req, res) => {
+router.post("/updateBlockchain", (req, res) => {
   const body = req.body;
   const blockNumber = body.blockNumber;
   blockchain.updateBlockchain(blockNumber)
@@ -39,7 +39,7 @@ router.post('/updateBlockchain', (req, res) => {
     .catch(reason => res.status(500).send(reason));
 });
 
-router.get('/log', (req, res) => {
+router.get("/log", (req, res) => {
   res.status(200).json(blockchain.getLog());
 });
 
