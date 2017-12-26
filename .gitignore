@@ -1,4 +1,10 @@
 # Created by https://www.gitignore.io/api/vim,node,rust,macos,python
+#
+### TeX ###
+*.aux
+*.log
+*.toc
+*.pdf
 
 ### Custom ###
 
