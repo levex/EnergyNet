@@ -105,14 +105,14 @@ async function myContracts() {
 }
 
 async function mySellerContracts() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   return Object.keys(contracts)
     .filter((contractAddr) => sellerContractsSet.has(contractAddr))
     .map((contractAddr) => contracts[contractAddr]);
 }
 
 async function myBuyerContracts() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   return Object.keys(contracts)
     .filter((contractAddr) => buyerContractsSet.has(contractAddr))
     .map((contractAddr) => contracts[contractAddr]);
@@ -120,14 +120,14 @@ async function myBuyerContracts() {
 
 
 async function availableContracts() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   return Object.keys(contracts)
     .filter((contractAddr) => availableContractsSet.has(contractAddr))
     .map((contractAddr) => contracts[contractAddr]);
 }
 
 async function buyEnergy(contractAddress, amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!contractAddress || !amount) {
     return Promise.reject({ msg: "Wrong contact address or amount", value: amount });
   }
@@ -143,7 +143,7 @@ async function buyEnergy(contractAddress, amount) {
 }
 
 async function sellEnergy(price, amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!price || !amount) {
     return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
   }
@@ -161,7 +161,7 @@ async function sellEnergy(price, amount) {
 }
 
 async function consumeEnergyFromContract(contractAddress, amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
@@ -175,7 +175,7 @@ async function consumeEnergyFromContract(contractAddress, amount) {
 }
 
 async function consumeEnergy(amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (amount < 0) {
     return Promise.reject({ msg: "negative amount", value: amount });
   }
@@ -222,7 +222,7 @@ async function consumeEnergy(amount) {
 }
 
 async function myEnergyBalance() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   const contracts = await myBuyerContracts();
   let balance = new bigNumber(0);
   for (const contract of contracts) {
@@ -232,7 +232,7 @@ async function myEnergyBalance() {
 }
 
 async function autoBuy(amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!amount || amount < 0) {
     return Promise.reject({ msg: "Invalid amount", value: amount });
   }
@@ -279,7 +279,7 @@ async function updateBlock(blockNumber) {
 }
 
 async function updateBlockchain(blockNumber) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   for (let i = lastBlock + 1; i <= blockNumber; i++) {
     await updateBlock(i);
   }
