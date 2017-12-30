@@ -6,15 +6,15 @@ import {makeContract, makeMasterContract} from "./blockchain";
 import {SellEnergyPanel} from "./sellEnergyPanel";
 import {BuyEnergyPanel} from "./buyEnergyPanel";
 import {ContractsViewPanel} from "./contractsViewPanel";
-import update from "immutability-helper";
-import BigNumber from "bignumber.js";
-import dateFormat from "dateformat";
-import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
+import update from 'immutability-helper';
+import BigNumber from 'bignumber.js';
+import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
+import Column from './Column.jsx';
 
-const file = "dapp/src/client/scripts/app.js";
 const METER_BACKEND = "http://localhost:3000";
 
-export class App extends React.Component {
+class App extends React.Component {
+
   constructor() {
     super();
     this.master = makeMasterContract();
@@ -170,83 +170,52 @@ export class App extends React.Component {
   }
 
   render() {
+    const accountBalance = <div className="col-xs-9 text-right">
+        <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
+        <div>Account Balance</div>
+      </div>;
+
+    const contractsInEffect = <div className="col-xs-9 text-right">
+        <div className="huge">
+          {
+            Object.keys(this.state.myBuyerContracts).length
+            +
+            Object.keys(this.state.mySellerContracts).length
+          }
+        </div>
+        <div>Contracts in effect</div>
+      </div>;
+
+    const transferedEnergy = <div>
+      <div className="col-xs-3 text-right">
+        <div className="huge">
+          {this.state.mySellerContracts.reduce(
+            (acc, contract) => {
+              return acc.add(new BigNumber(contract.offeredAmount))
+            }, new BigNumber(0)
+          ).toString()}
+        </div>
+        <div>kWh to sell</div>
+      </div>;
+      <div className="col-xs-5 text-right">
+        <div className="huge">
+          {this.state.myBuyerContracts.reduce(
+            (acc, contract) => {
+              return acc.add(new BigNumber(contract.remainingAmount))
+            }, new BigNumber(0)
+          ).toString()}
+        </div>
+        <div>kWh bought</div>
+      </div>
+    </div>;
+
     return (<div id="wrapper">
       <div id="page-wrapper">
-        <div className="row">
-          <div className="col-lg-12">
-            <h1 className="page-header">Dashboard</h1>
-          </div>
-          {/* /.col-lg-12 */}
-        </div>
         {/* /.row */}
         <div className="row">
-          <div className="col-lg-4 col-md-8">
-            <div className="panel panel-green">
-              <div className="panel-heading">
-                <div className="row">
-                  <div className="col-xs-3">
-                    <i className="fa fa-money fa-5x"></i>
-                  </div>
-                  <div className="col-xs-9 text-right">
-                    <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
-                    <div>Account Balance</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-8">
-            <div className="panel panel-primary">
-              <div className="panel-heading">
-                <div className="row">
-                  <div className="col-xs-2">
-                    <i className="fa fa-bolt fa-5x"></i>
-                  </div>
-                  <div className="col-xs-5 text-right">
-                    <div className="huge">
-                      {this.state.mySellerContracts.reduce(
-                        (acc, contract) => {
-                          return acc.add(new BigNumber(contract.offeredAmount));
-                        }, new BigNumber(0)
-                      ).toString()}
-                    </div>
-                    <div>kWh to sell</div>
-                  </div>
-                  <div className="col-xs-5 text-right">
-                    <div className="huge">
-                      {this.state.myBuyerContracts.reduce(
-                        (acc, contract) => {
-                          return acc.add(new BigNumber(contract.remainingAmount));
-                        }, new BigNumber(0)
-                      ).toString()}
-                    </div>
-                    <div>kWh bought</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-8">
-            <div className="panel panel-red">
-              <div className="panel-heading">
-                <div className="row">
-                  <div className="col-xs-3">
-                    <i className="fa fa-tasks fa-5x"></i>
-                  </div>
-                  <div className="col-xs-9 text-right">
-                    <div className="huge">
-                      {
-                        Object.keys(this.state.myBuyerContracts).length
-                      +
-                        Object.keys(this.state.mySellerContracts).length
-                      }
-                    </div>
-                    <div>Contracts in effect</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Column icon="fa fa-money fa-5x" color="green" content={accountBalance} />
+          <Column icon="fa fa-bolt fa-5x" color="primary" content={transferedEnergy} />
+          <Column icon="fa fa-tasks fa-5x" color="red" content={contractsInEffect} />
         </div>
         {/* /.row */}
         <div className="row">
@@ -255,40 +224,18 @@ export class App extends React.Component {
             <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
             <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer" amountSelector="remainingAmount" />
             <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller" amountSelector="offeredAmount" />
+
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
                 Energy consumption
-                <div className="pull-right">
-                  <div className="btn-group">
-                    <button type="button" className="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                      Actions
-                      <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu pull-right" role="menu">
-                      <li>
-                        <a href="#">Action</a>
-                      </li>
-                      <li>
-                        <a href="#">Another action</a>
-                      </li>
-                      <li>
-                        <a href="#">Something else here</a>
-                      </li>
-                      <li className="divider"></li>
-                      <li>
-                        <a href="#">Separated link</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
               </div>
-              {/* /.panel-heading */}
               <div className="panel-body">
                 <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameBorder="0"></iframe>
               </div>
               {/* /.panel-body */}
             </div>
+
             <div className="panel panel-default">
               <div className="panel-heading">
                 <i className="fa fa-bar-chart-o fa-fw"></i>
@@ -309,6 +256,7 @@ export class App extends React.Component {
               {/* /.panel-body */}
             </div>
             {/* /.panel */}
+
           </div>
           {/* /.col-lg-8 */}
         </div>
@@ -319,3 +267,5 @@ export class App extends React.Component {
     </div>);
   }
 }
+
+export default App;
