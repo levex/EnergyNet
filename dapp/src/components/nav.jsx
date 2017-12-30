@@ -3,7 +3,7 @@ import React from 'react'
 export class Nav extends React.Component {
   render() {
     return (<nav className="navbar navbar-default navbar-static-top" role="navigation" style={{
-        marginBottom: 0
+        marginBottom: 20
       }}>
       <div className="navbar-header">
         <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

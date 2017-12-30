@@ -1,15 +1,12 @@
-import React from "react";
-import {Rspan} from "oo7-react";
-import {bonds, formatBalance} from "oo7-parity";
-import {Bond} from "oo7";
-import {makeContract, makeMasterContract} from "./blockchain";
-import {SellEnergyPanel} from "./sellEnergyPanel";
-import {BuyEnergyPanel} from "./buyEnergyPanel";
-import {ContractsViewPanel} from "./contractsViewPanel";
+import React from 'react';
+import {Rspan} from 'oo7-react';
+import {bonds, formatBalance} from 'oo7-parity';
+import {Bond} from 'oo7';
+import {makeContract, makeMasterContract} from './blockchain';
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
-import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 import Column from './Column.jsx';
+import Stats from './Stats.jsx';
 
 const METER_BACKEND = "http://localhost:3000";
 
@@ -23,7 +20,8 @@ class App extends React.Component {
       mySellerContracts: [],
       myBuyerContracts: [],
       sellTx: null,
-      contractsHistogram: []
+      contractsHistogram: [],
+      show: "stats",
     };
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
@@ -209,62 +207,46 @@ class App extends React.Component {
       </div>
     </div>;
 
-    return (<div id="wrapper">
-      <div id="page-wrapper">
-        {/* /.row */}
-        <div className="row">
-          <Column icon="fa fa-money fa-5x" color="green" content={accountBalance} />
-          <Column icon="fa fa-bolt fa-5x" color="primary" content={transferedEnergy} />
-          <Column icon="fa fa-tasks fa-5x" color="red" content={contractsInEffect} />
-        </div>
-        {/* /.row */}
-        <div className="row">
-          <div className="col-lg-12">
-            <SellEnergyPanel sellTx={this.state.sellTx} amountBond={this.sellAmountBond} priceBond={this.priceBond} offerEnergy={this.offerEnergy.bind(this)}/>
-            <BuyEnergyPanel contracts={this.state.contracts} buyEnergy={this.buyEnergy.bind(this)} amountBond={this.buyAmountBond} />
-            <ContractsViewPanel contracts={this.state.myBuyerContracts} contractName="My contracts as buyer" amountSelector="remainingAmount" />
-            <ContractsViewPanel contracts={this.state.mySellerContracts} contractName="My contracts as seller" amountSelector="offeredAmount" />
+    const statsContractData = {
+      sellTx: this.state.sellTx,
+      contracts: this.state.contracts,
+      myBuyerContracts: this.state.myBuyerContracts,
+      mySellerContracts: this.state.mySellerContracts,
+      contractsHistogram: this.state.contractsHistogram,
+    };
 
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <i className="fa fa-bar-chart-o fa-fw"></i>
-                Energy consumption
-              </div>
-              <div className="panel-body">
-                <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameBorder="0"></iframe>
-              </div>
-              {/* /.panel-body */}
-            </div>
+    const statsBonds = {
+      sellAmountBond: this.sellAmountBond,
+      buyAmountBond: this.buyAmountBond,
+      priceBond: this.priceBond,
+      offerEnergy: this.offerEnergy.bind(this),
+      buyEnergy: this.buyEnergy.bind(this),
+    };
 
-            <div className="panel panel-default">
-              <div className="panel-heading">
-                <i className="fa fa-bar-chart-o fa-fw"></i>
-                Average price histogram
-              </div>
-              {/* /.panel-heading */}
-              <div className="panel-body">
-                <BarChart width={800} height={480} margin={{ top: 5, right: 5, bottom: 20, left: 5 }} data={this.state.contractsHistogram}>
-                  <XAxis dataKey="region">
-                    <Label position="bottom" value="Unit price [ETH]" />
-                  </XAxis>
-                  <YAxis />
-                  <CartesianGrid strokeDashArray="3 3" />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#8884d8" />
-                </BarChart>
-              </div>
-              {/* /.panel-body */}
-            </div>
-            {/* /.panel */}
+    return (
+      <div id="wrapper">
+        <Nav/>
+        <div id="page-wrapper">
+          <div className="row">
+            <Column icon="fa fa-money fa-5x" color="green" content={accountBalance} />
+            <Column icon="fa fa-bolt fa-5x" color="primary" content={transferedEnergy} />
+            <Column icon="fa fa-tasks fa-5x" color="red" content={contractsInEffect} />
+          </div>
+          <div className="row">
+            <ul className="nav nav-tabs nav-justified">
+              <li role="presentation"><a onClick={() => {this.setState({show: "stats"})}}>Stats</a></li>
+              <li role="presentation"><a onClick={() => {this.setState({show: "data"})}}>Settings</a></li>
+            </ul>
+
+            {this.state.show === "stats"
+              ? <Stats contracts={statsContractData} bonds={statsBonds} />
+              : <div> LOL </div>
+            }
 
           </div>
-          {/* /.col-lg-8 */}
         </div>
-        {/* /.row */}
       </div>
-      {/* /#page-wrapper */}
-
-    </div>);
+    );
   }
 }
 
