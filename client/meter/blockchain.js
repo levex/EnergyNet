@@ -1,9 +1,9 @@
-const oo7parity = require('oo7-parity');
+const oo7parity = require("oo7-parity");
 const bonds = oo7parity.bonds;
-const ENERGY_MASTER_ABI = require('./abis/abi_master');
-const ENERGY_ABI = require('./abis/abi');
+const ENERGY_MASTER_ABI = require("./abis/abi_master");
+const ENERGY_ABI = require("./abis/abi");
 const ENERGY_MASTER_ADDRESS = "0x7B7DC4FdB4eAf8168FBC73a9b67f15bB559c87cC";
-const bigNumber = require('bignumber.js');
+const bigNumber = require("bignumber.js");
 
 const EnergyMaster = bonds.makeContract(ENERGY_MASTER_ADDRESS, ENERGY_MASTER_ABI);
 
@@ -80,13 +80,13 @@ async function init() {
 }
 
 function send_energy_metric(name, amount) {
-  fetch('http://localhost:8086/write?db=energy', {
-    method: 'POST',
+  fetch("http://localhost:8086/write?db=energy", {
+    method: "POST",
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
+      "Accept": "application/json",
+      "Content-Type": "application/json",
     },
-    body: name + ' amount=' + amount,
+    body: name + " amount=" + amount,
   });
 }
 
@@ -105,14 +105,14 @@ async function myContracts() {
 }
 
 async function mySellerContracts() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   return Object.keys(contracts)
     .filter((contractAddr) => sellerContractsSet.has(contractAddr))
     .map((contractAddr) => contracts[contractAddr]);
 }
 
 async function myBuyerContracts() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   return Object.keys(contracts)
     .filter((contractAddr) => buyerContractsSet.has(contractAddr))
     .map((contractAddr) => contracts[contractAddr]);
@@ -120,22 +120,22 @@ async function myBuyerContracts() {
 
 
 async function availableContracts() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   return Object.keys(contracts)
     .filter((contractAddr) => availableContractsSet.has(contractAddr))
     .map((contractAddr) => contracts[contractAddr]);
 }
 
 async function buyEnergy(contractAddress, amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!contractAddress || !amount) {
     return Promise.reject({ msg: "Wrong contact address or amount", value: amount });
   }
 
-  send_energy_metric('energy_bought', amount);
+  send_energy_metric("energy_bought", amount);
   const contract = makeEnergyContract(contractAddress);
   logs.push({
-    action: 'buy',
+    action: "buy",
     amount: amount,
     contract: contractAddress
   });
@@ -143,39 +143,39 @@ async function buyEnergy(contractAddress, amount) {
 }
 
 async function sellEnergy(price, amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!price || !amount) {
     return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
   }
 
-  send_energy_metric('energy_sold', amount);
+  send_energy_metric("energy_sold", amount);
 
   logs.push({
     // FIXME: Log contract address
     // This is not available due to parity APIs unblocks
     // after tx is initiated instead of completed
-    action: 'sell',
+    action: "sell",
     amount: amount,
   });
   return await EnergyMaster.sell(price, amount);
 }
 
 async function consumeEnergyFromContract(contractAddress, amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   const contract = makeEnergyContract(contractAddress);
   const price = await contract.unitPrice();
   const cost = price.mul(amount);
-  send_energy_metric('energy_consumed', amount);
+  send_energy_metric("energy_consumed", amount);
   logs.push({
-    action: 'consume',
+    action: "consume",
     amount: amount,
     contract: contractAddress
   });
-  return await contract.consume(amount, {value: cost})
+  return await contract.consume(amount, {value: cost});
 }
 
 async function consumeEnergy(amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (amount < 0) {
     return Promise.reject({ msg: "negative amount", value: amount });
   }
@@ -222,7 +222,7 @@ async function consumeEnergy(amount) {
 }
 
 async function myEnergyBalance() {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   const contracts = await myBuyerContracts();
   let balance = new bigNumber(0);
   for (const contract of contracts) {
@@ -232,7 +232,7 @@ async function myEnergyBalance() {
 }
 
 async function autoBuy(amount) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!amount || amount < 0) {
     return Promise.reject({ msg: "Invalid amount", value: amount });
   }
@@ -256,7 +256,7 @@ async function autoBuy(amount) {
   }
 
   const promises = txs.map((tx) => buyEnergy(tx.address, tx.amount));
-  return Promise.all(promises)
+  return Promise.all(promises);
 }
 
 async function updateBlock(blockNumber) {
@@ -279,7 +279,7 @@ async function updateBlock(blockNumber) {
 }
 
 async function updateBlockchain(blockNumber) {
-  if (!inited) return Promise.reject({ msg: 'Blockchain unsynced' });
+  if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   for (let i = lastBlock + 1; i <= blockNumber; i++) {
     await updateBlock(i);
   }

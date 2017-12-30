@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 export class ContractsViewPanel extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   render() {
@@ -27,18 +27,18 @@ export class ContractsViewPanel extends React.Component {
       <div className="panel-body">
         <table width="100%" className="table table-striped table-bordered table-hover">
           <thead>
-          <tr>
-            <th>Date offered</th>
-            <th>Amount</th>
-            <th>Price</th>
-          </tr>
+            <tr>
+              <th>Date offered</th>
+              <th>Amount</th>
+              <th>Price</th>
+            </tr>
           </thead>
           <tbody>
-          {tableBody}
+            {tableBody}
           </tbody>
         </table>
       </div>
       {/* /.panel-body */}
-    </div>)
+    </div>);
   }
 }

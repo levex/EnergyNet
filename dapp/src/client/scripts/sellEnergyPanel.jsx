@@ -1,5 +1,5 @@
-import React from 'react'
-import {BButton, InputBond, TransactionProgressLabel} from 'parity-reactive-ui'
+import React from "react";
+import {BButton, InputBond, TransactionProgressLabel} from "parity-reactive-ui";
 
 export class SellEnergyPanel extends React.Component {
   constructor(props) {

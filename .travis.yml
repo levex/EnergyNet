@@ -10,12 +10,14 @@ cache:
 
 install:
   - pip install -r requirements.txt
-  - npm install -g truffle
+  - npm install -g truffle eslint eslint-plugin-react
 
 script:
   - python -m unittest discover
   - cd truffle
   - truffle test
+  - cd ../dapp && eslint --ext .jsx src
+  - cd ../client/meter && eslint .
 
 notifications:
   slack:

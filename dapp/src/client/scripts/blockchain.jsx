@@ -1,4 +1,4 @@
-import {bonds} from 'oo7-parity'
+import {bonds} from "oo7-parity";
 import ENERGY_ABI from "./abis/abi.js";
 import ENERGY_MASTER_ABI from "./abis/abi_master.js";
 
