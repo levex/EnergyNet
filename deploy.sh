@@ -1,6 +1,21 @@
-#!/bin/zsh
+#!/bin/sh
 
 set -e
+
+check_dep () {
+  if ! [ -x "$(command -v $1)" ]; then
+    echo "You don't have $1"
+    exit 1
+  fi
+}
+
+check_dep webpack
+check_dep truffle
+check_dep npm
+check_dep parity
+check_dep python3
+check_dep pip3
+check_dep mongod
 
 ENERGY_MIN=-100
 ENERGY_MAX=100
