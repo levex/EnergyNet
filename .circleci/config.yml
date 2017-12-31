@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: hiono/texlive:latest
+    steps:
+      - checkout
+      - run:
+          name: Download curl and make
+          command: apt-get update && apt-get install -y curl make
+      - run:
+          name: Compile
+          command: cd report && make && cd ..
+      - run:
+          name: Download Dropbox Uploader
+          command: curl "https://raw.githubusercontent.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh" -o ~/dropbox_uploader.sh && chmod +x ~/dropbox_uploader.sh
+      - run:
+          name: Check secret
+          command: echo $DROPBOX_SECRET_KEY
+      - run:
+          name: Configure Dropbox Uploader
+          command: echo $DROPBOX_SECRET_KEY > ~/.dropbox_uploader && chmod 777 ~/.dropbox_uploader
+      - run:
+          name: Upload to Dropbox
+          command: ~/dropbox_uploader.sh -d -f ~/.dropbox_uploader upload report/report.pdf ${BRANCH_NAME}/group-prj/report-$(date -u +"%m%d%y-%I%M%p").pdf
+      - run:
+          name: Upload to Dropbox latest
+          command: ~/dropbox_uploader.sh -d -f ~/.dropbox_uploader upload report/report.pdf ${BRANCH_NAME}/group-prj/report-latest.pdf
