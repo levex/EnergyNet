@@ -22,7 +22,7 @@ cd $PROJ_DIR/dapp && npm install && webpack && ./add_to_parity.sh
 cd $PROJ_DIR/parity && ./run.sh &
 pids="$pids $!"
 
-cd $PROJ_DIR && pip3.5 install --user -r requirements.txt
+cd $PROJ_DIR && pip3 install --user -r requirements.txt
 
 cd $PROJ_DIR/client/meter && npm install && npm start &
 pids="$pids $!"
