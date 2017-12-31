@@ -7,6 +7,7 @@ import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
 import Column from './Column';
 import Stats from './Stats';
+import SettingsSell from './SettingsSell';
 import Nav from './Nav';
 
 const METER_BACKEND = "http://localhost:3000";
@@ -229,34 +230,44 @@ class App extends React.Component {
 
     const navButtonClass = {
       stats: this.state.show === "stats" ? "active" : "",
-      data: this.state.show === "data" ? "active" : "",
+      settingsSell: this.state.show === "settingsSell" ? "active" : "",
     };
 
     return (
       <div id="wrapper">
         <Nav/>
         <div id="page-wrapper">
+
           <div className="row">
             <Column icon="fa fa-money fa-5x" color="green" content={accountBalance} />
             <Column icon="fa fa-bolt fa-5x" color="primary" content={transferedEnergy} />
             <Column icon="fa fa-tasks fa-5x" color="red" content={contractsInEffect} />
           </div>
+
           <div className="row">
-            <ul className="nav nav-tabs nav-justified">
-              <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: "stats"})}}>
-                <a>Stats</a>
-              </li>
-              <li role="presentation" className={navButtonClass.data} onClick={() => {this.setState({show: "data"})}}>
-                <a>Settings</a>
-              </li>
-            </ul>
+            <div className="panel panel-default">
+              <div className="panel-body">
 
-            {this.state.show === "stats"
-              ? <Stats contracts={statsContractData} bonds={statsBonds} />
-              : <div> LOL </div>
-            }
+                <ul className="nav nav-tabs nav-justified">
+                  <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: "stats"})}}>
+                    <a>Stats</a>
+                  </li>
+                  <li role="presentation" className={navButtonClass.settingsSell} onClick={() => {this.setState({show: "settingsSell"})}}>
+                    <a>Settings - Sell</a>
+                  </li>
+                </ul>
 
+                <div style={{marginTop: 10 + 'px'}}>
+                {this.state.show === "stats"
+                  ? <Stats contracts={statsContractData} bonds={statsBonds} />
+                  : <SettingsSell contracts={statsContractData} bonds={statsBonds} />
+                }
+                </div>
+
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     );
