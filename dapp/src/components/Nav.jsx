@@ -1,6 +1,11 @@
 import React from 'react'
 
-export class Nav extends React.Component {
+class Nav extends React.Component {
+
+  constructor() {
+    super();
+  }
+
   render() {
     return (<nav className="navbar navbar-default navbar-static-top" role="navigation" style={{
         marginBottom: 20
@@ -202,3 +207,5 @@ export class Nav extends React.Component {
     </nav>)
   }
 }
+
+export default Nav;

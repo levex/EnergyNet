@@ -5,8 +5,9 @@ import {Bond} from 'oo7';
 import {makeContract, makeMasterContract} from './blockchain';
 import update from 'immutability-helper';
 import BigNumber from 'bignumber.js';
-import Column from './Column.jsx';
-import Stats from './Stats.jsx';
+import Column from './Column';
+import Stats from './Stats';
+import Nav from './Nav';
 
 const METER_BACKEND = "http://localhost:3000";
 
@@ -194,8 +195,11 @@ class App extends React.Component {
           ).toString()}
         </div>
         <div>kWh to sell</div>
-      </div>;
-      <div className="col-xs-5 text-right">
+      </div>
+      <div className="col-xs-1 text-right huge">
+      :
+      </div>
+      <div className="col-xs-4 text-right">
         <div className="huge">
           {this.state.myBuyerContracts.reduce(
             (acc, contract) => {
@@ -223,6 +227,11 @@ class App extends React.Component {
       buyEnergy: this.buyEnergy.bind(this),
     };
 
+    const navButtonClass = {
+      stats: this.state.show === "stats" ? "active" : "",
+      data: this.state.show === "data" ? "active" : "",
+    };
+
     return (
       <div id="wrapper">
         <Nav/>
@@ -234,8 +243,12 @@ class App extends React.Component {
           </div>
           <div className="row">
             <ul className="nav nav-tabs nav-justified">
-              <li role="presentation"><a onClick={() => {this.setState({show: "stats"})}}>Stats</a></li>
-              <li role="presentation"><a onClick={() => {this.setState({show: "data"})}}>Settings</a></li>
+              <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: "stats"})}}>
+                <a>Stats</a>
+              </li>
+              <li role="presentation" className={navButtonClass.data} onClick={() => {this.setState({show: "data"})}}>
+                <a>Settings</a>
+              </li>
             </ul>
 
             {this.state.show === "stats"

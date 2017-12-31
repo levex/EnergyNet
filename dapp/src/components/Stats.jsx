@@ -1,6 +1,6 @@
 import React from 'react';
 import {SellEnergyPanel} from './sellEnergyPanel';
-import {BuyEnergyPanel} from './buyEnergyPanel';
+import BuyEnergyPanel from './BuyEnergyPanel';
 import {ContractsViewPanel} from "./contractsViewPanel";
 import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
 
@@ -9,10 +9,13 @@ const Stats = (props) => {
   const bonds = props.bonds;
   return (
     <div className="col-lg-12">
-      <SellEnergyPanel sellTx={contracts.sellTx} amountBond={bonds.sellAmountBond} priceBond={bonds.priceBond} offerEnergy={bonds.offerEnergy}/>
+      <SellEnergyPanel sellTx={contracts.sellTx} amountBond={bonds.sellAmountBond} priceBond={bonds.priceBond}
+                       offerEnergy={bonds.offerEnergy}/>
       <BuyEnergyPanel contracts={contracts.contracts} buyEnergy={bonds.buyEnergy} amountBond={bonds.buyAmountBond} />
-      <ContractsViewPanel contracts={contracts.myBuyerContracts} contractName="My contracts as buyer" amountSelector="remainingAmount" />
-      <ContractsViewPanel contracts={contracts.mySellerContracts} contractName="My contracts as seller" amountSelector="offeredAmount" />
+      <ContractsViewPanel contracts={contracts.myBuyerContracts} contractName="My contracts as buyer"
+                          title="My buyer contracts" amountSelector="remainingAmount" />
+      <ContractsViewPanel contracts={contracts.mySellerContracts} contractName="My contracts as seller"
+                          title="My seller contracts" amountSelector="offeredAmount" />
 
       <div className="panel panel-default">
         <div className="panel-heading">
