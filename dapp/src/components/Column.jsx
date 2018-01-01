@@ -1,3 +1,5 @@
+import React from "react";
+
 const Column = (props) => {
   const panelClass = "panel panel-" + props.color;
   return(

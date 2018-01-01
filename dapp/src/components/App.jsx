@@ -8,9 +8,16 @@ import BigNumber from "bignumber.js";
 import Column from "./Column";
 import Stats from "./Stats";
 import SettingsSell from "./SettingsSell";
+import SettingsBuy from "./SettingsBuy";
 import Nav from "./Nav";
 
 const METER_BACKEND = "http://localhost:3000";
+
+const tab = {
+  STATS: 0,
+  SELL: 1,
+  BUY: 2,
+};
 
 class App extends React.Component {
 
@@ -195,7 +202,7 @@ class App extends React.Component {
             }, new BigNumber(0)
           ).toString()}
         </div>
-        <div>kWh to sell</div>
+        <div>kWh sold</div>
       </div>
       <div className="col-xs-1 text-right huge">
       :
@@ -229,8 +236,9 @@ class App extends React.Component {
     };
 
     const navButtonClass = {
-      stats: this.state.show === "stats" ? "active" : "",
-      settingsSell: this.state.show === "settingsSell" ? "active" : "",
+      stats: this.state.show === tab.STATS ? "active" : "",
+      sell: this.state.show === tab.SELL ? "active" : "",
+      buy: this.state.show === tab.BUY ? "active" : "",
     };
 
     return (
@@ -249,18 +257,23 @@ class App extends React.Component {
               <div className="panel-body">
 
                 <ul className="nav nav-tabs nav-justified">
-                  <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: "stats"});}}>
+                  <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: tab.STATS});}}>
                     <a>Stats</a>
                   </li>
-                  <li role="presentation" className={navButtonClass.settingsSell} onClick={() => {this.setState({show: "settingsSell"});}}>
+                  <li role="presentation" className={navButtonClass.sell} onClick={() => {this.setState({show: tab.SELL});}}>
                     <a>Settings - Sell</a>
+                  </li>
+                  <li role="presentation" className={navButtonClass.buy} onClick={() => {this.setState({show: tab.BUY});}}>
+                    <a>Settings - Buy</a>
                   </li>
                 </ul>
 
                 <div style={{marginTop: 10 + "px"}}>
-                  {this.state.show === "stats"
+                  {this.state.show === tab.STATS
                     ? <Stats contracts={statsContractData} bonds={statsBonds} />
-                    : <SettingsSell contracts={statsContractData} bonds={statsBonds} />
+                    : (this.state.show === tab.SELL
+                    ? <SettingsSell contracts={statsContractData} bonds={statsBonds} />
+                    : <SettingsBuy contracts={statsContractData} bonds={statsBonds} />)
                   }
                 </div>
 

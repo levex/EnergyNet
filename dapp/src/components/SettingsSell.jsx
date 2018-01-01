@@ -1,3 +1,4 @@
+import React from "react";
 import {SellEnergyPanel} from "./sellEnergyPanel";
 
 const SettingsSell = (props) => {
