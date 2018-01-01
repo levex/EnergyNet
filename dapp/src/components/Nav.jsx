@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 class Nav extends React.Component {
 
@@ -8,8 +8,8 @@ class Nav extends React.Component {
 
   render() {
     return (<nav className="navbar navbar-default navbar-static-top" role="navigation" style={{
-        marginBottom: 20
-      }}>
+      marginBottom: 20
+    }}>
       <div className="navbar-header">
         <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
           <span className="sr-only">Toggle navigation</span>
@@ -37,8 +37,8 @@ class Nav extends React.Component {
                   </p>
                   <div className="progress progress-striped active">
                     <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style={{
-                        width: "40%"
-                      }}>
+                      width: "40%"
+                    }}>
                       <span className="sr-only">40% Complete (success)</span>
                     </div>
                   </div>
@@ -55,8 +55,8 @@ class Nav extends React.Component {
                   </p>
                   <div className="progress progress-striped active">
                     <div className="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style={{
-                        width: "20%"
-                      }}>
+                      width: "20%"
+                    }}>
                       <span className="sr-only">20% Complete</span>
                     </div>
                   </div>
@@ -73,8 +73,8 @@ class Nav extends React.Component {
                   </p>
                   <div className="progress progress-striped active">
                     <div className="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={{
-                        width: "60%"
-                      }}>
+                      width: "60%"
+                    }}>
                       <span className="sr-only">60% Complete (warning)</span>
                     </div>
                   </div>
@@ -91,8 +91,8 @@ class Nav extends React.Component {
                   </p>
                   <div className="progress progress-striped active">
                     <div className="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style={{
-                        width: "80%"
-                      }}>
+                      width: "80%"
+                    }}>
                       <span className="sr-only">80% Complete (danger)</span>
                     </div>
                   </div>
@@ -204,7 +204,7 @@ class Nav extends React.Component {
         {/* /.dropdown */}
       </ul>
       {/* /.navbar-static-side */}
-    </nav>)
+    </nav>);
   }
 }
 

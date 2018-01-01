@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Column = (props) => {
   const panelClass = "panel panel-" + props.color;
   return(
@@ -10,12 +8,12 @@ const Column = (props) => {
             <div className="col-xs-3">
               <i className={props.icon}/>
             </div>
-              {props.content}
+            {props.content}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 export default Column;

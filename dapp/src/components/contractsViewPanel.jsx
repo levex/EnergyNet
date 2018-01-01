@@ -1,7 +1,7 @@
 import React from "react";
 
-const $ = require('jquery');
-$.DataTable = require('datatables.net-bs');
+const $ = require("jquery");
+$.DataTable = require("datatables.net-bs");
 
 export class ContractsViewPanel extends React.Component {
 
@@ -13,51 +13,51 @@ export class ContractsViewPanel extends React.Component {
     const columns =
 
     $(this.refs.table).DataTable({
-       "dom":
+      "dom":
          "<'data-table-wrapper'" +
          "<'row'<'col-sm-6'l><'col-sm-6'>>" +
          "<'row'<'col-sm-12'tr>>" +
          "<'row'<'col-sm-5'i><'col-sm-7'p>>" +
          ">",
-       "data": this.props.contracts,
-       "columns": [
-         {
-           title: "Date Offered",
-           width: 100,
-           data: null,
-           type: "string",
-           render: (data, type, row) => "SomeDate"
-         },
-         {
-           title: "Amount Offered",
-           width: 100,
-           data: this.props.amountSelector,
-           type: "num",
-           render: (data, type, row) => data + " kWh/day"
-         },
-         {
-            title: "Price",
-            width: 100,
-            data: "unitPrice",
-            type: "num",
-            render: (data, type, row) => data + " £/kWh"
-         },
-       ],
-       "order": [[2, "asc"]],
-    })
+      "data": this.props.contracts,
+      "columns": [
+        {
+          title: "Date Offered",
+          width: 100,
+          data: null,
+          type: "string",
+          render: (data, type, row) => "SomeDate"
+        },
+        {
+          title: "Amount Offered",
+          width: 100,
+          data: this.props.amountSelector,
+          type: "num",
+          render: (data, type, row) => data + " kWh/day"
+        },
+        {
+          title: "Price",
+          width: 100,
+          data: "unitPrice",
+          type: "num",
+          render: (data, type, row) => data + " £/kWh"
+        },
+      ],
+      "order": [[2, "asc"]],
+    });
   }
 
   componentWillUnmount() {
-    $('.data-table-wrapper')
-    .find('table')
-    .DataTable()
-    .destroy(true)
+    $(".data-table-wrapper")
+      .find("table")
+      .DataTable()
+      .destroy(true);
   }
 
   shouldComponentUpdate(nextProps) {
-    const table = $('.data-table-wrapper')
-    .find('table')
-    .DataTable();
+    const table = $(".data-table-wrapper")
+      .find("table")
+      .DataTable();
     table.clear();
     table.rows.add(nextProps.contracts);
     table.draw();
@@ -76,6 +76,6 @@ export class ContractsViewPanel extends React.Component {
           <table width="100%" className="table table-striped table-bordered table-hover" ref="table" />
         </div>
       </div>
-    )
+    );
   }
 }

@@ -1,7 +1,6 @@
-import React from 'react';
-import BuyEnergyPanel from './BuyEnergyPanel';
+import BuyEnergyPanel from "./BuyEnergyPanel";
 import {ContractsViewPanel} from "./contractsViewPanel";
-import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts';
+import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
 
 const Stats = (props) => {
   const contracts = props.contracts;
@@ -11,9 +10,9 @@ const Stats = (props) => {
     <div className="col-lg-12">
       <BuyEnergyPanel contracts={contracts.contracts} buyEnergy={bonds.buyEnergy} amountBond={bonds.buyAmountBond} />
       <ContractsViewPanel contracts={contracts.myBuyerContracts} contractName="My contracts as buyer"
-                          title="My buyer contracts" amountSelector="remainingAmount" />
+        title="My buyer contracts" amountSelector="remainingAmount" />
       <ContractsViewPanel contracts={contracts.mySellerContracts} contractName="My contracts as seller"
-                          title="My seller contracts" amountSelector="offeredAmount" />
+        title="My seller contracts" amountSelector="offeredAmount" />
 
       <div className="panel panel-default">
         <div className="panel-heading">

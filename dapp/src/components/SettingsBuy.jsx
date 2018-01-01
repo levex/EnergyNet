@@ -1,6 +1,6 @@
-import {SellEnergyPanel} from "./sellEnergyPanel";
+import BuyEnergyPanel from "./BuyEnergyPanel";
 
-const SettingsSell = (props) => {
+const SettingsBuy = (props) => {
   const contracts = props.contracts;
   const bonds = props.bonds;
 
@@ -12,4 +12,4 @@ const SettingsSell = (props) => {
   );
 };
 
-export default SettingsSell;
+export default SettingsBuy;

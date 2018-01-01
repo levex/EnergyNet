@@ -1,14 +1,14 @@
-import React from 'react';
-import {Rspan} from 'oo7-react';
-import {bonds, formatBalance} from 'oo7-parity';
-import {Bond} from 'oo7';
-import {makeContract, makeMasterContract} from './blockchain';
-import update from 'immutability-helper';
-import BigNumber from 'bignumber.js';
-import Column from './Column';
-import Stats from './Stats';
-import SettingsSell from './SettingsSell';
-import Nav from './Nav';
+import React from "react";
+import {Rspan} from "oo7-react";
+import {bonds, formatBalance} from "oo7-parity";
+import {Bond} from "oo7";
+import {makeContract, makeMasterContract} from "./blockchain";
+import update from "immutability-helper";
+import BigNumber from "bignumber.js";
+import Column from "./Column";
+import Stats from "./Stats";
+import SettingsSell from "./SettingsSell";
+import Nav from "./Nav";
 
 const METER_BACKEND = "http://localhost:3000";
 
@@ -171,27 +171,27 @@ class App extends React.Component {
 
   render() {
     const accountBalance = <div className="col-xs-9 text-right">
-        <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
-        <div>Account Balance</div>
-      </div>;
+      <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
+      <div>Account Balance</div>
+    </div>;
 
     const contractsInEffect = <div className="col-xs-9 text-right">
-        <div className="huge">
-          {
-            Object.keys(this.state.myBuyerContracts).length
+      <div className="huge">
+        {
+          Object.keys(this.state.myBuyerContracts).length
             +
             Object.keys(this.state.mySellerContracts).length
-          }
-        </div>
-        <div>Contracts in effect</div>
-      </div>;
+        }
+      </div>
+      <div>Contracts in effect</div>
+    </div>;
 
     const transferedEnergy = <div>
       <div className="col-xs-3 text-right">
         <div className="huge">
           {this.state.mySellerContracts.reduce(
             (acc, contract) => {
-              return acc.add(new BigNumber(contract.offeredAmount))
+              return acc.add(new BigNumber(contract.offeredAmount));
             }, new BigNumber(0)
           ).toString()}
         </div>
@@ -204,7 +204,7 @@ class App extends React.Component {
         <div className="huge">
           {this.state.myBuyerContracts.reduce(
             (acc, contract) => {
-              return acc.add(new BigNumber(contract.remainingAmount))
+              return acc.add(new BigNumber(contract.remainingAmount));
             }, new BigNumber(0)
           ).toString()}
         </div>
@@ -249,19 +249,19 @@ class App extends React.Component {
               <div className="panel-body">
 
                 <ul className="nav nav-tabs nav-justified">
-                  <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: "stats"})}}>
+                  <li role="presentation" className={navButtonClass.stats} onClick={() => {this.setState({show: "stats"});}}>
                     <a>Stats</a>
                   </li>
-                  <li role="presentation" className={navButtonClass.settingsSell} onClick={() => {this.setState({show: "settingsSell"})}}>
+                  <li role="presentation" className={navButtonClass.settingsSell} onClick={() => {this.setState({show: "settingsSell"});}}>
                     <a>Settings - Sell</a>
                   </li>
                 </ul>
 
-                <div style={{marginTop: 10 + 'px'}}>
-                {this.state.show === "stats"
-                  ? <Stats contracts={statsContractData} bonds={statsBonds} />
-                  : <SettingsSell contracts={statsContractData} bonds={statsBonds} />
-                }
+                <div style={{marginTop: 10 + "px"}}>
+                  {this.state.show === "stats"
+                    ? <Stats contracts={statsContractData} bonds={statsBonds} />
+                    : <SettingsSell contracts={statsContractData} bonds={statsBonds} />
+                  }
                 </div>
 
               </div>
