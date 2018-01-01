@@ -272,8 +272,8 @@ class App extends React.Component {
                   {this.state.show === tab.STATS
                     ? <Stats contracts={statsContractData} bonds={statsBonds} />
                     : (this.state.show === tab.SELL
-                    ? <SettingsSell contracts={statsContractData} bonds={statsBonds} />
-                    : <SettingsBuy contracts={statsContractData} bonds={statsBonds} />)
+                      ? <SettingsSell contracts={statsContractData} bonds={statsBonds} />
+                      : <SettingsBuy contracts={statsContractData} bonds={statsBonds} />)
                   }
                 </div>
 
