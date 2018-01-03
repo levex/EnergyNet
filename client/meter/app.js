@@ -2,6 +2,8 @@ const express = require("express");
 const balance = require("./routes/balance");
 const contract = require("./routes/contract");
 const transaction = require("./routes/transaction");
+const blockchain = require("./routes/blockchain");
+const config = require("./routes/config");
 
 const bodyParser = require("body-parser");
 const logger = require("morgan");
@@ -19,7 +21,9 @@ app.use(logger("dev"));
 app.use("/balance", balance);
 app.use("/contract", contract);
 app.use("/transaction", transaction);
-app.listen(3000, "localhost", () => console.log("Example app listening on port 3000!"));
+app.use("/blockchain", blockchain);
+app.use("/config", config);
+app.listen(3000, "localhost", () => console.log("Energy client listening on port 3000!"));
 
 // catch 404
 app.use((req, res, next) => {
