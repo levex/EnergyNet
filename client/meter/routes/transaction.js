@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const blockchain = require("../blockchain");
+const consume = require("../consume");
+const sell = require("../sell");
 
 router.post("/buy", (req, res) => {
   const body = req.body;
@@ -14,21 +16,24 @@ router.post("/buy", (req, res) => {
 
 router.post("/sell", (req, res) => {
   const body = req.body;
-  const price = body.price;
   const amount = body.amount;
 
-  blockchain.sellEnergy(price, amount)
-    .then(() => res.status(200).end())
-    .catch(() => res.status(400).end());
+  if (sell.sellEnergy(amount)) {
+    res.status(200).end();
+  } else {
+    res.status(400).end();
+  }
 });
 
 router.post("/consume", (req, res) => {
   const body = req.body;
   const amount = body.amount;
 
-  blockchain.consumeEnergy(amount)
-    .then(() => res.status(200).end())
-    .catch(reason => res.status(500).send(reason));
+  if (consume.consumeEnergy(amount)) {
+    res.status(200).end();
+  } else {
+    res.status(500).send();
+  }
 });
 
 router.post("/updateBlockchain", (req, res) => {
@@ -37,10 +42,6 @@ router.post("/updateBlockchain", (req, res) => {
   blockchain.updateBlockchain(blockNumber)
     .then(() => res.status(200).end())
     .catch(reason => res.status(500).send(reason));
-});
-
-router.get("/log", (req, res) => {
-  res.status(200).json(blockchain.getLog());
 });
 
 module.exports = router;
