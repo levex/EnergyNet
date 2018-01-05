@@ -1,10 +1,8 @@
-import React from "react";
 import {ContractsViewPanel} from "./contractsViewPanel";
 import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
 
 const Stats = (props) => {
   const contracts = props.contracts;
-  const bonds = props.bonds;
 
   return (
     <div className="col-lg-12">
