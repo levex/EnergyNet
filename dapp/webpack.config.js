@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
   entry: {
-  	app: path.resolve(__dirname, 'src/client/scripts/entry.jsx')
+  	app: path.resolve(__dirname, 'src/components/entry.jsx')
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

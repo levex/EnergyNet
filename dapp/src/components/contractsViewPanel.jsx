@@ -1,11 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import {BButton, InputBond, TransactionProgressLabel} from "parity-reactive-ui";
 
 const $ = require("jquery");
 $.DataTable = require("datatables.net-bs");
 
-export class AvailableContractsTable extends React.Component {
+export class ContractsViewPanel extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
 
   componentDidMount() {
     const columns =
@@ -20,16 +22,16 @@ export class AvailableContractsTable extends React.Component {
       "data": this.props.contracts,
       "columns": [
         {
-          title: "Amount Offered",
+          title: "Date Offered",
           width: 100,
-          data: "offeredAmount",
-          type: "num",
-          render: (data, type, row) => data + " kWh/day"
+          data: null,
+          type: "string",
+          render: (data, type, row) => "SomeDate"
         },
         {
-          title: "Amount Bought",
+          title: "Amount Offered",
           width: 100,
-          data: "remainingAmount",
+          data: this.props.amountSelector,
           type: "num",
           render: (data, type, row) => data + " kWh/day"
         },
@@ -39,22 +41,6 @@ export class AvailableContractsTable extends React.Component {
           data: "unitPrice",
           type: "num",
           render: (data, type, row) => data + " £/kWh"
-        },
-        {
-          title: "Buy Energy",
-          width: 400,
-          data: null,
-          orderable: false,
-          createdCell: (cell, cellData, rowData, rowIndex, colIndex) => ReactDOM.render(
-            <form role="form">
-              <InputBond placeholder="kWh/day" bond={this.props.amountBond} style={{width: "100%"}} action>
-                <input />
-                {rowData.tx === null
-                  ? <BButton className="btn btn-primary" content="Buy Energy" onClick={() => this.props.buyEnergy(rowData.address)}/>
-                  : <TransactionProgressLabel value={rowData.tx}/>
-                }
-              </InputBond>
-            </form>, cell)
         },
       ],
       "order": [[2, "asc"]],
@@ -80,8 +66,15 @@ export class AvailableContractsTable extends React.Component {
 
   render() {
     return (
-      <div>
-        <table width="100%" className="table table-striped table-bordered table-hover" ref="table" />
+      <div className="panel panel-default">
+        <div className="panel-heading">
+          <i className="fa fa-bar-chart-o fa-fw"></i>
+          {this.props.title}
+        </div>
+
+        <div className="panel-body">
+          <table width="100%" className="table table-striped table-bordered table-hover" ref="table" />
+        </div>
       </div>
     );
   }

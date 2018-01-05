@@ -2,7 +2,7 @@
 
 set -e
 
-DAPP_ABI_DIR=${WORKING_DIRECTORY}/../dapp/src/client/scripts/abis
+DAPP_ABI_DIR=${WORKING_DIRECTORY}/../dapp/src/components/abis
 METER_ABI_DIR=${WORKING_DIRECTORY}/../client/meter/abis
 
 function write_abi() {
