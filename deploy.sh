@@ -21,10 +21,10 @@ ENERGY_MIN=-100
 ENERGY_MAX=100
 PROJ_DIR=$(pwd)
 cd $PROJ_DIR/truffle && rm -rf build && truffle compile && truffle build
-cd $PROJ_DIR/dapp && npm install && webpack && ./add_to_parity.sh
+cd $PROJ_DIR/dapp && npm install oo7 && npm install oo7-parity oo7-react && npm install && webpack && ./add_to_parity.sh
 cd $PROJ_DIR/parity && ./run.sh &
 cd $PROJ_DIR && pip3 install --user -r requirements.txt
-cd $PROJ_DIR/client/meter && npm install && npm start &
+cd $PROJ_DIR/client/meter && npm install oo7 && npm install && npm start &
 cd $PROJ_DIR/simulation && python3 meter.py -e $ENERGY_MIN $ENERGY_MAX &
 
 handler() {

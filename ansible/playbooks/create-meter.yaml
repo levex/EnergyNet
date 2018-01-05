@@ -93,7 +93,7 @@
     - name: build contracts
       shell: rm -rf /energy/truffle/build && cd /energy/truffle && truffle compile && truffle build
     - name: build frontend
-      shell: cd /energy/dapp && npm install && webpack && ./add_to_parity.sh
+      shell: cd /energy/dapp && npm install oo7 && npm install oo7-parity oo7-react && npm install && webpack && ./add_to_parity.sh
     - name: reload systemd
       shell: systemctl daemon-reload
     - name: Disable ParityEnergy service if running
@@ -104,7 +104,7 @@
     - name: Start ParityEnergy service
       shell: systemctl start parity-energy
     - name: Build Meter server
-      shell: cd /energy/client/meter && npm install
+      shell: cd /energy/client/meter && npm install oo7 && npm install
     - name: Disable Meter service if running
       shell: systemctl stop meter-server && systemctl disable meter-server
       ignore_errors: yes
