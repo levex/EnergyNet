@@ -1,11 +1,25 @@
 {
   "meter0": {
     "ip": "localhost",
-    "config": {
-      "price": 1,
-      "energy_input": -2,
-      "input_noise": 1,
-      "enabled": true
+    "schedule": {
+      "0": {
+        "price": 1,
+        "energy_input": -2,
+        "input_noise": 1,
+        "enabled": true
+      },
+      "1": {
+        "price": 1,
+        "energy_input": 6,
+        "input_noise": 2,
+        "enabled": true
+      },
+      "3": {
+        "price": 3,
+        "energy_input": 6,
+        "input_noise": 2,
+        "enabled": true
+      }
     }
   }
 }

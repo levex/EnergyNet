@@ -7,7 +7,6 @@ from collections import defaultdict
 
 CLIENT_PORT = 8080
 
-
 def make_api(ip, endpoint):
     return "http://" + ip + ":8080" + endpoint
 
@@ -29,10 +28,36 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def update_node_config(config, ip):
+    requests.post(make_api(ip, "/config"), data=json.dumps(config), \
+        headers= {'Content-type': 'application/json', 'Accept': 'text/plain'})
+
+
+def update_nodes(time):
+    for node in simulation_config.values():
+        ip = node["ip"]
+        schedule = node["schedule"]
+        if str(time) in schedule:
+            config = schedule.get(str(time))
+            update_node_config(config, ip)
+
+
+def disable_nodes():
+    for c in simulation_config.values():
+        ip = c["ip"]
+        config = {
+            "price": 1,
+            "energy_input": 0,
+            "input_noise": 0,
+            "enabled": False,
+        }
+
+        update_node_config(config, ip)
+
+
 if __name__ == "__main__":
     args = parse_arguments()
     simulation_config = json.load(open(args.config))
-    print(simulation_config)
 
     collected_metrics = defaultdict(int)
 
@@ -42,34 +67,11 @@ if __name__ == "__main__":
     #    collected_metrics["sold"] -= metrics["sold"]
     #    collected_metrics["consumed"] -= metrics["consumed"]
 
-    # Configure meters
-    for c in simulation_config.values():
-      ip = c["ip"]
-      config = c["config"]
-      requests.get(make_api(ip, "/metrics"))
-      time.sleep(1)
-      requests.post(make_api(ip, "/config"), data=json.dumps(config), \
-          headers= {'Content-type': 'application/json', 'Accept': 'text/plain'})
-
-    #for i in range(args.simulation_duration):
-    #    for ip in args.simulated_client_ip:
-    #        requests.get(make_api(ip, "/tick"))
-    #    time.sleep(0.01)
-
-    time.sleep(args.simulation_duration)
-
-    # Disable meters
-    for c in simulation_config.values():
-      ip = c["ip"]
-      config = {
-          "price": 1,
-          "energy_input": 0,
-          "input_noise": 0,
-          "enabled": False,
-      }
-
-      requests.post(make_api(ip, "/config"), data=json.dumps(config),
-          headers= {'Content-type': 'application/json', 'Accept': 'text/plain'})
+    t = 0
+    for i in range(args.simulation_duration):
+        update_nodes(t)
+        time.sleep(1)
+        t += 1
 
     # Collect metrics and print them out
     #for ip in args.simulated_client_ip:

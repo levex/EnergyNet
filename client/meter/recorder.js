@@ -17,13 +17,14 @@ function record_sell_price(price) {
 }
 
 function send_energy_metric(name, amount) {
+  const location = config.location;
   fetch(config.influxUrl, {
     method: "POST",
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
     },
-    body: name + " amount=" + amount,
+    body: location + name + " amount=" + amount,
   });
 }
 

@@ -1,3 +1,4 @@
 {
-  "influxUrl": "http://localhost:8086/write?db=energy"
+  "influxUrl": "http://146.169.45.94:8086/write?db=simulation",
+  "location": "meter00"
 }
