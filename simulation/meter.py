@@ -56,7 +56,7 @@ def consume_energy(amount):
     simulation_metrics["consumed"] += amount
 
 
-def sell_energy(amount, price):
+def sell_energy(amount):
     requests.post(
         METER_API_BASE_URL + "transaction/sell",
         data=json.dumps({
@@ -106,7 +106,7 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
           print(post_data)
           config = json.loads(post_data)
           print("Setting config to: " + str(config))
-          if (config["price"] !== simulation_config["price"]):
+          if (config["price"] != simulation_config["price"]):
               print("Setting price to: " + str(config["price"]))
               requests.post(
                   METER_API_BASE_URL + "config/price",
@@ -130,7 +130,7 @@ def tick():
 
     print("Energy outcome: " + str(energy_input) + "kWh")
     if energy_input > 0:
-      sell_energy(energy_input, simulation_config["price"])
+      sell_energy(energy_input)
     elif energy_input < 0:
       consume_energy(-energy_input)
 
