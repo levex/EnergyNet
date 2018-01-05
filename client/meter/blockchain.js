@@ -95,8 +95,7 @@ async function myAccount() {
 async function myContracts() {
   const sellerContracts = await mySellerContracts();
   const buyerContracts = await myBuyerContracts();
-  return contracts;
-  //return {sellerContracts, buyerContracts};
+  return {sellerContracts, buyerContracts};
 }
 
 async function mySellerContracts() {

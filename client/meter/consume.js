@@ -31,7 +31,7 @@ function processConsumption() {
     return;
   }
 
-  amount = consumeRequests.reduce((acc, x) => acc + x);
+  const amount = consumeRequests.reduce((acc, x) => acc + x);
   consumeRequests.length = 0;
   if (amount > 0) {
     recorder.record_consumed_energy(amount);
@@ -43,7 +43,7 @@ async function consumeEnergyFromChain(amount) {
   let energyBalance = await blockchain.myEnergyBalance();
   if (energyBalance < amount) {
     try {
-      buyAmount = (amount - energyBalance) * PREBUY_COEF;
+      const buyAmount = (amount - energyBalance) * PREBUY_COEF;
       await buy.autoBuy(buyAmount);
 
       let count = 0;
@@ -87,4 +87,4 @@ setInterval(processConsumption, PROCESS_INTERVAL);
 
 module.exports = {
   consumeEnergy,
-}
+};

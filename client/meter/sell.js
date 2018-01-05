@@ -20,7 +20,7 @@ function processProdution() {
     return;
   }
 
-  amount = sellRequests.reduce((acc, x) => acc + x);
+  const amount = sellRequests.reduce((acc, x) => acc + x);
   sellRequests.length = 0;
   if (amount > 0) {
     blockchain.sellEnergy(price, amount).catch();
@@ -33,4 +33,4 @@ setInterval(processProdution, PROCESS_INTERVAL);
 module.exports = {
   sellEnergy,
   setPrice,
-}
+};

@@ -32,4 +32,4 @@ async function autoBuy(amount) {
 
 module.exports = {
   autoBuy,
-}
+};
