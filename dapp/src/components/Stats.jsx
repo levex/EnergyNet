@@ -1,5 +1,5 @@
 import React from "react";
-import {ContractsViewPanel} from "./contractsViewPanel";
+import {ContractsViewPanel} from "./ContractsViewPanel";
 import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
 
 const Stats = (props) => {
