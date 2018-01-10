@@ -2,7 +2,7 @@ import React from "react";
 import {Rspan} from "oo7-react";
 import {bonds, formatBalance} from "oo7-parity";
 import {Bond} from "oo7";
-import {makeContract, makeMasterContract} from "./blockchain";
+import {makeContract, makeMasterContract} from "./Blockchain";
 import update from "immutability-helper";
 import BigNumber from "bignumber.js";
 import Column from "./Column";

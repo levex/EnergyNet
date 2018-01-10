@@ -1,5 +1,5 @@
 import React from "react";
-import {SellEnergyPanel} from "./sellEnergyPanel";
+import {SellEnergyPanel} from "./SellEnergyPanel";
 
 const SettingsSell = (props) => {
   const contracts = props.contracts;
