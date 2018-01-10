@@ -18,6 +18,7 @@ function sellEnergy(amount) {
 
 function processProdution() {
   if (sellRequests.length === 0) {
+    recorder.record_sold_energy(0);
     return;
   }
 
@@ -25,8 +26,6 @@ function processProdution() {
   sellRequests.length = 0;
   if (amount > 0) {
     blockchain.sellEnergy(price, amount).catch();
-  } else {
-    recorder.record_sold_energy(0);
   }
 }
 
