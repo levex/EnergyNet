@@ -1,3 +1,4 @@
+import React from "react";
 import {ContractsViewPanel} from "./contractsViewPanel";
 import {BarChart, Bar, Label, XAxis, YAxis, CartesianGrid, Tooltip} from "recharts";
 
@@ -6,10 +7,6 @@ const Stats = (props) => {
 
   return (
     <div className="col-lg-12">
-      <ContractsViewPanel contracts={contracts.myBuyerContracts} contractName="My contracts as buyer"
-        title="My buyer contracts" amountSelector="remainingAmount" />
-      <ContractsViewPanel contracts={contracts.mySellerContracts} contractName="My contracts as seller"
-        title="My seller contracts" amountSelector="offeredAmount" />
 
       <div className="panel panel-default">
         <div className="panel-heading">
@@ -17,9 +14,28 @@ const Stats = (props) => {
           Energy consumption
         </div>
         <div className="panel-body">
-          <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameborder="0"></iframe>
+          <div className="col-lg-4">
+            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameborder="0"></iframe>
+          </div>
+          <div className="col-lg-4">
+            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&from=1514786595639&to=1515216195883&panelId=2&&theme=light" width="100%" height="200" frameborder="0"></iframe>
+          </div>
+          <div className="col-lg-4">
+            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&from=1514786595639&to=1515216195883&panelId=3&&theme=light" width="100%" height="200" frameborder="0"></iframe>
+          </div>
         </div>
         {/* /.panel-body */}
+      </div>
+
+      <div className="row">
+        <div className="col-lg-6">
+          <ContractsViewPanel contracts={contracts.myBuyerContracts} contractName="My contracts as buyer"
+            title="My buyer contracts" amountSelector="remainingAmount" />
+        </div>
+        <div className="col-lg-6">
+          <ContractsViewPanel contracts={contracts.mySellerContracts} contractName="My contracts as seller"
+            title="My seller contracts" amountSelector="offeredAmount" />
+        </div>
       </div>
 
       <div className="panel panel-default">
