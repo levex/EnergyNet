@@ -1,0 +1,13 @@
+{
+  "meter01": {
+    "ip": "127.0.0.1",
+    "schedule": {
+      "0": {
+        "price": 1,
+        "energy_input": -4,
+        "input_noise": 1,
+        "enabled": true
+      }
+    }
+  }
+}
