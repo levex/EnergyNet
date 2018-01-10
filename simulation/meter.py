@@ -24,6 +24,7 @@ simulation_config = {
     "energy_input": 0,
     "input_noise": 0,
     "enabled": False,
+    "location": ""
 }
 
 
@@ -66,6 +67,7 @@ def sell_energy(amount):
     )
     simulation_metrics["sold"] += amount
 
+
 class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -96,43 +98,54 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-      global simulation_config
-      if self.path == '/config':
-          content_length = int(self.headers['Content-Length'])
-          post_data = str(self.rfile.read(content_length), "utf-8")
-          self.send_response(200)
-          self.end_headers()
+        global simulation_config
+        if self.path == '/config':
+            content_length = int(self.headers['Content-Length'])
+            post_data = str(self.rfile.read(content_length), "utf-8")
+            self.send_response(200)
+            self.end_headers()
 
-          print(post_data)
-          config = json.loads(post_data)
-          print("Setting config to: " + str(config))
-          if (config["price"] != simulation_config["price"]):
-              print("Setting price to: " + str(config["price"]))
-              requests.post(
-                  METER_API_BASE_URL + "config/price",
-                  data=json.dumps({
-                      "price": config["price"],
-                  }),
-                  headers=API_CALL_HEADER,
-              )
+            print(post_data)
+            config = json.loads(post_data)
+            print("Setting config to: " + str(config))
+            if (config["price"] != simulation_config["price"]):
+                print("Setting price to: " + str(config["price"]))
+                requests.post(
+                    METER_API_BASE_URL + "config/price",
+                    data=json.dumps({
+                        "price": config["price"],
+                    }),
+                    headers=API_CALL_HEADER,
+                )
+            if (config["location"] != simulation_config["location"]):
+                print("Setting location to: " + str(config["location"]))
+                requests.post(
+                    METER_API_BASE_URL + "config/location",
+                    data=json.dumps({
+                        "location": config["location"],
+                    }),
+                    headers=API_CALL_HEADER,
+                )
 
-          simulation_config = config
+            simulation_config = config
 
-          return
+            return
 
-      self.send_response(404)
-      self.end_headers()
+        self.send_response(404)
+        self.end_headers()
+
 
 def tick():
     input_noise = simulation_config["input_noise"]
     energy_input = simulation_config["energy_input"] + \
-                    random.randint(-input_noise, input_noise)
+        random.randint(-input_noise, input_noise)
 
     print("Energy outcome: " + str(energy_input) + "kWh")
     if energy_input > 0:
-      sell_energy(energy_input)
+        sell_energy(energy_input)
     elif energy_input < 0:
-      consume_energy(-energy_input)
+        consume_energy(-energy_input)
+
 
 if __name__ == "__main__":
     args = parse_arguments()
@@ -140,15 +153,15 @@ if __name__ == "__main__":
 
     server_address = ("", args.port)
     httpd = HTTPServer(server_address, MeterHTTPRequestHandler)
-    server_thread = threading.Thread(target = httpd.serve_forever)
+    server_thread = threading.Thread(target=httpd.serve_forever)
     server_thread.daemon = True
 
     try:
-      server_thread.start()
-    except:
-      httpd.shutdown()
+        server_thread.start()
+    except:  # noqa
+        httpd.shutdown()
 
     while True:
-      if (simulation_config["enabled"]):
-          tick()
-      time.sleep(1)
+        if (simulation_config["enabled"]):
+            tick()
+        time.sleep(1)

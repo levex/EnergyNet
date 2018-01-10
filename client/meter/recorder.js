@@ -1,4 +1,4 @@
-const config = require("./config.json");
+let config = require("./config.json");
 
 function record_sold_energy(amount) {
   send_energy_metric("energy_sold", amount);
@@ -28,9 +28,14 @@ function send_energy_metric(name, amount) {
   });
 }
 
+function change_location(location) {
+  config.location = location;
+}
+
 module.exports = {
   record_buy_price,
   record_sell_price,
   record_consumed_energy,
   record_sold_energy,
+  change_location,
 };

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const sell = require("../sell");
+const recorder = require("../recorder.js");
 
 router.post("/price", (req, res) => {
   const body = req.body;
@@ -8,6 +9,19 @@ router.post("/price", (req, res) => {
 
   if (price) {
     sell.setPrice(price);
+    res.status(200).end();
+    return;
+  }
+
+  res.status(400).end();
+});
+
+router.post("/location", (req, res) => {
+  const body = req.body;
+  const location = body.location;
+
+  if (location) {
+    recorder.change_location(location);
     res.status(200).end();
     return;
   }

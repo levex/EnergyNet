@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 class ParityRPCClient():
 
     def __init__(self, url):
@@ -20,13 +21,13 @@ class ParityRPCClient():
         }
 
     def send_command(self, cmd, params):
-      payload = self._build_payload(cmd, params)
+        payload = self._build_payload(cmd, params)
 
-      return requests.post(
-          self.url,
-          data=json.dumps([payload]),
-          headers=self.headers
-      )
+        return requests.post(
+            self.url,
+            data=json.dumps([payload]),
+            headers=self.headers
+        )
 
     def send_transaction(self, from_, **kwargs):
         """
