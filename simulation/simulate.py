@@ -68,12 +68,6 @@ if __name__ == "__main__":
 
     collected_metrics = defaultdict(int)
 
-    # Collect initial readings
-    # for ip in args.simulated_client_ip:
-    #    metrics = requests.get(make_api(ip, "/metrics")).json()
-    #    collected_metrics["sold"] -= metrics["sold"]
-    #    collected_metrics["consumed"] -= metrics["consumed"]
-
     t = 0
     for i in range(args.simulation_duration):
         update_nodes(t)
@@ -81,15 +75,3 @@ if __name__ == "__main__":
         t += 1
 
     disable_nodes()
-
-    # Collect metrics and print them out
-    # for ip in args.simulated_client_ip:
-    #    metrics = requests.get(make_api(ip, "/metrics")).json()
-    #    collected_metrics["sold"] += metrics["sold"]
-    #    collected_metrics["consumed"] += metrics["consumed"]
-
-    print("Simulation run metrics")
-    print("Total energy put for sale: " + str(collected_metrics["sold"]))
-    print("Total energy consumed: " + str(collected_metrics["consumed"]))
-    print("Unsold energy: " +
-          str(collected_metrics["sold"] - collected_metrics["consumed"]))
