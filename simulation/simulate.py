@@ -1,4 +1,5 @@
 import argparse
+import atexit
 import requests
 import time
 import json
@@ -46,6 +47,7 @@ def update_nodes(time):
             update_node_config(config, ip)
 
 
+@atexit.register
 def disable_nodes():
     for location, c in simulation_config.items():
         ip = c["ip"]
