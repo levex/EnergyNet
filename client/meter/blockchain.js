@@ -183,6 +183,11 @@ async function updateBlock(blockNumber) {
   lastBlock = blockNumber;
 }
 
+async function updateNow() {
+  const blockNumber = await bonds.height;
+  await updateBlockchain(blockNumber);
+}
+
 async function updateBlockchain(blockNumber) {
   if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   for (let i = lastBlock + 1; i <= blockNumber; i++) {
@@ -211,6 +216,7 @@ module.exports = {
   buyEnergy,
   sellEnergy,
   updateBlockchain,
+  updateNow,
   getLog,
   log,
   isInited,

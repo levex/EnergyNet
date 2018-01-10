@@ -1,10 +1,15 @@
 const blockchain = require("./blockchain");
 const recorder = require("./recorder");
 const buy = require("./buy");
+const BigNumber = require("bignumber.js");
 
 const PROCESS_INTERVAL = 10000;
 const PREBUY_COEF = 2;
 const consumeRequests = [];
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function consumeEnergyFromContract(contractAddress, amount) {
   if (!blockchain.isInited()) return Promise.reject({ msg: "Blockchain unsynced" });
@@ -31,7 +36,7 @@ function processConsumption() {
     return;
   }
 
-  const amount = consumeRequests.reduce((acc, x) => acc + x);
+  const amount = consumeRequests.reduce((acc, x) => acc.add(x), new BigNumber(0));
   consumeRequests.length = 0;
   if (amount > 0) {
     recorder.record_consumed_energy(amount);
@@ -40,17 +45,20 @@ function processConsumption() {
 }
 
 async function consumeEnergyFromChain(amount) {
+  const amountBigNumber = new BigNumber(amount);
   let energyBalance = await blockchain.myEnergyBalance();
-  if (energyBalance < amount) {
+  if (energyBalance.lt(amountBigNumber)) {
     try {
-      const buyAmount = (amount - energyBalance) * PREBUY_COEF;
+      const buyAmount = (amountBigNumber.minus(energyBalance)).mul(PREBUY_COEF);
       await buy.autoBuy(buyAmount);
 
       let count = 0;
-      while (energyBalance < amount) {
+      while (energyBalance.lt(amountBigNumber)) {
+        await blockchain.updateNow();
         energyBalance = await blockchain.myEnergyBalance();
+        await sleep(1000);
         count++;
-        if (count == 30) {
+        if (count == 100) {
           return Promise.reject({ msg: "failed to autoBuy", value: amount });
         }
       }
