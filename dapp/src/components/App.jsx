@@ -178,7 +178,7 @@ class App extends React.Component {
 
   render() {
     const accountBalance = <div className="col-xs-9 text-right">
-      <div className="huge"><Rspan>{bonds.balance(bonds.me).map(formatBalance)}</Rspan></div>
+      <div className="huge"><Rspan>{bonds.balance(bonds.me).map((b) => formatBalance(b) + "/USD")}</Rspan></div>
       <div>Account Balance</div>
     </div>;
 

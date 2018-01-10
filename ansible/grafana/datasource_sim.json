@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "orgId": 1,
+  "name": "EnergyNet Simulation",
+  "type": "influxdb",
+  "typeLogoUrl": "",
+  "access": "direct",
+  "url": "http://146.169.45.94:8086",
+  "password": "",
+  "user": "",
+  "database": "simulation",
+  "basicAuth": false,
+  "basicAuthUser": "",
+  "basicAuthPassword": "",
+  "withCredentials": false,
+  "isDefault": true,
+  "jsonData": {},
+  "secureJsonFields": {}
+}
