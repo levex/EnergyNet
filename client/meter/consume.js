@@ -33,6 +33,7 @@ function consumeEnergy(amount) {
 
 function processConsumption() {
   if (consumeRequests.length === 0) {
+    recorder.record_consumed_energy(0);
     return;
   }
 
@@ -41,8 +42,6 @@ function processConsumption() {
   if (amount > 0) {
     recorder.record_consumed_energy(amount);
     consumeEnergyFromChain(amount).catch();
-  } else {
-    recorder.record_consumed_energy(0);
   }
 }
 
