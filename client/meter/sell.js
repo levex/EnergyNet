@@ -1,4 +1,5 @@
 const blockchain = require("./blockchain");
+const recorder = require("./recorder");
 
 const PROCESS_INTERVAL = 10000;
 const sellRequests = [];
@@ -24,6 +25,8 @@ function processProdution() {
   sellRequests.length = 0;
   if (amount > 0) {
     blockchain.sellEnergy(price, amount).catch();
+  } else {
+    recorder.record_sold_energy(0);
   }
 }
 
