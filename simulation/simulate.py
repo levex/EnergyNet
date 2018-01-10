@@ -37,22 +37,24 @@ def update_node_config(config, ip):
 
 
 def update_nodes(time):
-    for node in simulation_config.values():
+    for location, node in simulation_config.items():
         ip = node["ip"]
         schedule = node["schedule"]
         if str(time) in schedule:
             config = schedule.get(str(time))
+            config["location"] = location
             update_node_config(config, ip)
 
 
 def disable_nodes():
-    for c in simulation_config.values():
+    for location, c in simulation_config.items():
         ip = c["ip"]
         config = {
             "price": 1,
             "energy_input": 0,
             "input_noise": 0,
             "enabled": False,
+            "location": location
         }
 
         update_node_config(config, ip)

@@ -24,6 +24,7 @@ simulation_config = {
     "energy_input": 0,
     "input_noise": 0,
     "enabled": False,
+    "location": ""
 }
 
 
