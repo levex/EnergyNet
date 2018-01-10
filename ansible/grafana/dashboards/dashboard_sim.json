@@ -282,7 +282,7 @@
           "values": []
         },
         "yaxes": [{
-          "format": "pounds",
+          "format": "currencyGBP",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -554,7 +554,7 @@
           "values": []
         },
         "yaxes": [{
-          "format": "kwatth",
+          "format": "currencyGBP",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -572,7 +572,7 @@
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
+      "showTitle": true,
       "title": "Meter02 Row",
       "titleSize": "h6"
     },
@@ -826,7 +826,7 @@
           "values": []
         },
         "yaxes": [{
-          "format": "kwatth",
+          "format": "currencyGBP",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -1098,7 +1098,7 @@
           "values": []
         },
         "yaxes": [{
-          "format": "kwatth",
+          "format": "currencyGBP",
           "label": null,
           "logBase": 1,
           "max": null,
