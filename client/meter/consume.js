@@ -41,6 +41,8 @@ function processConsumption() {
   if (amount > 0) {
     recorder.record_consumed_energy(amount);
     consumeEnergyFromChain(amount).catch();
+  } else {
+    recorder.record_consumed_energy(0);
   }
 }
 
