@@ -71,7 +71,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter01energy_consumed",
@@ -158,7 +158,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter01energy_sold",
@@ -248,7 +248,7 @@
             "params": ["previous"],
             "type": "fill"
           }],
-          "measurement": "meter01energy_buy_price",
+          "measurement": "meter01buy_price",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -343,7 +343,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter02energy_consumed",
@@ -430,7 +430,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter02energy_sold",
@@ -520,7 +520,7 @@
             "params": ["previous"],
             "type": "fill"
           }],
-          "measurement": "meter02energy_buy_price",
+          "measurement": "meter02buy_price",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -615,7 +615,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter03energy_consumed",
@@ -702,7 +702,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter03energy_sold",
@@ -792,7 +792,7 @@
             "params": ["previous"],
             "type": "fill"
           }],
-          "measurement": "meter03energy_buy_price",
+          "measurement": "meter03buy_price",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -887,7 +887,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter04energy_consumed",
@@ -974,7 +974,7 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
           "measurement": "meter04energy_sold",
@@ -1064,7 +1064,7 @@
             "params": ["previous"],
             "type": "fill"
           }],
-          "measurement": "meter04energy_buy_price",
+          "measurement": "meter04buy_price",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
