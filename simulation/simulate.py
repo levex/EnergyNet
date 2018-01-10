@@ -29,6 +29,7 @@ def parse_arguments():
 
 
 def update_node_config(config, ip):
+    print("Updating [" + ip + "], config: " + str(config))
     requests.post(make_api(ip, "/config"), data=json.dumps(config), \
         headers= {'Content-type': 'application/json', 'Accept': 'text/plain'})
 
@@ -72,6 +73,8 @@ if __name__ == "__main__":
         update_nodes(t)
         time.sleep(1)
         t += 1
+
+    disable_nodes()
 
     # Collect metrics and print them out
     #for ip in args.simulated_client_ip:

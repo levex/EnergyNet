@@ -1,23 +1,56 @@
 {
-  "meter0": {
-    "ip": "localhost",
+  "meter01": {
+    "ip": "146.169.45.95",
     "schedule": {
       "0": {
         "price": 1,
-        "energy_input": -2,
+        "energy_input": -4,
+        "input_noise": 1,
+        "enabled": true
+      }
+    }
+  },
+  "meter02": {
+    "ip": "146.169.45.56",
+    "schedule": {
+      "0": {
+        "price": 1,
+        "energy_input": -8,
+        "input_noise": 2,
+        "enabled": true
+      }
+    }
+  },
+  "meter03": {
+    "ip": "146.169.45.55",
+    "schedule": {
+      "0": {
+        "price": 2,
+        "energy_input": 14,
+        "input_noise": 2,
+        "enabled": true
+      },
+      "200": {
+        "price": 2,
+        "energy_input": -3,
         "input_noise": 1,
         "enabled": true
       },
-      "1": {
-        "price": 1,
-        "energy_input": 6,
-        "input_noise": 2,
+      "400": {
+        "price": 2,
+        "energy_input": 18,
+        "input_noise": 3,
         "enabled": true
-      },
-      "3": {
-        "price": 3,
-        "energy_input": 6,
-        "input_noise": 2,
+      }
+    }
+  },
+  "meter04": {
+    "ip": "146.169.45.51",
+    "schedule": {
+      "0": {
+        "price": 4,
+        "energy_input": 20,
+        "input_noise": 1,
         "enabled": true
       }
     }
