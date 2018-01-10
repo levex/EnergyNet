@@ -27,18 +27,18 @@ const SettingsSell = (props) => {
 
               <div className="row" style={{margin: "0px 0px 15px 0px"}}>
                 <label for="basic-url">Minimum unit price</label>
-                  <div className="input-group">
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="addon1"/>
-                    <span class="input-group-addon" id="addon1">$/kWh</span>
-                  </div>
+                <div className="input-group">
+                  <input type="text" class="form-control" id="basic-url" aria-describedby="addon1"/>
+                  <span class="input-group-addon" id="addon1">$/kWh</span>
+                </div>
               </div>
 
               <div className="row" style={{margin: "0px 0px 15px 0px"}}>
                 <label for="basic-url">Undershoot others by</label>
-                  <div className="input-group">
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="addon2"/>
-                    <span class="input-group-addon" id="addon2">%</span>
-                  </div>
+                <div className="input-group">
+                  <input type="text" class="form-control" id="basic-url" aria-describedby="addon2"/>
+                  <span class="input-group-addon" id="addon2">%</span>
+                </div>
               </div>
 
               <div className="row" style={{margin: "0px 0px 15px 0px"}}>
@@ -60,10 +60,10 @@ const SettingsSell = (props) => {
             <div className="panel-body">
               <div className="row" style={{margin: "0px 0px 15px 0px"}}>
                 <label for="basic-url">Unit price</label>
-                  <div className="input-group">
-                    <input type="text" class="form-control" id="basic-url" aria-describedby="addon3"/>
-                    <span class="input-group-addon" id="addon3">$/kWh</span>
-                  </div>
+                <div className="input-group">
+                  <input type="text" class="form-control" id="basic-url" aria-describedby="addon3"/>
+                  <span class="input-group-addon" id="addon3">$/kWh</span>
+                </div>
               </div>
             </div>
           </div>
