@@ -5,8 +5,8 @@ const PROCESS_INTERVAL = 10000;
 const sellRequests = [];
 let price = 1;
 
-function setPrice(price) {
-  this.price = price;
+function setPrice(newPrice) {
+  price = newPrice;
 }
 
 function sellEnergy(amount) {
