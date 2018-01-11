@@ -6,6 +6,7 @@ const BigNumber = require("bignumber.js");
 const PROCESS_INTERVAL = 10000;
 const PREBUY_COEF = 2;
 const consumeRequests = [];
+let leftover = new BigNumber(0);
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -21,7 +22,7 @@ async function consumeEnergyFromContract(contractAddress, amount) {
     amount: amount,
     contract: contractAddress
   });
-  return await contract.consume(amount, {value: cost});
+  return contract.consume(amount, {value: cost}).transactionPromise;
 }
 
 function consumeEnergy(amount) {
@@ -37,11 +38,12 @@ function processConsumption() {
     return;
   }
 
-  const amount = consumeRequests.reduce((acc, x) => acc.add(x), new BigNumber(0));
+  const amount = consumeRequests.reduce((acc, x) => acc.add(x), leftover);
+  leftover = new BigNumber(0);
   consumeRequests.length = 0;
   if (amount > 0) {
     recorder.record_consumed_energy(amount);
-    consumeEnergyFromChain(amount).catch();
+    consumeEnergyFromChain(amount).catch(console.log);
   }
 }
 
@@ -57,7 +59,6 @@ async function consumeEnergyFromChain(amount) {
       while (energyBalance.lt(amountBigNumber)) {
         await blockchain.updateNow();
         energyBalance = await blockchain.myEnergyBalance();
-        await sleep(1000);
         count++;
         if (count == 100) {
           return Promise.reject({ msg: "failed to autoBuy", value: amount });
@@ -87,7 +88,7 @@ async function consumeEnergyFromChain(amount) {
     return Promise.reject({ msg: "Unable to consume energy", value: toConsume });
   }
 
-  const promises = txs.map((tx) => consumeEnergyFromContract(tx.address, tx.amount));
+  const promises = txs.map((tx) => consumeEnergyFromContract(tx.address, tx.amount).catch(() => leftover = leftover.add(tx.amount)));
   return Promise.all(promises);
 }
 
