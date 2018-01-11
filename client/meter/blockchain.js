@@ -18,25 +18,30 @@ let lastCount = 0;
 let logs = [];
 
 async function getContractInfoByAddress(address) {
-  console.log("getCOntractByAdd: " + address);
   const account = await myAccount();
   const contract = makeEnergyContract(address);
-  const [
+  let [
     seller,
     offeredAmount,
     unitPrice,
-    remainingAmount
+    remainingAmount,
+    dateCreated,
   ] = await Promise.all([
     contract.seller(),
     contract.offeredAmount(),
     contract.unitPrice(),
-    contract.remainingEnergy(account)
+    contract.remainingEnergy(account),
+    contract.dateCreated()
   ]);
+
+  dateCreated = new Date(dateCreated.toNumber() * 1000);
+  dateCreated = dateCreated.toUTCString();
   contracts[address] = {
     seller,
     offeredAmount,
     unitPrice,
     remainingAmount,
+    dateCreated,
     address
   };
   if (seller === account && offeredAmount > 0) {
@@ -57,14 +62,12 @@ async function getContractInfoByAddress(address) {
 }
 
 async function getContractInfoByIndex(index) {
-  console.log("getContractInfo: " + index);
   const contractEntity = await EnergyMaster.contracts(index);
   const contractAddr = contractEntity[0];
   await getContractInfoByAddress(contractAddr);
 }
 
 async function updateMaster() {
-  console.log("UpdateMaster");
   const count = await EnergyMaster.contractCount();
   const promises = [];
   for (let i = lastCount; i < count; i++) {
@@ -76,7 +79,6 @@ async function updateMaster() {
 
 async function init() {
   // FIXME: Multiple inits
-  console.log("Init");
   if (inited) return;
   await updateMaster();
   lastBlock = await bonds.height;
