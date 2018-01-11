@@ -138,7 +138,7 @@ async function buyEnergy(contractAddress, amount) {
     amount: amount,
     contract: contractAddress
   });
-  return await contract.buy(amount);
+  return await contract.buy(amount).transactionPromise;
 }
 
 async function sellEnergy(price, amount) {

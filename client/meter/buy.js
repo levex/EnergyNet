@@ -30,7 +30,7 @@ async function actuallyAutoBuy() {
     return Promise.reject({ msg: "Insufficient energy over network", value: toBuy });
   }
 
-  const promises = txs.map((tx) => blockchain.buyEnergy(tx.address, tx.amount).then(() => autoBuyAmount = autoBuyAmount.sub(tx.amount)));
+  const promises = txs.map((tx) => blockchain.buyEnergy(tx.address, tx.amount).then(() => autoBuyAmount = autoBuyAmount.sub(tx.amount)).catch(console.log));
   return Promise.all(promises);
 }
 
