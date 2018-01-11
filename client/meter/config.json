@@ -1,4 +1,5 @@
 {
+  "master": "0x86f2835e5C9be2Ea5e512237411Af7B304Ce0A1B",
   "influxUrl": "http://146.169.45.94:8086/write?db=simulation",
   "location": "meter00"
 }

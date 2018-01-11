@@ -1,8 +1,9 @@
 const oo7parity = require("oo7-parity");
 const bonds = oo7parity.bonds;
+const config = require("./config.json");
 const ENERGY_MASTER_ABI = require("./abis/abi_master");
 const ENERGY_ABI = require("./abis/abi");
-const ENERGY_MASTER_ADDRESS = "0x86f2835e5C9be2Ea5e512237411Af7B304Ce0A1B";
+const ENERGY_MASTER_ADDRESS = config.master;
 const bigNumber = require("bignumber.js");
 const recorder = require("./recorder");
 
