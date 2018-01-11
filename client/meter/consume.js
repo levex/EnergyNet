@@ -4,7 +4,7 @@ const buy = require("./buy");
 const BigNumber = require("bignumber.js");
 
 const PROCESS_INTERVAL = 10000;
-const PREBUY_COEF = 2;
+const PREBUY_COEF = 1;
 const consumeRequests = [];
 
 function sleep(ms) {
@@ -50,14 +50,19 @@ async function consumeEnergyFromChain(amount) {
   let energyBalance = await blockchain.myEnergyBalance();
   if (energyBalance.lt(amountBigNumber)) {
     try {
-      const buyAmount = (amountBigNumber.minus(energyBalance)).mul(PREBUY_COEF);
-      await buy.autoBuy(buyAmount);
-
       let count = 0;
       while (energyBalance.lt(amountBigNumber)) {
         await blockchain.updateNow();
         energyBalance = await blockchain.myEnergyBalance();
-        await sleep(1000);
+
+        const buyAmount = (amountBigNumber.minus(energyBalance)).mul(PREBUY_COEF);
+        try {
+          await buy.autoBuy(buyAmount);
+        } catch(e) {
+          continue;
+        }
+
+        await sleep(5000);
         count++;
         if (count == 100) {
           return Promise.reject({ msg: "failed to autoBuy", value: amount });
