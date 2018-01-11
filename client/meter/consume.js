@@ -38,12 +38,12 @@ function processConsumption() {
     return;
   }
 
-  const amount = consumeRequests.reduce((acc, x) => acc.add(x), leftover);
-  leftover = new BigNumber(0);
+  const amount = consumeRequests.reduce((acc, x) => acc.add(x), new BigNumber(0));
   consumeRequests.length = 0;
   if (amount > 0) {
     recorder.record_consumed_energy(amount);
-    consumeEnergyFromChain(amount).catch(console.log);
+    consumeEnergyFromChain(amount.add(leftover)).catch(console.log);
+    leftover = new BigNumber(0);
   }
 }
 
