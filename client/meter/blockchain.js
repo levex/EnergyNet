@@ -2,7 +2,7 @@ const oo7parity = require("oo7-parity");
 const bonds = oo7parity.bonds;
 const ENERGY_MASTER_ABI = require("./abis/abi_master");
 const ENERGY_ABI = require("./abis/abi");
-const ENERGY_MASTER_ADDRESS = "0x7B019fD19f8b75Ff00089Dc93411dFB04e6D48Ca";
+const ENERGY_MASTER_ADDRESS = "0x86f2835e5C9be2Ea5e512237411Af7B304Ce0A1B";
 const bigNumber = require("bignumber.js");
 const recorder = require("./recorder");
 
@@ -18,6 +18,7 @@ let lastCount = 0;
 let logs = [];
 
 async function getContractInfoByAddress(address) {
+  console.log("getCOntractByAdd: " + address);
   const account = await myAccount();
   const contract = makeEnergyContract(address);
   const [
@@ -56,12 +57,14 @@ async function getContractInfoByAddress(address) {
 }
 
 async function getContractInfoByIndex(index) {
+  console.log("getContractInfo: " + index);
   const contractEntity = await EnergyMaster.contracts(index);
   const contractAddr = contractEntity[0];
   await getContractInfoByAddress(contractAddr);
 }
 
 async function updateMaster() {
+  console.log("UpdateMaster");
   const count = await EnergyMaster.contractCount();
   const promises = [];
   for (let i = lastCount; i < count; i++) {
@@ -73,6 +76,7 @@ async function updateMaster() {
 
 async function init() {
   // FIXME: Multiple inits
+  console.log("Init");
   if (inited) return;
   await updateMaster();
   lastBlock = await bonds.height;

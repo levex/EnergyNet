@@ -5,14 +5,16 @@ import './Master.sol';
 contract Energy {
     uint public unitPrice;
     uint public offeredAmount;
+    uint public dateCreated;
     mapping (address => uint) public remainingEnergy;
     address public seller;
     address public master_addr;
 
-    function Energy(address seller_, uint unitPrice_, uint offeredAmount_) public {
+    function Energy(address seller_, uint unitPrice_, uint offeredAmount_, uint dateCreated_) public {
         unitPrice = unitPrice_;
         offeredAmount = offeredAmount_;
         seller = seller_;
+        dateCreated = dateCreated_;
         // Sender is master contract, this is called in sell function
         master_addr = msg.sender;
     }

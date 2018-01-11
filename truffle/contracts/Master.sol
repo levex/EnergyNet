@@ -19,7 +19,8 @@ contract Master {
     // Sender is the seller, return deployed energy contract
     function sell(uint unitPrice, uint amountOffered) public returns(address) {
         // TODO: delegate call
-        Energy energy = new Energy(msg.sender, unitPrice, amountOffered);
+        uint date = now;
+        Energy energy = new Energy(msg.sender, unitPrice, amountOffered, date);
         ContractEntity memory entity;
         entity.contract_addr = energy;
         entity.seller = msg.sender;
