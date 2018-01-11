@@ -1,4 +1,5 @@
 const blockchain = require("./blockchain");
+const BigNumber = require("bignumber.js");
 const recorder = require("./recorder");
 
 const PROCESS_INTERVAL = 10000;
@@ -22,7 +23,7 @@ function processProdution() {
     return;
   }
 
-  const amount = sellRequests.reduce((acc, x) => acc + x);
+  const amount = sellRequests.reduce((acc, x) => acc.add(x), new BigNumber(0));
   sellRequests.length = 0;
   if (amount > 0) {
     blockchain.sellEnergy(price, amount).catch();
