@@ -24,9 +24,9 @@ export class ContractsViewPanel extends React.Component {
         {
           title: "Date Offered",
           width: 100,
-          data: null,
+          data: "dateCreated",
           type: "string",
-          render: (data, type, row) => "SomeDate"
+          render: (data, type, row) => data
         },
         {
           title: "Amount Offered",
