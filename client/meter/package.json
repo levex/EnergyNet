@@ -12,7 +12,7 @@
     "immutability-helper": "^2.4.0",
     "morgan": "^1.9.0",
     "oo7": "^0.5.8",
-    "oo7-parity": "^0.6.13"
+    "oo7-parity": "github:fangyi-zhou/oo7-parity"
   },
   "devDependencies": {
     "babel-loader": "^7.1.2",
