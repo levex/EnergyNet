@@ -1,6 +1,6 @@
 import React from "react";
 import {Rspan} from "oo7-react";
-import {bonds, formatBalance} from "oo7-parity";
+import {bonds, formatBalance, splitValue} from "oo7-parity";
 import {Bond} from "oo7";
 import {makeContract, makeMasterContract} from "./Blockchain";
 import update from "immutability-helper";
@@ -32,6 +32,7 @@ class App extends React.Component {
       contractsHistogram: [],
       show: "stats",
     };
+
     this.buyAmountBond = new Bond();
     this.sellAmountBond = new Bond();
     this.priceBond = new Bond();
@@ -178,7 +179,11 @@ class App extends React.Component {
 
   render() {
     const accountBalance = <div className="col-xs-9 text-right">
-      <div className="huge"><Rspan>{bonds.balance(bonds.me).map((b) => formatBalance(b) + "/USD")}</Rspan></div>
+      <div className="huge"><Rspan>{bonds.balance(bonds.me).map((b) => {
+        console.log(splitValue(b));
+        return (Math.trunc(splitValue(b).base.toNumber() * 100) / 100 + " GBP");
+      })}
+      </Rspan></div>
       <div>Account Balance</div>
     </div>;
 

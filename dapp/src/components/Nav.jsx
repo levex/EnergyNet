@@ -22,7 +22,12 @@ class Nav extends React.Component {
       {/* /.navbar-header */}
 
       <ul className="nav navbar-top-links navbar-right">
-        Welcome, Daniel
+        <li>
+          Welcome, Daniel
+        </li>
+        <li style={{marginLeft: "10px"}}>
+          <button type="button" className="btn btn-primary btn-block" onClick={() => {window.location.reload()}}>Refresh</button>
+        </li>
         <li className="dropdown">
           <a className="dropdown-toggle" data-toggle="dropdown" href="#">
             <i className="fa fa-user fa-fw"></i>

@@ -20,29 +20,43 @@ class BuyEnergyPanel extends React.Component {
       "data": this.props.contracts,
       "columns": [
         {
+          title: "Seller",
+          width: 80,
+          data: "sellerName",
+          type: "string",
+          render: (data, type, row) => data
+        },
+        {
           title: "Amount Offered",
-          width: 100,
+          width: 50,
           data: "offeredAmount",
           type: "num",
           render: (data, type, row) => data + " kWh/day"
         },
         {
           title: "Amount Bought",
-          width: 100,
+          width: 50,
           data: "remainingAmount",
           type: "num",
           render: (data, type, row) => data + " kWh/day"
         },
         {
           title: "Price",
-          width: 100,
+          width: 50,
           data: "unitPrice",
           type: "num",
           render: (data, type, row) => data + " £/kWh"
         },
         {
+          title: "Renewable",
+          width: 30,
+          data: "renewable",
+          type: "string",
+          render: (data, type, row) => data
+        },
+        {
           title: "Buy Energy",
-          width: 400,
+          width: 300,
           data: null,
           orderable: false,
           createdCell: (cell, cellData, rowData, rowIndex, colIndex) => ReactDOM.render(

@@ -15,13 +15,13 @@ const Stats = (props) => {
         </div>
         <div className="panel-body">
           <div className="col-lg-4">
-            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&panelId=1&from=now-24h&to=now&theme=light" width="100%" height="200" frameborder="0"></iframe>
+            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&refresh=5s&panelId=1" width="100%" height="200" frameborder="0"></iframe>
           </div>
           <div className="col-lg-4">
-            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&from=1514786595639&to=1515216195883&panelId=2&&theme=light" width="100%" height="200" frameborder="0"></iframe>
+            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&refresh=5s&panelId=2" width="100%" height="200" frameborder="0"></iframe>
           </div>
           <div className="col-lg-4">
-            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&from=1514786595639&to=1515216195883&panelId=3&&theme=light" width="100%" height="200" frameborder="0"></iframe>
+            <iframe src="http://localhost:4000/dashboard-solo/db/energy-statistics?orgId=1&refresh=5s&panelId=3" width="100%" height="200" frameborder="0"></iframe>
           </div>
         </div>
         {/* /.panel-body */}
@@ -47,7 +47,7 @@ const Stats = (props) => {
         <div className="panel-body">
           <BarChart width={800} height={480} margin={{ top: 5, right: 5, bottom: 20, left: 5 }} data={contracts.contractsHistogram}>
             <XAxis dataKey="region">
-              <Label position="bottom" value="Unit price [ETH]" />
+              <Label position="bottom" value="Unit price [GBP]" />
             </XAxis>
             <YAxis />
             <CartesianGrid strokeDashArray="3 3" />
