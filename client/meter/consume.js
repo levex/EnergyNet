@@ -6,10 +6,28 @@ const BigNumber = require("bignumber.js");
 const PROCESS_INTERVAL = 10000;
 const PREBUY_COEF = 2;
 const consumeRequests = [];
+let prebuyLimit = 0;
+let preferRenewables = false;
 let leftover = new BigNumber(0);
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getRenewables() {
+  return preferRenewables;
+}
+
+function setRenewables(r) {
+  preferRenewables = r;
+}
+
+function getPreBuyLimit() {
+  return prebuyLimit;
+}
+
+function setPreBuyLimit(x) {
+  prebuyLimit = x;
 }
 
 async function consumeEnergyFromContract(contractAddress, amount) {
@@ -73,6 +91,16 @@ async function consumeEnergyFromChain(amount) {
   let toConsume = amount;
   // cheapest first
   contracts.sort((a, b) => {
+    if (preferRenewables) {
+      if (a.renewable) {
+        console.log(a.renewable);
+        return -1;
+      } else if (b.renewable) {
+        console.log(b.renewable);
+        return 1;
+      }
+    }
+
     return a.unitPrice - b.unitPrice;
   });
 
@@ -97,4 +125,8 @@ setInterval(processConsumption, PROCESS_INTERVAL);
 
 module.exports = {
   consumeEnergy,
+  getPreBuyLimit,
+  setPreBuyLimit,
+  setRenewables,
+  getRenewables,
 };

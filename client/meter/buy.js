@@ -1,6 +1,7 @@
 const blockchain = require("./blockchain");
 const recorder = require("./recorder");
 const BigNumber = require("bignumber.js");
+const consume = require("./consume");
 
 const BUY_INTERVAL = 10000;
 
@@ -15,6 +16,14 @@ async function actuallyAutoBuy() {
   let toBuy = autoBuyAmount;
   // cheapest first
   contracts.sort((a, b) => {
+    if (consume.getRenewables()) {
+      if (a.renewable) {
+        return -1;
+      } else if (b.renewable) {
+        return 1
+      }
+    }
+
     return a.unitPrice - b.unitPrice;
   });
   let txs = [];

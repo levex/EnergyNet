@@ -5,9 +5,14 @@ const recorder = require("./recorder");
 const PROCESS_INTERVAL = 10000;
 const sellRequests = [];
 let price = 1;
+let renewable = false;
 
 function setPrice(newPrice) {
   price = newPrice;
+}
+
+function setRenewable(isRenevable) {
+  renewable = isRenevable;
 }
 
 function sellEnergy(amount) {
@@ -26,7 +31,7 @@ function processProdution() {
   const amount = sellRequests.reduce((acc, x) => acc.add(x), new BigNumber(0));
   sellRequests.length = 0;
   if (amount > 0) {
-    blockchain.sellEnergy(price, amount).catch();
+    blockchain.sellEnergy(price, amount, renewable).catch();
   }
 }
 
@@ -36,4 +41,5 @@ setInterval(processProdution, PROCESS_INTERVAL);
 module.exports = {
   sellEnergy,
   setPrice,
+  setRenewable,
 };

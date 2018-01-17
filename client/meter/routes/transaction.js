@@ -36,6 +36,32 @@ router.post("/consume", (req, res) => {
   }
 });
 
+router.post("/setPrebuyLimit", (req, res) => {
+  const body = req.body;
+  const preBuyLimit = body.preBuyLimit;
+
+  console.log(preBuyLimit);
+  consume.setPreBuyLimit(preBuyLimit);
+  res.status(200).end();
+});
+
+router.get("/prebuyLimit", (req, res) => {
+  console.log(consume.getPreBuyLimit());
+  res.status(200).json({preBuyLimit: consume.getPreBuyLimit()});
+});
+
+router.get("/renewables", (req, res) => {
+  res.status(200).json({preferRenewables: consume.getRenewables()});
+});
+
+router.post("/setRenewables", (req, res) => {
+  const body = req.body;
+  const preferRenewables = body.preferRenewables;
+  console.log(preferRenewables);
+  consume.setRenewables(preferRenewables);
+  res.status(200).end();
+})
+
 router.post("/updateBlockchain", (req, res) => {
   const body = req.body;
   const blockNumber = body.blockNumber;

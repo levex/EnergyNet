@@ -1,5 +1,5 @@
 {
-  "master": "0xcE797deE764462A741340a86d793c8fFC9A6e1C0",
-  "influxUrl": "http://146.169.45.94:8086/write?db=simulation",
+  "master": "0x16ee0061B526cf8f68dfc6d086057F257700E3Cd",
+  "influxUrl": "http://localhost:8086/write?db=energy",
   "location": "meter00"
 }

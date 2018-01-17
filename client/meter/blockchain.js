@@ -27,24 +27,33 @@ async function getContractInfoByAddress(address) {
     unitPrice,
     remainingAmount,
     dateCreated,
+    renewable
   ] = await Promise.all([
     contract.seller(),
     contract.offeredAmount(),
     contract.unitPrice(),
     contract.remainingEnergy(account),
-    contract.dateCreated()
+    contract.dateCreated(),
+    contract.renewable()
   ]);
 
   dateCreated = new Date(dateCreated.toNumber() * 1000);
   dateCreated = dateCreated.toUTCString();
+  const sellerInfo = await getAccountInfo(seller);
+  console.log(sellerInfo);
+  const sellerName = sellerInfo.name;
+
   contracts[address] = {
     seller,
     offeredAmount,
     unitPrice,
     remainingAmount,
     dateCreated,
+    sellerName,
+    renewable,
     address
   };
+
   if (seller === account && offeredAmount > 0) {
     sellerContractsSet.add(address);
   } else {
@@ -99,6 +108,10 @@ async function myAccount() {
   return await bonds.me;
 }
 
+async function getAccountInfo(address) {
+  return await bonds.accountsInfo[address];
+}
+
 async function myContracts() {
   const sellerContracts = await mySellerContracts();
   const buyerContracts = await myBuyerContracts();
@@ -141,7 +154,7 @@ async function buyEnergy(contractAddress, amount) {
   return await contract.buy(amount).transactionPromise;
 }
 
-async function sellEnergy(price, amount) {
+async function sellEnergy(price, amount, renewable) {
   if (!inited) return Promise.reject({ msg: "Blockchain unsynced" });
   if (!price || !amount) {
     return Promise.reject({ msg: "Unable to sell energy", value: amount, price: price});
@@ -156,8 +169,9 @@ async function sellEnergy(price, amount) {
     // after tx is initiated instead of completed
     action: "sell",
     amount: amount,
+    renewable: renewable,
   });
-  return await EnergyMaster.sell(price, amount);
+  return await EnergyMaster.sell(price, amount, renewable);
 }
 
 
