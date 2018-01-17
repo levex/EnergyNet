@@ -30,7 +30,7 @@ class SettingsSell extends React.Component {
                 <a href="#" class={autoBtnClass} role="button" onClick={() => {
                   this.setState({
                     show: "auto"
-                  })}}>
+                  });}}>
                   Auto
                 </a>
               </div>
@@ -38,7 +38,7 @@ class SettingsSell extends React.Component {
                 <a href="#" class={manualBtnClass} role="button" onClick={() => {
                   this.setState({
                     show: "manual"
-                  })
+                  });
                 }}>Manual</a>
               </div>
             </div>
@@ -98,6 +98,6 @@ class SettingsSell extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default SettingsSell;

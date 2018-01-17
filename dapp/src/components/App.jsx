@@ -180,7 +180,6 @@ class App extends React.Component {
   render() {
     const accountBalance = <div className="col-xs-9 text-right">
       <div className="huge"><Rspan>{bonds.balance(bonds.me).map((b) => {
-        console.log(splitValue(b));
         return (Math.trunc(splitValue(b).base.toNumber() * 100) / 100 + " GBP");
       })}
       </Rspan></div>

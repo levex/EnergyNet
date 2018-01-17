@@ -29,7 +29,6 @@ class SettingsBuy extends React.Component {
       headers: headers
     }).then((data) => data.json())
       .then((data) => {
-        console.log(data);
         this.setState({preBuyLimit: data.preBuyLimit});
       });
   }
@@ -43,7 +42,6 @@ class SettingsBuy extends React.Component {
       headers: headers
     }).then((data) => data.json())
       .then((data) => {
-        console.log(data);
         this.setState({preferRenewables : data.preferRenewables});
       });
   }
@@ -55,7 +53,7 @@ class SettingsBuy extends React.Component {
       method: "POST",
       body: JSON.stringify({preBuyLimit: this.state.preBuyLimit}),
       headers: headers
-    }).catch(console.log);
+    }).catch();
   }
 
   setRenewablePreference() {
@@ -65,11 +63,10 @@ class SettingsBuy extends React.Component {
       method: "POST",
       body: JSON.stringify({preferRenewables: this.state.preferRenewables}),
       headers: headers
-    }).catch(console.log);
+    }).catch();
   }
 
   render() {
-    console.log(this.state.preBuyLimit);
     return (
       <div className="col-lg-12">
         <div className="col-lg-5">
@@ -91,7 +88,7 @@ class SettingsBuy extends React.Component {
                 <label for="basic-url">Prebuy limit</label>
                 <div className="input-group">
                   <input type="text" class="form-control" id="basic-url" aria-describedby="addon2" value={this.state.preBuyLimit}
-                        onChange={(e) => this.setState({preBuyLimit: e.target.value})} />
+                    onChange={(e) => this.setState({preBuyLimit: e.target.value})} />
                   <span class="input-group-addon" id="addon2">kWh</span>
                 </div>
               </div>
@@ -99,7 +96,7 @@ class SettingsBuy extends React.Component {
               <div className="row" style={{margin: "0px 0px 15px 0px"}}>
                 <div class="checkbox">
                   <label><input type="checkbox" value="" checked={this.state.preferRenewables}
-                                onChange={() => {this.setState({preferRenewables: !this.state.preferRenewables})}}/>
+                    onChange={() => {this.setState({preferRenewables: !this.state.preferRenewables});}}/>
                     Prefer renewables?
                   </label>
                 </div>
@@ -118,11 +115,11 @@ class SettingsBuy extends React.Component {
         </div>
         <div className="col-lg-7">
           <BuyEnergyPanel contracts={this.state.contracts.contracts} buyEnergy={this.state.bonds.buyEnergy}
-                          amountBond={this.state.bonds.buyAmountBond}/>
+            amountBond={this.state.bonds.buyAmountBond}/>
         </div>
       </div>
     );
   }
-};
+}
 
 export default SettingsBuy;

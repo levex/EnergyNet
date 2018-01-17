@@ -26,7 +26,7 @@ class Nav extends React.Component {
           Welcome, Daniel
         </li>
         <li style={{marginLeft: "10px"}}>
-          <button type="button" className="btn btn-primary btn-block" onClick={() => {window.location.reload()}}>Refresh</button>
+          <button type="button" className="btn btn-primary btn-block" onClick={() => {window.location.reload();}}>Refresh</button>
         </li>
         <li className="dropdown">
           <a className="dropdown-toggle" data-toggle="dropdown" href="#">
