@@ -24,6 +24,7 @@ simulation_config = {
     "energy_input": 0,
     "input_noise": 0,
     "enabled": False,
+    "renewable": False,
     "location": ""
 }
 
@@ -117,6 +118,15 @@ class MeterHTTPRequestHandler(BaseHTTPRequestHandler):
                     }),
                     headers=API_CALL_HEADER,
                 )
+            print("Setting renewable energy to: " + str(config["renewable"]))
+            requests.post(
+                METER_API_BASE_URL + "config/renewable",
+                data=json.dumps({
+                    "renewable": config["renewable"],
+                }),
+                headers=API_CALL_HEADER,
+            )
+
             if (config["location"] != simulation_config["location"]):
                 print("Setting location to: " + str(config["location"]))
                 requests.post(

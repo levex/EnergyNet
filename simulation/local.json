@@ -3,10 +3,11 @@
     "ip": "127.0.0.1",
     "schedule": {
       "0": {
-        "price": 1,
-        "energy_input": -4,
-        "input_noise": 1,
-        "enabled": true
+        "price": 2,
+        "energy_input": 10,
+        "input_noise": 2,
+        "enabled": true,
+        "renewable": false
       }
     }
   }

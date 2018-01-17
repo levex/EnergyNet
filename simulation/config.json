@@ -26,20 +26,20 @@
     "schedule": {
       "0": {
         "price": 2,
+        "energy_input": -5,
+        "input_noise": 2,
+        "enabled": true
+      },
+      "120": {
+        "price": 2,
         "energy_input": 14,
         "input_noise": 2,
         "enabled": true
       },
-      "200": {
+      "220": {
         "price": 2,
-        "energy_input": -3,
-        "input_noise": 1,
-        "enabled": true
-      },
-      "400": {
-        "price": 2,
-        "energy_input": 18,
-        "input_noise": 3,
+        "energy_input": -4,
+        "input_noise": 2,
         "enabled": true
       }
     }
@@ -49,8 +49,8 @@
     "schedule": {
       "0": {
         "price": 4,
-        "energy_input": 20,
-        "input_noise": 1,
+        "energy_input": 23,
+        "input_noise": 3,
         "enabled": true
       }
     }

@@ -57,7 +57,8 @@ def disable_nodes():
             "energy_input": 0,
             "input_noise": 0,
             "enabled": False,
-            "location": location
+            "location": location,
+            "renewable": False
         }
 
         update_node_config(config, ip)
