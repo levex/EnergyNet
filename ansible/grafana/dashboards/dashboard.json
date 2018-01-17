@@ -71,10 +71,10 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
-          "measurement": "energy_consumed",
+          "measurement": "meter00energy_consumed",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -158,10 +158,10 @@
             "params": ["$__interval"],
             "type": "time"
           }, {
-            "params": ["previous"],
+            "params": ["linear"],
             "type": "fill"
           }],
-          "measurement": "energy_sold",
+          "measurement": "meter00energy_sold",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -248,7 +248,7 @@
             "params": ["previous"],
             "type": "fill"
           }],
-          "measurement": "energy_bought",
+          "measurement": "meter00buy_price",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -267,7 +267,7 @@
         "thresholds": [],
         "timeFrom": null,
         "timeShift": null,
-        "title": "Energy bought",
+        "title": "Energy price",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -282,7 +282,7 @@
           "values": []
         },
         "yaxes": [{
-          "format": "kwatth",
+          "format": "currencyGBP",
           "label": null,
           "logBase": 1,
           "max": null,
