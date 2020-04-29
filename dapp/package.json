@@ -9,7 +9,7 @@
     "datatables.net-bs": "^1.10.16",
     "dateformat": "^3.0.2",
     "immutability-helper": "^2.4.0",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.0",
     "oo7": "^0.5.8",
     "oo7-parity": "^0.6.13",
     "oo7-react": "^0.4.8",
